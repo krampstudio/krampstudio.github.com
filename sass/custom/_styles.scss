@@ -1,9 +1,59 @@
 // This File is imported last, and will override other styles in the cascade
 // Add styles here to make changes without digging in too much
 
+body{
+	max-width:100%;
+	hgroup{
+		max-width:$max-width;
+    	margin: 0 auto;
+	}
+}
 body > header {
-  background: none;
+  	background-color: $header-bg;
+	background-image:image-url('cloud.png');
+	background-repeat:no-repeat;
+	background-position:right;
+	padding-bottom:100px;
 }
 body > nav {
 	@include border-top-radius(.4em);
+	@include single-box-shadow();
+	max-width:$max-width;
+	margin: 0 auto;
+	padding:5px 15px;
+	top:-75px;
+}
+#main{
+	@include single-box-shadow();
+	max-width:$max-width;
+	padding:5px 15px;
+	position:relative;
+	top:-75px;
+	#content{
+		h1{ color:#2C5A78;}
+		aside{
+			h1{ font-size:1.4em; font-weight:normal; color:#333;}
+		}
+		article {
+			.entry-content{
+				ul {
+					list-style-image: image-url('bullet.png');
+				}
+			}
+		}
+	}
+}
+body > footer{
+ 	@include single-box-shadow();
+	max-width:$max-width;
+	margin: 0 auto;
+	padding:5px 15px; 
+	text-align:center;
+	top:-75px;
+}
+.entry-content {
+	font-size:0.9em;
+}
+aside h1{
+	
 }
