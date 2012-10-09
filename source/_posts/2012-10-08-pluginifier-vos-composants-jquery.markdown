@@ -94,18 +94,16 @@ Dans l'ordre, on va:
 2. Le versionner avec GIT.
 3. Générer la structure de base.
 
-``` bash
+{% codeblock lang:bash %}
 $ mkdir removablearea
 $ cd removablearea
 $ git init
 Initialized empty Git repository in /home/bertrand/dev/workspace/removablearea/.git/
 $ grunt init:jquery
 #answer the questions about the plugin
-...
-...
+#...
 Initialized from template "jquery".
-
 Done, without errors.
 $ git add -A
 $ git commit -m "Create base plugin"
-```
+{% endcodeblock %}
