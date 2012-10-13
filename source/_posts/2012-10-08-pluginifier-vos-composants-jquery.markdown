@@ -12,6 +12,8 @@ Le principe est simple: j'utilise HTML, CSS et la librairie jQuery ainsi que son
 
 Dans ce post, je vais essayer de _pluginifier_ pas à pas, un petit composant utilisé pour supprimer graphiquement un élément de l'interface.
 
+<!-- more -->
+
 ## Environnement
 
 En premier lieu, les requis:
@@ -39,7 +41,7 @@ Pour les autres, vous pouvez vous reporter au site de [node.js](http://nodejs.or
 
 ### Grunt
 
-{% img right images/grunt.png Grunt %}
+{% img right /images/grunt.png Grunt %}
 Une fois la commande npm disponible, il va falloir installer [Grunt](http://gruntjs.com), l'outils que nous utiliserons pour automatiser les tâches de build de notre plugin. Nous allons donc l'installer avec npm, en mode _global_ (donc accessible pour tous les utilisateurs), d'où le commutateur <code class='inline'>g</code>. C'est pourquoi il faut l'installer avec les droits root.
 
 ``` bash
@@ -48,7 +50,7 @@ $> sudo npm install -g grunt
 
 ### Phantom.js
 
-{% img right images/phantomjs.png Phantom.js %}
+{% img right /images/phantomjs.png Phantom.js %}
 Le dernier outils a installer sur votre système est [Phantom.js](http://phantomjs.org), qui va nous servir pour simuler un browser durant nos tests. Il est aussi disponible depuis le gestionnaire de paquet sur les distributions récentes:
 
 ``` bash
@@ -64,8 +66,6 @@ Voici un exemple de code intégré à un script d'une application:
 {% gist 3854836 dynamic-removable-list.js %}
 
 Cet exemple est utilisé pour créer une liste HTML en fonction du résultat d'une requête ajax. Chaque item de la liste doit pouvoir être supprimé par la suite. C'est ce point qui nous intéresse, car nous voulons pouvoir appliquer ce composant de suppression à d'autres parties de notre interface graphique. 
-
-//add a screenshot
 
 Nous allons procéder en suivant ces étapes:
 
@@ -107,3 +107,34 @@ Done, without errors.
 $ git add -A
 $ git commit -m "Create base plugin"
 {% endcodeblock %}
+
+Voilà, maintenant, notre stucture est générée, le projet est versionné avec GIT, et si vous avez renseigné soigneusement les questions demandées par Grunt, alors un certain nombre de sections sont déjà préremplies.
+
+Normalement, vous devriez avoir l'arborescence suivante:
+<pre>
+.
+├── grunt.js					//fichier de build
+├── libs						//librairies externes
+│   ├── jquery
+│   │   └── jquery.js
+│   ├── jquery-loader.js
+│   └── qunit
+│       ├── qunit.css
+│       └── qunit.js
+├── LICENSE-GPL					//licenses
+├── LICENSE-MIT
+├── package.json				//meta données du projet
+├── README.md					
+├── removablearea.jquery.json	//meta données du plugin
+├── src							//sources du plugin
+│   └── removablearea.js
+└── test						//tests unitaires
+    ├── removablearea.html
+    └── removablearea_test.js
+</pre>
+
+Nous allons modifier un peu cette structure, en y ajoutant un répertoire <span class="inline-code">sample</span> dans lequel nous allons créer des examples d'utilisation de notre plugin.
+
+## Pluginification
+
+

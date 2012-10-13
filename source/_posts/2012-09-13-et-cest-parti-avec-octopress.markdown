@@ -13,6 +13,8 @@ Quand je dis quelques heures, c'est vraiement le cas. Octopress cible un public 
 * sachant lancer des commandes de build (rake en l'occurence)
 * et sachant éditer feuilles de style CSS, fichiers de configuration YAML et bien entendu des fichiers textes au micro-format Markdown
 
+<!--more-->
+
 Bon, je tiens à vous le dire tout de suite, mieux vaut avoir un système d'exploitation adapté muni d'un Shell de type Bash, Zsh ou autre, sinon il va falloir bidouiller. En effet, Octopress nécessite une version particulière de Ruby qu'il faut gérer grâce à [rbenv](https://github.com/sstephenson/rbenv) (qui permet de créer des environnements Ruby cloisonnés) qui n'est simplement pas fait pour tourner sur un OS comme Windows (ca fonctionne peut être avec cygwin). Dans mon cas ça tombe plutôt bien car je suis sous Linux, mais lorsque j'ai voulu faire un essai au boulot (durant ma pause déjeuné bien sûr), j'ai vite abandonné.
 
 ### Pourquoi Octopress?
