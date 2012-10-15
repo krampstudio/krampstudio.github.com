@@ -137,4 +137,22 @@ Nous allons modifier un peu cette structure, en y ajoutant un répertoire <span 
 
 ## Pluginification
 
+Dans un premier temps, nous allons créer la structure (au sens du typage en programmation) de notre plugin jQuery, en se basant sur les bonnes pratiques détaillée dans la [documentation jQuery](http://docs.jquery.com/Plugins/Authoring "jQuery Plugin AUthoring") à ce propos. Nous allons donc utiliser la structure suivante, comme base de notre fichier <span class="inline-code">src/removablearea.js</span>:
 
+{% gist 3886198 removablearea.js %}
+
+Tout d'abord, on peut remarquer que le code est englobé dans une closure. Cette pratique s'appelle _Immediately-Invoked Function Expression_ (ou _LIFE_). Cette pratique permet d'éviter d'exécuter du code dans le scope global. Dans le cas de jQuery, cet usage permet d'utiliser le symbole dollar en étant sûr qu'il vient de jQuery et non d'un autre framework, le <span class="inline-code">$</span> est mappé à l'objet <span class="inline-code">jQuery</span> :
+
+{% codeblock lang:javascript %}
+(function( $ ) {
+	//your code
+})( jQuery );
+{% endcodeblock %}
+
+Un autre point que l'on peut souligner est ce string utilisé à la ligne 2:
+
+{% codeblock lang:javascript %}
+	"use strict";
+{% endcodeblock %}
+
+La présence de ce string permet de passer le moteur le moteur javascript en mode _strict_, qui le rend moins tolérant à certaines pratiques du langage.
