@@ -115,19 +115,19 @@ Normalement, vous devriez avoir l'arborescence suivante:
 .
 ├── grunt.js					//fichier de build
 ├── libs						//librairies externes
-│   ├── jquery
-│   │   └── jquery.js
-│   ├── jquery-loader.js
-│   └── qunit
-│       ├── qunit.css
-│       └── qunit.js
+│   ├── jquery
+│   │   └── jquery.js
+│   ├── jquery-loader.js
+│   └── qunit
+│       ├── qunit.css
+│       └── qunit.js
 ├── LICENSE-GPL					//licenses
 ├── LICENSE-MIT
 ├── package.json				//meta données du projet
 ├── README.md					
 ├── removablearea.jquery.json	//meta données du plugin
 ├── src							//sources du plugin
-│   └── removablearea.js
+│   └── removablearea.js
 └── test						//tests unitaires
     ├── removablearea.html
     └── removablearea_test.js
@@ -155,4 +155,36 @@ Un autre point que l'on peut souligner est ce string utilisé à la ligne 2:
 	"use strict";
 {% endcodeblock %}
 
-La présence de ce string permet de passer le moteur le moteur javascript en mode _strict_, qui le rend moins tolérant à certaines pratiques du langage.
+La présence de ce string permet de passer le moteur Javascript en mode _strict_, qui le rend moins tolérant à certaines pratiques du langage.
+
+Ensuite la partie qui permet de créer le plugin jQuery peut se résumer à cette ligne:
+
+{% codeblock lang:javascript %}
+    $.fn.removableArea = function( method ) { }
+{% endcodeblock %}
+
+Littéralement, nous ajoutons à l'attribut <span class='inline-code'>fn</span> de l'objet <code class='inline'>jQuery</code> (ou <code class='inline'>$</code> pour les itimes), la function <code class='inline'>removableArea</code> qui prend en paramètre un nom de méthode. C'est grâce à cette ligne que nous pourrons appeler la fonction <code class='inline'>removableArea</code> sur un élément du DOM, comme <code class='inline'>$('.boo > #far').removableArea(options);</code>.
+
+Ensuite le contnenue de cette fonction va tout simplement déléguer les appels à l'objet <code class='inline'>RemovableArea</code> définit au préalable, en fonction du contexte d'appel:
+
+
+- <code class='inline'>removableArea</code> est appelé avec un objet en paramètre (les options) on délègue à <code class='inline'>RemovableArea.init(options)</code>.
+- <code class='inline'>removableArea</code> est appelé avec un string en paramètre:
+  - Ce string correspond à une méthode de <code class='inline'>RemovableArea</code>, alors on délègue, sauf si ce nom commence par un underscore (genre de méthode privée).
+- <code class='inline'>removableArea</code> est appelé sans paramètre, on lève une erreur.
+
+Grâce à ce mécanisme de paramètres, nous avons pouvons appeler des méthodes à partir du même plugin: 
+{% codeblock lang:javascript %}
+    var elt = $('#id').removableArea(options);
+    elt.removableArea('destroy');
+{% endcodeblock %}
+
+## Refactoring
+
+Maintenant, que nous avons la structure de notre plugin en place, nous allons y intégrer notre code. Pour cela, il faut se poser les questions suivantes:
+
+- Quelles sont les options demander à l'utilisateur et quelles seront les valeurs par défaut ?
+- Comment répartir notre code entre la méthode par défaut (<code class='inline'>RemovableArea.init(options)</code>) et d'autres méthodes.
+- Quels événements déclencher pour aider à l'implémentation du plugin?
+
+
