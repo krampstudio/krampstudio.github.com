@@ -4,12 +4,26 @@
 
 $page-bg: #EFEFEF;
 $header-bg: #6F7F8A;
+//$title_color:#E9AC24; 
 $title_color:#BCCFDC;
-$subtitle-color: #88A5B8;
-$link-color:#2C5A78;
+$subtitle-color: lighten($title_color, 5);
+//#88A5B8;
+//$nav-bg:#FFB456;
+//$nav-bg:#FFDF83;
+//$nav-bg:#FFC883;
+$nav-bg:#FFE6C7;
+$nav-color:#666;
+$nav-color-hover:darken($nav-bg,40);
+
+$link-color:#1F7CB8;
+$link-color-hover: lighten(#2C5A78, 10);
+//#2C5A78;
 $sidebar-link-color: #2C5A78;
-$sidebar-link-color-hover: #BCCFDC;
-$footer-bg: #2C5A78;;
+$sidebar-link-color-hover: $link-color-hover;
+$footer-bg: $nav-bg;
+$footer-color: $nav-color;
+$footer-link-color: $nav-color;
+$footer-link-color-hover : $nav-color-hover;
 //$footer-bg-front: image-url('noise.png');
 //$footer-bg-back: linear-gradient(lighten($footer-bg, 8), $footer-bg, darken($footer-bg, 11));
 

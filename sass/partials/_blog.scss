@@ -8,9 +8,10 @@ article {
     margin-bottom: 1em;
     background: $img-border bottom left repeat-x;
     h1 {
-      margin: 0;
-      a { text-decoration: none; }
-    }
+      	margin: 0;
+     	color: $link-color !important;
+		a { text-decoration: none; }
+	}
     p {
       font-size: .9em;
       color: $text-color-light;
@@ -92,7 +93,11 @@ article + article {
   article header { background: none; padding-bottom: 0; }
   article h1 {
     font-size: 2.2em;
-    a { color: inherit; &:hover { color: $link-color-hover; } }
+	color:$link-color;
+	a { color: $link-color;
+		&:visited{ color: $link-color;} 
+		&:hover { color: darken($link-color,10); } 
+	}
   }
   a[rel=full-article] {
     background: darken($main-bg, 5);

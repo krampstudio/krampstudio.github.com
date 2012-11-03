@@ -24,7 +24,7 @@ body > nav {
 	top:-75px;
 }
 #main{
-	@include single-box-shadow();
+	@include single-box-shadow(#666, 0, 2px);
 	max-width:$max-width;
 	padding:5px 15px;
 	position:relative;
