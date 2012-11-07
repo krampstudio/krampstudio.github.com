@@ -3,7 +3,8 @@
 // If you need a handy color picker try http://hslpicker.com
 
 $page-bg: #EFEFEF;
-$header-bg: #6F7F8A;
+$header-bg:darken(#1F7CB8, 5);
+//$header-bg: #6F7F8A;
 //$title_color:#E9AC24; 
 $title_color:#BCCFDC;
 $subtitle-color: lighten($title_color, 5);
@@ -11,7 +12,8 @@ $subtitle-color: lighten($title_color, 5);
 //$nav-bg:#FFB456;
 //$nav-bg:#FFDF83;
 //$nav-bg:#FFC883;
-$nav-bg:#FFE6C7;
+//$nav-bg:#FFE6C7;
+$nav-bg:#FFDB58;
 $nav-color:#666;
 $nav-color-hover:darken($nav-bg,40);
 
