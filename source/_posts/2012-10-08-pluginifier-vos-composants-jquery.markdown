@@ -187,4 +187,19 @@ Maintenant, que nous avons la structure de notre plugin en place, nous allons y 
 - Comment répartir notre code entre la méthode par défaut (<code class='inline'>RemovableArea.init(options)</code>) et d'autres méthodes.
 - Quels événements déclencher pour aider à l'implémentation du plugin?
 
+### Les options
 
+Par convention, le paramétrage des plugins se fait en passant un objet contenant les options pour initialiser le plugin. Le code suivant va permettre dans notre exemple d'intialiser notre composant:
+
+{% codeblock lang:javascript %}
+$.removableArea({
+	label 		: 'Supprimer',
+	img 		: '/imgs/delete.png',
+	warning 	: 'Voulez-vous supprimer cet élément?',
+	hoverClass 	: 'half-opac'
+});
+{% endcodeblock %}
+
+Pour notre plugin, nous avons donc définis un certain nombre de paramètres, comme l'image qui va servir de _bouton_ qui s'affichera pour supprimer la zone ou les différents labels. On permet aussi de définir la classe CSS qui s'appliquera sur ce _bouton_ au passage de la souris. 
+ 
+### Les paramètres par défaut
