@@ -203,3 +203,42 @@ $.removableArea({
 Pour notre plugin, nous avons donc définis un certain nombre de paramètres, comme l'image qui va servir de _bouton_ qui s'affichera pour supprimer la zone ou les différents labels. On permet aussi de définir la classe CSS qui s'appliquera sur ce _bouton_ au passage de la souris. 
  
 ### Les paramètres par défaut
+
+Une fois le liste des options définies, il faut leur donner des valeurs par défaut. Cela permet d'éviter de redonner toutes les options à chaque utilisation, et permet surtout de mettre en place un comportement par défaut. L'idée est que le plugin fonctionne tout de suite, mais de laisser la possibilité de le modifier plus tard.
+
+Pour faire cela, nous allons utiliser un méthode de jQuery qui est très utile: <code class='inline'>$.extend</code> qui permet de _merger_ les options passées en paramètres et les options par défaut.
+
+Nous allons donc définir ces paramètres par défaut dans un attribut de notre objet <code class='inline'>RemovableArea</code>, puis les étendre avec les paramètres passés au plugin:
+
+{% codeblock lang:javascript %}
+	var RemovableArea = {
+        _opts : {
+            label : 'Supprimer',
+            img : '/imgs/delete.png',
+            warning : 'Voulez-vous supprimer cet élément?',
+            hoverClass : 'half-opac'
+        },
+		_init: function(options){
+			var opts = $.extend(true, {}, RemovableArea._opts, options);
+			//...
+
+		}
+	};
+{% endcodeblock %}
+
+Grâce au résultat de la méthode <code class='inline'>$.extend</code> la variable <code class='inline'>opts</code> contient les options passées par l'utilisateur ou leur valeur par défaut s'ils ont été omis.
+
+###Le code du plugin
+
+Maintenant, que nous avons une structure à notre plugin, la gestion des paramètres et options, il va falloir répartir le code entre la méthode d'initialisation et d"autres méthodes que nous rajoutons en fonction du fonctionnement souhaité. L'approche que je met souvent en place est de tout faire dans un premier temps dans la méthode d'initialisation et je refactor au fur et à mesure (le problème est qu'il m'arrive de n'avoir jamais le temps de refactorer...). 
+
+Pour notre exemple, nous allons créer les élements du DOM dans la méthode d'initialisation et une méthode <code class='inline'>destroy</code> pour supprime tout ce que le plugin a créé. 
+
+{% gist 4114309 removablearea.js %}
+
+
+Voilà donc notre plugin créé! On peut aussi noter l'ajout de deux événements : le premier étant déclenché à l'initialisation du plugin et le second lors de la suppression. Le nom des événements est suffixé par _removablearea_, qui est une manière de les grouper dans des [namespaces](http://docs.jquery.com/Namespaced_Events).
+
+## Mise en oeuvre : créer une page d'exemple
+
+
