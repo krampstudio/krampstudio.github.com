@@ -241,4 +241,192 @@ Voilà donc notre plugin créé! On peut aussi noter l'ajout de deux événement
 
 ## Mise en oeuvre : créer une page d'exemple
 
+Bon rien de bien compliqué ici, je créé juste une page HTML basique qui charge jQuery et notre plugin. Le principe est d'avoir un cas d'utilisation classique du plugin.
+Pour notre plugin, je créé cette page dans le répertoire <code class='inline'>sample</code> et je la plublie avec [Github-Pages](http://pages.github.com/) (ce qui est bien pratique). Jettez donc un oeil à cet [exemple](http://krampstudio.com/jQueryRemovableArea/index.html) et aux sources <code class='inline'>Ctrl-U</code>.
+
+## Tester du Javascript
+
+> Tester c'est douter :-S
+
+On voit trop rarement des tests mis en place pour le code Javascript, mais pourtant tous les outils dont nous avons besoin sont disponibles. Donc comme pour n'importe quel autre langage, nous allons créer des tests automatisés pour notre plugin. 
+
+{% img right /images/qunitjs.png Grunt %}
+Parmis les nombreux framework existant, mon dévolu c'est posé sur [QUnit](http://www.qunitjs.org) car c'est le framework de tests de jQuery d'une part (donc il s'intègre naturellement avec un plugin jQuery) et d'autre part parce qu'il offre toutes les fonctionnalités dont nous avons besoin: tests asynchrones, fixtures, groupes, etc.
+
+Le test se compose de deux fichiers:
+
+* Un fichier HTML, qui contient:
+  * Une structure de base à ne pas modifier
+  * Un block _fixtures_ dont l'identifiant est <code class='inline'>qunit-fixture</code>. C'est dans ce block uniquement que nous pouvons inclure nos éléments liés à notre test. Le contenu de ce block n'est pas visible et sera rechargé après l'exécution de chaque méthode de test
+* Un fichier javascript qui va contenir notre test.
+
+Du point de vue de l'API de test, QUnit nous propose:
+
+* D'organiser les tests en modules. Les tests peuvent partager des attributs lorsqu'ils sont groupés en module.
+* Un ensemble de functions comparables à des assertions, commme <code class='inline'>ok( boolean )</code>, <code class='inline'>equal(expected, compared)</code>, etc.
+* Des méthodes pour tester des méthodes asynchrones.
+
+Testons notre plugin!
+
+Tout d'abord, nous créons dans les _fixtures_ trois blocks qui vont nous servir comme zones de suppression:
+
+{% codeblock lang:html %}
+	<div id="qunit-fixture">
+		<div>lame test markup</div>
+		<div>normal test markup</div>
+		<div>awesome test markup</div>
+	</div>
+{% endcodeblock %}
+
+Ensuite, nous définissons un module dans le test. L'ordre d'invocation des méthodes est important, car toutes les méthodes de test définie après la déclaration du module feront parties de ce module. Ce module va initialiser l'attribut <code class='inline'>targets</code> qui pointe sur les zones de suppression, qui pourra être utilisé 
+
+{% codeblock lang:javascript %}
+	module('jQuery#removableArea', {
+		setup: function() {
+			this.targets = $('#qunit-fixture').children();
+		}
+	});
+{% endcodeblock %}
+
+Puis nous déclarons une méthode de test classique qui s'assure que le plugin est bien chargé par jQuery:
+
+{% codeblock lang:javascript %}
+	test('is plugin loaded in jQuery', 1, function(){
+        ok( (typeof $.fn.removableArea === 'function'), "the plugin should be available from jQuery.fn");
+    });
+{% endcodeblock %}
+
+Ensuite, un petit test asynchrone qui se déroule en 3 temps:
+
+1. Déclaration d'un <code class='inline'>asyncTest</code>
+2. Définir le nombre d'assertion attendues via la fonction <code class='inline'>expected</code>
+3. Appeler la fonction <code class='inline'>start</code> une fois que le code asynchrone a été exécuté.
+
+Ce qui donne le test suivant, qui test l'initialisation du plugin en écoutant un événement:
+
+{% codeblock lang:javascript %}
+	asyncTest("does the plugin initialize", function(){
+
+        expect(this.targets.length); 	//we expect 3 assertions, one by target
+
+        this.targets.bind('init.removablearea', function(){
+                strictEqual(1, $('.removable-ctrl', this).length);
+                start();
+            });
+        this.targets.removableArea();
+    });
+{% endcodeblock %}
+
+Pour lancer les tests, il suffit de charger la page HTML. Le résultat est visible depuis celle-ci, comme nous ponvons le voir sur la capture suivante: 
+
+{% img /images/sc.test-result.png Capture de la page de résultats tests %}
+
+## Automatisation
+
+> Un makefile pour du Javascript ?
+>> C'est un peu l'idée oui!
+
+Dans le but d'améliorer la qualité de nos développement et de gagner du temps, nous allons déléguer les tâches suivante à un outils de build, [Grunt](http://www.gruntjs.org) dont nous avons déjà parlé précédement: 
+
+* Minimification des sources
+* Ajout de la bannière de license
+* Exécution des tests 
+* Vérification du code
+
+Pour faire tout cela, c'est simple nous utilisons les plugins fournis de base avec Grunt.
+
+### Génération des sources finales
+
+Nous allons distribuer notre plugin sous forme minimifié, mais avec tout de même une bannière rappelant les informations essentielles: le copyright, l'auteur et la license. Ces informations vont être extraites et formatées à partir du fichier de meta-données : <code class='inline'>package.json</code>. Ce fichier est bien sûr formaté en JSON et suit la convention de description de paquet [NPM](http://www.npmjs.org) (les paquets node.js). Vous pouvez allez voir la [spécification](https://npmjs.org/doc/json.html) pour plus de détails. 
+
+Dans le cas de notre plugin, les méta-données sont les suivantes:
+
+{% gist 4145261 package.json %} 
+
+Maintenant nous souhaitons avoir en entête de nos sources le commentaire suivant:
+
+{% codeblock lang:javascript %}
+/**
+ * Copyright (c) 2012 Bertrand Chevrier
+ * jQueryRemovableArea - v0.1.0 
+ * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
+ * @license GPL  <http://www.gnu.org/licenses/gpl-3.0.txt>
+ */
+{% endcodeblock %}
+
+Pour cela grunt nous propose un mécanisme qui va nous permettre de récupérer le contenu du fichier <code class='inline'>package.json</code> et de l'utiliser au sein de notre fichier de build, via un mécanisme de template basique. De plus, Grunt a mis en place le concept de <code class='inline'>banner</code> qui pourra être concaténé avec notre fichier source. 
+
+Voici le fichier de build <code class='inline'>grunt.js</code> qui va minimifier les sources et créer l'entête:
+
+{% codeblock lang:javascript %}
+	grunt.initConfig({
+        pkg: '<json:package.json>',
+        meta: {
+            banner: '/**\n'+
+                    ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>\n' +
+                    ' * <%= pkg.name %> - v<%= pkg.version %> \n' +
+                    ' * @author <%= pkg.author.name %> <<%= pkg.author.email %>>\n' +
+                    ' * @license <%= pkg.licenses[0].type %>  <<%= pkg.licenses[0].url %>>\n'+
+                    ' */'
+        },
+        min : {
+            dist : {
+                src: 'src/removablearea.js',
+                dest: 'jquery.removablearea.min.js'
+            }
+        },
+        concat : {
+            dist : {
+                src : [ '<banner>', 'jquery.removablearea.min.js'],
+                dest: 'jquery.removablearea.min.js'
+            }
+        }
+	});
+{% endcodeblock %}
+
+La commande :
+
+``` bash
+$> grunt min concat
+```
+
+va produire notre fichier final <code class='inline'>jquery.removablearea.min.js</code>.
+
+### Tests et vérification
+
+Nous pouvons automatiser l'exécution des tests QUnit avec Grunt et PhantomJs. PhantomJs permet d'exécuter le test dans un navigateur en ligne de commande: il créé un navigauteur de type WebKit en _headless_. 
+
+Pour la vérification du code source, nous utilisons [JSHint](http://www.jshint.com) qui est plus flexible que [JSLint](http://www.jslint.com). 
+
+Puisque nous utilisons les plugins fournits par défaut avec Grunt, la configuration se résume à l'ajout des fichiers de tests QUnit et la définition des règles JSHint. 
+
+Le fichier de build final ressemble à cela:
+
+{% gist 4145424 grunt.js %}
+
+Et voici le genre de sortie que devrait retourner Grunt si tout se passe bien durant le build:
+
+``` bash
+$> grunt 
+Running "lint:files" (lint) task
+Lint free.
+
+Running "qunit:all" (qunit) task
+Testing removablearea.html....OK
+>> 6 assertions passed (61ms)
+
+Running "min:dist" (min) task
+File "jquery.removablearea.min.js" created.
+Uncompressed size: 2001 bytes.
+Compressed size: 660 bytes gzipped (1269 bytes minified).
+
+Running "concat:dist" (concat) task
+File "jquery.removablearea.min.js" created.
+
+Done, without errors.
+```
+
+## Partager 
+
+
 
