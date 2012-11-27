@@ -3,7 +3,7 @@ layout: post
 title: "Pluginifier vos composants jQuery"
 date: 2012-11-27 23:02
 comments: true
-categories: javascript,jquery,build,test 
+categories: [javascript,jquery,build,test]
 ---
 
 C'est en développant l'interface d'un de mes projets persos, que je me suis dit: _"Ces composants graphiques que tu fait là, pourquoi ne pas en faire de vrais plugins jQuery, et tout et tout!"_. C'est alors que tout s'enchaîne: création d'un dépôt sur Github, recherche des outils, j'ai fait un, puis deux, je présente ça devant mes collègues au travail, et pour finir un petit post en _&quot;bonnet de forme&quot;_...
