@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Pluginifier vos composants jQuery"
-date: 2012-10-08 13:47
+date: 2012-11-27 23:02
 comments: true
 categories: javascript,jquery,build,test 
 ---
