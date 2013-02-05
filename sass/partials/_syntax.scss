@@ -1,51 +1,59 @@
 .highlight, html .gist .gist-file .gist-syntax .gist-highlight {
   table td.code { width: 100%; }
-  .line-numbers {
-    text-align: right;
-    font-size: 0.8em;
-    line-height: 1.45em;
-    @if $solarized == light {
-      background: lighten($base03, 1) $noise-bg !important;
-      border-right: 1px solid darken($base02, 2) !important;
-      @include box-shadow(lighten($base03, 2) -1px 0 inset);
-      text-shadow: lighten($base02, 2) 0 -1px;
-    } @else {
-      background: $base02 $noise-bg !important;
-      border-right: 1px solid darken($base03, 2) !important;
-      @include box-shadow(lighten($base02, 2) -1px 0 inset);
-      text-shadow: darken($base02, 10) 0 -1px;
-    }
-    span { color: $base01 !important; }
-    padding: .8em !important;
-    @include border-radius(0);
-  }
   border: 1px solid $pre-border !important;
 }
+.highlight .line-numbers, html .gist .gist-file .gist-syntax .highlight .line_numbers {
+  text-align: right;
+  font-size: 13px;
+  line-height: 1.45em;
+  @if $solarized == light {
+    background: lighten($base03, 1) $noise-bg !important;
+    border-right: 1px solid darken($base02, 2) !important;
+    @include box-shadow(lighten($base03, 2) -1px 0 inset);
+    text-shadow: lighten($base02, 2) 0 -1px;
+  } @else {
+    background: $base02 $noise-bg !important;
+    border-right: 1px solid darken($base03, 2) !important;
+    @include box-shadow(lighten($base02, 2) -1px 0 inset);
+    text-shadow: darken($base02, 10) 0 -1px;
+  }
+  span { color: $base01 !important; }
+  padding: .8em !important;
+  @include border-radius(0);
+}
+
 figure.code, .gist-file, pre {
   @include box-shadow(rgba(#000, .06) 0 0 10px);
   .highlight pre { @include box-shadow(none); }
 }
 
+.gist .highlight, figure.code .highlight {
+  @include selection(adjust-color($base03, $lightness: 23%, $saturation: -65%), $text-shadow: $base03 0 1px);
+}
 html .gist .gist-file {
   margin-bottom: 1.8em;
   position: relative;
   border: none;
-  padding-top: 1.2em !important;
+  padding-top: image-height("code_bg.png") !important;
+  .highlight {
+    margin-bottom: 0;
+  }
   .gist-syntax {
     border-bottom: 0 !important;
     background: none !important;
-    .gist-highlight{
+    .gist-highlight {
       background: $base03 !important;
-      pre {
-        @extend .pre-code;
-      }
+    }
+    .highlight pre {
+      @extend .pre-code;
+      padding: 0;
     }
   }
   .gist-meta {
    padding: .6em 0.8em;
    border: 1px solid lighten($base02, 2) !important;
    color: $base01;
-   font-size: .8em !important;
+   font-size: .7em !important;
    @if $solarized == light {
      background: lighten($base03, 2) $noise-bg;
      border: 1px solid $pre-border !important;
@@ -78,7 +86,7 @@ pre {
   @extend .mono;
   border: 1px solid $pre-border;
   line-height: 1.45em;
-  font-size: .8em;
+  font-size: 13px;
   margin-bottom: 2.1em;
   padding: .8em 1em;
   color: $pre-color;
@@ -107,12 +115,11 @@ p, li {
 }
 
 .pre-code {
-  @include selection(adjust-color($base03, $lightness: 23%, $saturation: -65%), $text-shadow: $base03 0 1px);
   font-family: $mono !important;
   overflow: scroll;
   overflow-y: hidden;
   display: block;
-  padding: .8em !important;
+  padding: .8em;
   overflow-x: auto;
   line-height: 1.45em;
   background: $base03 $noise-bg !important;
@@ -187,7 +194,7 @@ p, li {
 }
 
 .highlight, .gist-highlight {
-  pre { background: none; @include border-radius(none); border: none; padding: 0; margin-bottom: 0; }
+  pre { background: none; @include border-radius(0px); border: none; padding: 0; margin-bottom: 0; }
   margin-bottom: 1.8em;
   background: $base03;
   overflow-y: hidden;
@@ -206,7 +213,9 @@ pre, .highlight, .gist-highlight {
   &::-webkit-scrollbar-thumb:horizontal { background: $solar-scroll-thumb;  -webkit-border-radius: 4px; border-radius: 4px }
 }
 
-.highlight code { @extend .pre-code; background: #000;}
+.highlight code { 
+  @extend .pre-code; background: #000;
+}
 figure.code {
   background: none;
   padding: 0;
@@ -225,7 +234,7 @@ figure.code {
 
 .code-title {
   text-align: center;
-  font-size: .8em;
+  font-size: 13px;
   line-height: 2em;
   text-shadow: #cbcccc 0 1px 0;
   color: #474747;
@@ -246,8 +255,7 @@ figure.code {
   @include hover-link;
   color: #666 !important;
   z-index: 1;
-  font-size: .8em;
+  font-size: 13px;
   text-shadow: #cbcccc 0 1px 0;
   padding-left: 3em;
 }
-
