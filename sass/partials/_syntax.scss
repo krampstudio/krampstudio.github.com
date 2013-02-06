@@ -1,6 +1,5 @@
 .highlight, html .gist .gist-file .gist-syntax .gist-highlight {
   table td.code { width: 100%; }
-
   border: 1px solid $pre-border !important;
 }
 .highlight .line-numbers, html .gist .gist-file .gist-syntax .highlight .line_numbers {
@@ -50,11 +49,8 @@ html .gist .gist-file {
       padding: 0;
     }
   }
-  .file-data > table{
-	margin-bottom: 0;
-  }
   .gist-meta {
-   padding: .6em 0.9em;
+   padding: .6em 0.8em;
    border: 1px solid lighten($base02, 2) !important;
    color: $base01;
    font-size: .7em !important;
@@ -90,11 +86,7 @@ pre {
   @extend .mono;
   border: 1px solid $pre-border;
   line-height: 1.45em;
-<<<<<<< HEAD
-  font-size: .9em;
-=======
   font-size: 13px;
->>>>>>> 4d1e5a0192259094a2bd3b8537842a989907d082
   margin-bottom: 2.1em;
   padding: .8em 1em;
   color: $pre-color;
@@ -111,7 +103,7 @@ p, li {
     display: inline-block;
     white-space: no-wrap;
     background: #fff;
-    font-size: 1em !important;
+    font-size: .8em;
     line-height: 1.5em;
     color: #555;
     border: 1px solid #ddd;
@@ -124,7 +116,6 @@ p, li {
 
 .pre-code {
   font-family: $mono !important;
-  font-size: 1em;
   overflow: scroll;
   overflow-y: hidden;
   display: block;
@@ -208,6 +199,7 @@ p, li {
   background: $base03;
   overflow-y: hidden;
   overflow-x: auto;
+  width:100%;
 }
 
 $solar-scroll-bg: rgba(#fff, .15);
@@ -268,3 +260,4 @@ figure.code {
   text-shadow: #cbcccc 0 1px 0;
   padding-left: 3em;
 }
+
