@@ -12,7 +12,7 @@ Cette liste n'est pas exhaustive et sera mise à jour au fil de l'eau... N'hési
 
 <!-- more -->
 
-## <a href="node"></a> node.js et npm
+## <a name="node"></a>node.js et npm
 
 {% img right /images/tools/nodejs.png node.js %}
 
@@ -28,7 +28,7 @@ Même dans le cadre de développement client, avoir node.js vous permettra d'avo
 
 Sites webs : [nodejs.org](http://nodejs.org) [npmjs.org](https://npmjs.org)
 
-## jQuery
+## <a name="jquery"></a>jQuery
 
 {% img right /images/tools/jquery.png jquery %}
 
@@ -43,7 +43,7 @@ Sites web : [jquery.com](http://jquery.com)
 Ce [site](http://garann.github.com/template-chooser/) plutôt sympa permet de choisir son moteur de _gabaris_ en JavaScript.
 
 
-## Grunt
+## <a name="grunt"></a>Grunt
 
 {% img right /images/tools/grunt.png grunt %}
 
@@ -53,23 +53,27 @@ Grunt se définit comme un _task runner_, c'est donc un outils de _build_ au sen
 
 > &lt;pub&gt;De plus, le [plugin jsdoc](https://npmjs.org/package/grunt-jsdoc) est super (et a été assez facile à réaliser car les APIs sont complètes et bien documentées).&lt;/pub&gt;
 
-Sites web : [gruntjs.com](http://gruntjs.com)
+Site web : [gruntjs.com](http://gruntjs.com)
 
-## Yeoman
+## <a name="yeoman"></a>Yeoman
 
 {% img right /images/tools/yeoman.png yeoman %}
 
 Yeoman est au Javascript ce que Maven est à Java: c'est une outils de gestion du cycle de vie de l'application. Il se compose de 3 outils différents et complémentaires:
 
  * *yo* un outils de _scaffolding_, il permet de générer des structures pour de nouvelles applications, de créer de composants pour de nombreux framework, etc.
- * *bower* pour la gestion des dépendances
- * *grunt* pour l'automatisation des tâches et le build
-
-
+ * [bower](#bower) qu'il utilise en interne pour la gestion des dépendances
+ * [grunt](#grunt) qu'il intègre aussi pour l'automatisation des tâches et le build
 
 ## Jake
 
+Make, Rake et ... Jake c'est l'autre outils de build, d'automatisation de tâches. Il est axé sur la customisation des tâches pour votre projet, d'ailleur il faudra mettre la main à la patte et programmer vos tâches. Cet outils se présente sous la forme d'un module [node.js](#node) et s'utilise autant pour un projet node qu'un projet browser.
+
+Site web: [mde/jake](https://github.com/mde/jake)
+
 ## Bower
+
+
 
 ## JSLint
 
@@ -110,3 +114,11 @@ Underscore.js est un framework généraliste qui augmente le langage avec un cer
 ## Prototype.js
 
 ## Sizzler
+
+## Testacular
+
+## Chart.js
+
+## Raphael.js
+
+
