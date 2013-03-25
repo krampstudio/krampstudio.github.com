@@ -71,11 +71,22 @@ Make, Rake et ... Jake c'est l'autre outils de build, d'automatisation de tâche
 
 Site web: [mde/jake](https://github.com/mde/jake)
 
-## Bower
+## <a name="bower"></a> Bower
 
+{% img right /images/tools/bower.png bower %}
 
+Bower est un outils de gestion de composants et de dépendances orienté navigateur. Les packages sont ni plus ni moins que des projets Github, car Bower se base uniquement sur Github comme dépôt de packages. Cela offre tous les avantages de la plateforme : fork, clone, etc. et aussi les inconvénients : la qualité de service dépend directement de la disponibilité de Github . Les paquets ou composants ne se limitent pas à Javascript mais peuvent contenir n'importe quel type de resource web: html, css, etc.
 
-## JSLint
+L'outils est simple à utiliser et résoud les problématiques de gestion des librairies browser. Plus d'excuse pour ne pas mettre à jour une librairie et ses plugins...
+
+> A mon sens, Bower manque encore un peu de maturité. Néanmoins, le projet est promis à un bel avenir, à utiliser sans modération! 
+
+Site web: [twitter/bower](http://twitter.github.com/bower/)
+
+## <a name="jslint"></a> JSLint
+
+{% img right /images/tools/jslint.png jslint %}
+
 
 ## JSHint
 
