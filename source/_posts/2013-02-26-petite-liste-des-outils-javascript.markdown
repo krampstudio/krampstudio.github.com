@@ -87,6 +87,7 @@ Site web: [twitter/bower](http://twitter.github.com/bower/)
 
 {% img right /images/tools/jslint.png jslint %}
 
+JSLint est un outils qui permet de vérifier la qualité du code source Javascript. JSLint va vérifier la conformité des sources avec des conventions de codes basée sur des bonnes prattiques de programmations.
 
 ## JSHint
 
