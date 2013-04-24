@@ -87,9 +87,20 @@ Site web: [twitter/bower](http://twitter.github.com/bower/)
 
 {% img right /images/tools/jslint.png jslint %}
 
-JSLint est un outils qui permet de vérifier la qualité du code source Javascript. JSLint va vérifier la conformité des sources avec des conventions de codes basée sur des bonnes prattiques de programmations.
+JSLint est un analyseur de code statique, c'est un outils qui permet de vérifier la qualité du code source Javascript. JSLint va vérifier la conformité des sources avec des conventions de codes basée sur des bonnes pratiques de programmation, comme l'obligation de mettre des points virgules à la fin des lignes, l'utilisation de l'opérateur de vérité, la vérification des scopes, des variables globales, etc.
+JSLint est déjà très répandu et il y a surement un plugin pour votre éditeur/IDE JavaScript favori ou votre système de build/qualité.
 
-## JSHint
+> Parfois considéré comme trop strict, JSLint est néanmoins un outils esstentiel car il permet de développer en évitant pièges du JavaScript, et de n'utiliser que _the good parts_^(\*)
+
+__\*__ _<u>JavaScript, The Good Parts, Douglas Crockford, O'Reilly, 2008</u>_ est un ouvrage de référence du language JavaScript, son auteur est aussi le développeur dérrière JSLint. La lecture de ce livre vous permettra souvent de mieux comprendre l'utilisation de certaines règles JSLint.
+
+Site web : [jslint.com](http://jslint.com)
+
+## <a name="jshint"></a>JSHint
+
+{% img right /images/tools/jshint.png jshint %}
+
+JSHint est un fork de JSLint avec pour but de rendre ce dernier plus configurable. Il permet d'autoriser certaines pratiques ou d'autres styles de programmation que celui défini par JSLint. 
 
 ## QUnit
 
@@ -132,5 +143,6 @@ Underscore.js est un framework généraliste qui augmente le langage avec un cer
 ## Chart.js
 
 ## Raphael.js
+
 
 
