@@ -63,9 +63,7 @@ Site web : [jqueryui.com](http://jqueryui.com)
 
 {% img right /images/tools/qunit.png QUnit %}
 
-QUnit est un framework de tests unitaires JavaScript orienté client. Bien que développé initialement pour tester les différents projets de jQuery, c'est un framework de test généraliste facile à utiliser et qui s'adapte bien eux tests de code client. Il propose les fonctionnalités de bases comme les assertions, le regroupement des tests anisi que des fonctionnalités plus avancées comme les tests asynchrones ou les fixtures (une sorte de mock HTML qui permet de réaliser le test avec des éléments externes du DOM dont il dépend).
-
-> QUnit est simple, efficace et rapide à mettre en oeuvre. 
+QUnit est un framework de tests unitaires JavaScript orienté client. Bien que développé initialement pour tester les différents projets de jQuery, c'est un framework de test généraliste facile à utiliser et qui s'adapte bien eux tests de code client. Il propose les fonctionnalités de bases comme les assertions, le regroupement des tests anisi que des fonctionnalités plus avancées comme les tests asynchrones ou les fixtures (une sorte de mock HTML qui permet de réaliser le test avec des éléments externes d)
 
 Site web : [qunitjs.com](http://qunitjs.com)
 
