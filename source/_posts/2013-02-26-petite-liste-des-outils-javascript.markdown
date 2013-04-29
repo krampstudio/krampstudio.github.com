@@ -8,7 +8,7 @@ categories: javascript, tools
 
 Javascript est devenu un langage à la mode. Une profusion d'outils et de librairies fleurissent chaque jour. Lorsqu'on commence un nouveau dev, plusieurs possibilités s'offrent à nous pour composer notre stack côté client (et je ne parle pas du javascript côté serveur). Le but de ce post est de lister un certain nombre d'outils permettant de créer cette pile de librairies. 
 
-Cette liste n'est pas exhaustive et sera mise à jour au fil de l'eau... N'hésitez pas à m'aider à la compléter.
+Cette liste n'est pas exhaustive, car elle se base tout d'abord sur les outils que j'utilise, ai utilisé ou envie d'utiliser. Bien que Le nombre de librairies JavaScript de bonne qualité croit de jour en jour et qu'il est difficile de suivre cette frénésie, j'essairai de mettre à jour cette liste au fil de l'eau... N'hésitez pas à m'aider à la compléter.
 
 <!-- more -->
 
@@ -28,6 +28,8 @@ Même dans le cadre de développement client, avoir node.js vous permettra d'avo
 
 Sites webs : [nodejs.org](http://nodejs.org) [npmjs.org](https://npmjs.org)
 
+Licence : MIT
+
 ## <a name="jquery"></a>jQuery
 
 {% img right /images/tools/jquery.png jquery %}
@@ -38,6 +40,8 @@ Est-il encore besoin de présenter jQuery? Au cas où vous sortez d'une longue h
 
 Sites web : [jquery.com](http://jquery.com)
 
+Licence : MIT
+
 ## <a name="sizzle"></a> Sizzle
 
 {% img right /images/tools/sizzle.png Sizzle %}
@@ -47,6 +51,8 @@ Sizzle est un projet qui a pour but de permettre de sélectionner un noeud du DO
 > Sizzle est très utile dès lors que l'on souhaite faire des manipulations complexes (on peut facilement créer ses propres sélecteurs) ainsi que dans le cas où vous n'utilisez que la partie sélection de jQuery, cela vous permettra de n'inclure que l'essentiel notamment dans le cadre d'une librairie.
 
 Site web : [sizzlejs.com](http://sizzlejs.com)
+
+Licence : MIT
 
 ## <a name="jqueryui"></a>jQuery UI
 
@@ -59,6 +65,8 @@ jQuery UI utilise des thèmes pour son composants, facilement customisables grâ
 
 Site web : [jqueryui.com](http://jqueryui.com)
 
+Licence : MIT
+
 ## <a name="qunit"></a>QUnit
 
 {% img right /images/tools/qunit.png QUnit %}
@@ -69,12 +77,19 @@ QUnit est un framework de tests unitaires JavaScript orienté client. Bien que d
 
 Site web : [qunitjs.com](http://qunitjs.com)
 
+Licence : MIT
+
 ## <a name="jquerymobile"></a>jQuery Mobile
 
 {% img right /images/tools/jquery-mobile.png jQuery Mobile %}
 
+jQuery Mobile est un framework d'interface graphique orienté mobile. Il propose une solution complète de création d'une interface web adaptée aux appareils mobiles (smartphones et tablettes). Cette librairie ne nécessite que peu de code JavaScript et utilise plutôt une sémantique HTML5 qui permettra de définir les éléments d'interface. 
+
+> jQuery Mobile est une des solutions mobile pour le web les plus facile à mettre en place. A noter tout de même des difficultés dès lors que l'on souhaite sortir du cadre définit.
+
 Site web : [jquerymobile.com](http://jquerymobile.com)
 
+Licence : MIT
 
 ## Choisir son moteur de template Javascript
 
@@ -93,6 +108,8 @@ Grunt se définit comme un _task runner_, c'est donc un outils de _build_ au sen
 
 Site web : [gruntjs.com](http://gruntjs.com)
 
+Licence : MIT
+
 ## <a name="yeoman"></a>Yeoman
 
 {% img right /images/tools/yeoman.png yeoman %}
@@ -102,12 +119,18 @@ Yeoman est au Javascript ce que Maven est à Java: c'est une outils de gestion d
  * *yo* un outils de _scaffolding_, il permet de générer des structures pour de nouvelles applications, de créer de composants pour de nombreux framework, etc.
  * [bower](#bower) qu'il utilise en interne pour la gestion des dépendances
  * [grunt](#grunt) qu'il intègre aussi pour l'automatisation des tâches et le build
+ 
+Site web : [yeoman.io](http://yeoman.io)
+
+Licence : BSD
 
 ## Jake
 
 Make, Rake et ... Jake c'est l'autre outils de build, d'automatisation de tâches. Il est axé sur la customisation des tâches pour votre projet, d'ailleur il faudra mettre la main à la patte et programmer vos tâches. Cet outils se présente sous la forme d'un module [node.js](#node) et s'utilise autant pour un projet node qu'un projet browser.
 
 Site web: [mde/jake](https://github.com/mde/jake)
+
+Licence : Apache version 2.0
 
 ## <a name="bower"></a> Bower
 
@@ -119,7 +142,9 @@ L'outils est simple à utiliser et résoud les problématiques de gestion des li
 
 > A mon sens, Bower manque encore un peu de maturité. Néanmoins, le projet est promis à un bel avenir, à utiliser sans modération! 
 
-Site web: [twitter/bower](http://twitter.github.com/bower/)
+Site web: [bower.io](http://bower.io)
+
+Licence : MIT
 
 ## <a name="jslint"></a> JSLint
 
@@ -134,6 +159,8 @@ __\*__ _<u>JavaScript, The Good Parts, Douglas Crockford, O'Reilly, 2008</u>_ es
 
 Site web : [jslint.com](http://jslint.com)
 
+Licence : MIT?_
+
 ## <a name="jshint"></a>JSHint
 
 {% img right /images/tools/jshint.png jshint %}
@@ -143,13 +170,45 @@ Une des fonctionnalité intéressante de JSHint sont les profiles, qui adaptent 
 
 > JSHint est un bon compromis sur un code JavaScript existant et n'ayant pas été développé avec les bonnes pratiques telles que définies par Douglas CrockFord.
 
-## Jasmine
+Site web : [jshint.com](http://jshint.com)
+
+Licence : MIT
+
+## <a name="jasmine"></a>Jasmine
+
+{% img right /images/tools/jasmine.png Jasmine %}
+
+Jasmine est une librairie de tests intégrant les principes du _BDD_ (_Behavior Driven Developement_), elle ne dépend d'aucune autre librairies et peut être utilisé aussi bien pour tester un contexte client que serveur (node) et s'intègre avec de nombreuses plateformes.
+
+> Jasmine est un des framework de test de référence en JavaScript.
+
+Site web : [pivotal.github.io/jasmine](http://pivotal.github.io/jasmine/)
+
+Licence : MIT
 
 ## Phantom.js
 
-## ExtJS
+{% img right /images/tools/phantomjs.png Phantom.js %}
 
-## Modernizr
+Phantom.js est un des outils qu'il est nécessaire d'installer sur sa machine. Cette librarie est un naviguateur WebKit sans interface grapĥique. Phantom.js permet notamment de faire tourner des tests JavaScript clients depuis un terminal, sur un serveur et surtout de lancer des suites de tests sans dépendre d'un navigueteur classique. Phantom.js expose une API et est donc scriptable.
+
+> Incontournable si vous utilisez un outils de build.
+
+Site web : [phantomjs.org](http://phantomjs.org/)
+
+Licence : BSD
+
+## <a name="modernizr"></a>Modernizr
+
+{% img right /images/tools/modernizr.png Modernizr %}
+
+Modernizr est une librairie de détection de fonctionnalités HTML5 et CSS3. Elle permet donc de connaître pour le navigauteur courant si une des fonctionnalité est présente ou non, car comme nous le savons tous, la détection par type de naviguateur est à proscrire. 
+
+> Cet outils doit être utilisé dès que l'on souhaite faire du HTML5 et/ou CSS3. 
+
+Site web : [modernizr.com](http://modernizr.com/)
+
+Licence : MIT
 
 ## <a name="underscore"></a>Underscore.js
 
@@ -157,13 +216,23 @@ Une des fonctionnalité intéressante de JSHint sont les profiles, qui adaptent 
 
 Underscore.js est un framework généraliste qui augmente le langage avec un certain nombre d'utilitaires fait pour vous faciliter la vie. Il est difficile de syntétiser son contenu car très hétéroclite, il permet autant de faire du map/reduce sur des collections que de la memoization de function. Underscore va simplement vous éviter de réécrire pas mal de functions qui ne sont pas incluses dans le langage. 
 
-> Underscore est au _  ce que jQuery est au $
+> Underscore est au \_  ce que jQuery est au $
 
-## Backbone
+Site web: [underscorejs.org](http://underscorejs.org/)
 
-## Angular.js
+Licence : MIT
 
-## Require.js
+## <a name="requirejs"></a>Require.js
+
+{% img right /images/tools/require-js.png require.js %}
+
+Require.js est une librairie qui permet de pallier à une lacune du langage JavaScript: la gestion des librairies, des dépendances et des imports. Pour cela, Require.js implémente la spécification [AMD](https://github.com/amdjs/amdjs-api/wiki/AMD) (Asynchronous Module Definition) et est aussi compatible [CommonJs](http://www.commonjs.org/). Grâce à Require.js, vous pouvez définir des _modules_ et importer ces modules depuis d'autres modules. La notion de dépendance entre module est gérée et le chargement peut se faire ne mode synchrone ou asynchrone (le module est chargé au moment où il est importé). 
+
+> Require.js vous offre un système aussi puissant que ceux présents dans d'autres languages. Il est optimisable, et s'intègre facilement avec de nombreuses librairies.
+
+Site web: [requirejs.org](http://requirejs.org/)
+
+Licence : BSD
 
 ## jsdoc
 
