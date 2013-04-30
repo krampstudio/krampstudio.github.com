@@ -198,6 +198,18 @@ Site web : [phantomjs.org](http://phantomjs.org/)
 
 Licence : BSD
 
+## <a name="karma"></a>Karma
+
+{% img right /images/tools/karma.png Karma %}
+
+Précédement nommé Testacular, Karma est un utilitaire permettant de faciliter l'exécution des tests en JavaScript. Karma vous permettra de configurer, de piloter et d'intégrer vos suites de tests. Quelques fonctionnalités peuvent vous faciliter la vie comme le contrôle des navigateurs. 
+
+> Karma est fait pour s'intégrer à votre projet quelque soit les librairies déjà utilisées.
+
+Site web : [karma-runner.github.io](http://karma-runner.github.io)
+
+Licence : MIT
+
 ## <a name="modernizr"></a>Modernizr
 
 {% img right /images/tools/modernizr.png Modernizr %}
@@ -234,19 +246,53 @@ Site web: [requirejs.org](http://requirejs.org/)
 
 Licence : BSD
 
-## jsdoc
+## <a name="jsdoc"></a>jsdoc
 
-## uglify
+Cette librairie permet de générer une documentation du code source JavaScript à partir des commentaires. JsDoc propose un formalisme des commentaires permettant une unification au sein des sources. La documentation finale prend la forme d'un site internet, qu'il est possible de customiser grâce à des templates.
 
-## jsbeautifier
+> Bien que souffrant encore de quelques lacunes, cette librairie permet de couvrir bon nombre de pratiques diverses et variées dues à la souplesse du langage. 
 
-## Prototype.js
+Site web: [usejsdoc.org](http://usejsdoc.org/)
 
-## Testacular
+Licence : BSD
 
-## Chart.js
+## <a name="uglifyjs"></a>UglifyJS
 
-## Raphael.js
+{% img right /images/tools/uglifyjs.png UglifyJS %}
+
+UglifyJS est une librairie de minimification et de compression de code source JavaScript écrit en JavaScript. Cette librairie est performante et offre des résultats très satisfaisant. Elle se distingue des alternatives car elle offre des APIs de parsing et de manipulation du code source basées sur le pattern _AST_ (Abstract Syntax Tree).
+
+> UglifyJS est un choix à considérer sérieusement dans le choix d'un outils de compression des sources.
+
+Site web: [lisperator.net/uglifyjs](http://lisperator.net/uglifyjs/)
+
+Licence : BSD
+
+## <a name=""></a>Raphael.js
+
+## <a name="prototype"></a>Prototype.js 
+
+{% img right /images/tools/prototype.png Prototype.js %}
+
+Prototype est une des première librairie JavaScript fournissant des services cross-browser de haut niveau tels que la manipulation du DOM ou les requêtes AJAX. 
+
+> Bien qu'aujourd'hui jQuery ait remplacé Prototype dans bon nombre de projets, il reste néanmoins des points très intéressant qu'il est bon de connaître.
+
+Site web: [prototypejs.org](http://prototypejs.org/)
+
+Licence : MIT
+
+## Script.aculo.us
+
+{% img right /images/tools/scriptaculous.png Script.aculo.us %}
+
+Script.aculo.us est à Prototype ce que jQuery UI est à jQuery: il l'augmente de fonctionnalités dédiées à l'interface graphique: effets, drag n'drop, widgets, etc.
+
+> Tout comme Prototype, Script.aculo.us fut en sont temps incontournable
+
+Site web: [script.aculo.us](http://script.aculo.us/)
+
+Licence : MIT
 
 
 
