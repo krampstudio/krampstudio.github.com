@@ -1,0 +1,966 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Catégorie: test | Krampstudio]]></title>
+  <link href="http://krampstudio.github.com/blog/categories/test/atom.xml" rel="self"/>
+  <link href="http://krampstudio.github.com/"/>
+  <updated>2013-05-01T22:42:56+02:00</updated>
+  <id>http://krampstudio.github.com/</id>
+  <author>
+    <name><![CDATA[Bertrand Chevrier]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Pluginifier vos composants jQuery]]></title>
+    <link href="http://krampstudio.github.com/blog/2012/11/27/pluginifier-vos-composants-jquery/"/>
+    <updated>2012-11-27T23:02:00+01:00</updated>
+    <id>http://krampstudio.github.com/blog/2012/11/27/pluginifier-vos-composants-jquery</id>
+    <content type="html"><![CDATA[<p>C'est en développant l'interface d'un de mes projets persos, que je me suis dit: <em>"Ces composants graphiques que tu fait là, pourquoi ne pas en faire de vrais plugins jQuery, et tout et tout!"</em>. C'est alors que tout s'enchaîne: création d'un dépôt sur Github, recherche des outils, j'ai fait un, puis deux, je présente ça devant mes collègues au travail, et pour finir un petit post en <em>&quot;bonnet de forme&quot;</em>...</p>
+
+<!-- more -->
+
+
+<p>Le principe est simple: j'utilise HTML, CSS et la librairie jQuery ainsi que son acolyte jQuery-UI pour développer les interfaces graphiques de mes webapps. Au fur et à mesure des développements, je suis passé de <em>tout faire dans le même script</em> (tout imbriqué) à commencer à utiliser les plugins jQuery dans l'application, puis à en faire des projets autonomes.</p>
+
+<p>Dans ce post, je vais essayer de <em>pluginifier</em> pas à pas, un petit composant utilisé pour supprimer graphiquement un élément de l'interface.</p>
+
+<h2>Environnement</h2>
+
+<p>En premier lieu, les requis:</p>
+
+<ul>
+<li>Un système d'exploitation avec un Shell de type Bash (Dash, Ksh, Zsh devraient faire l'affaire) pour les autres, il faudra trouver une alternative de type Cygwin ou équivalent.</li>
+<li>Disposer des droits root/admin sur ce système.</li>
+<li>Git installé (optionnel) mais ca vous permettra d'aller chercher les exemples sur GitHub.</li>
+<li>Un éditeur de texte.</li>
+</ul>
+
+
+<p>Pour réaliser ce post, j'ai utilisé Ubuntu 12.04, Precise Pangolin.</p>
+
+<h3>Node.js &amp; NPM</h3>
+
+<blockquote><p>Mais c'est quoi le rapport entre jQuery et Node.js? Là je ne comprend plus rien!</p></blockquote>
+
+<p>En fait, on a besoin de <a href="http://nodejs.org">node.js</a>, pour installer notre système de build. Il y a pas mal de librairies JavaScript en CLI qui utilisent node.js. De plus le système de paquet de node, <a href="http://npmjs.org">npm</a>  étant plutôt pas mal, va faciliter l'installation des ces librairies. Par ailleurs, quand on développe en Javascript, même pour du développement client, c'est une bonne chose d'avoir node.js installé, car on peut profiter de tout un tas d'outils sympa.</p>
+
+<p>Pour installer node.js et npm sous Debian/Ubuntu:</p>
+
+<p><code>bash
+$&gt; sudo aptitude install nodejs npm
+</code></p>
+
+<p>Pour les autres, vous pouvez vous reporter au site de <a href="http://nodejs.org/download/">node.js</a></p>
+
+<h3>Grunt</h3>
+
+<p><img class="right" src="/images/grunt.png" title="Grunt" ></p>
+
+<p>Une fois la commande npm disponible, il va falloir installer <a href="http://gruntjs.com">Grunt</a>, l'outils que nous utiliserons pour automatiser les tâches de build de notre plugin. Nous allons donc l'installer avec npm, en mode <em>global</em> (donc accessible pour tous les utilisateurs), d'où le commutateur <code class='inline'>g</code>. C'est pourquoi il faut l'installer avec les droits root.</p>
+
+<p><code>bash
+$&gt; sudo npm install -g grunt
+</code></p>
+
+<h3>Phantom.js</h3>
+
+<p><img class="right" src="/images/phantomjs.png" title="Phantom.js" ></p>
+
+<p>Le dernier outils a installer sur votre système est <a href="http://phantomjs.org">Phantom.js</a>, qui va nous servir pour simuler un browser durant nos tests. Il est aussi disponible depuis le gestionnaire de paquet sur les distributions récentes:</p>
+
+<p><code>bash
+$&gt; sudo aptitude install phantomjs
+</code></p>
+
+<p>ou en le téléchargeant depuis le <a href="http://phantomjs.org/download.html">site web</a>, dans ce cas, ne pas oublier de le rajouter dans le <code class='inline'>PATH</code>.</p>
+
+<h2>Les choses sérieuses</h2>
+
+<p>Voici un exemple de code intégré à un script d'une application:</p>
+
+<p><div><script src='https://gist.github.com/3854836.js?file=dynamic-removable-list.js'></script>
+<noscript><pre><code>$(document).ready(function(){
+            
+//get list id
+var listId = ('#list').val();
+
+//retrieve items
+$.post('/list/articles', {list: listId}, function(articles){
+
+    //create a list dynamically
+    var $list = $('#items &gt; ul');
+    for (var index in articles){
+
+        //add an item
+        var article = articles[index];
+        var shortDesc = article.description;
+        if(article.description.length &gt; 100){
+            shortDesc = shortDesc.substring(0,95) + '[...]';
+        }
+       	var $item = $(&quot;\
+            &lt;li&gt;\
+                &lt;div class='item-title'&gt;&quot;+article.name+&quot;&lt;/div&gt;\
+                &lt;img class='item-thumbnail' src='/imgs/articles/&quot;+article.thumb+&quot;' alt='' /&gt;\
+                &lt;div class='item-desc'&gt;&quot;+shortDesc+&quot;&lt;/div&gt;\
+            &lt;/li&gt;\
+        &quot;);
+        
+        //make the item removable
+        
+        //remove controls
+        var $rmCtrl = $(&quot;&lt;img class='removable-ctrl' src='imgs/delete.png' alt='remove' title='Remove'&gt;&quot;);
+        $rmCtrl.css({
+            'display' : 'none',
+            'position'	: 'absolute',
+            'right'	: '5px',
+            'top'	: '5px',
+            'cursor'	: 'pointer'
+            })
+            .click(function(){
+                if(confirm(&quot;Remove this item?&quot;)){
+                    $item.remove();
+                }
+            });
+        $item.append($rmCtrl)
+            .mouseover(function(){
+                $('.removable-ctrl', $(this)).show();
+            })
+            .mouseout(function(){
+                $('.removable-ctrl', $(this)).hide();
+            });
+      
+        
+        $list.append($item);
+    }
+
+}, 'json');
+        
+});</code></pre></noscript></div>
+</p>
+
+<p>Cet exemple est utilisé pour créer une liste HTML en fonction du résultat d'une requête Ajax. Chaque item de la liste doit pouvoir être supprimé par la suite. C'est ce point qui nous intéresse, car nous voulons pouvoir appliquer ce composant de suppression à d'autres parties de notre interface graphique.</p>
+
+<p>Nous allons procéder en suivant ces étapes:</p>
+
+<ol>
+<li>Trouver un nom au plugin.</li>
+<li>Générer une structure, un archétype pour notre plugin.</li>
+<li>Refactorer notre code au sein d'un plugin.</li>
+<li>Créer une page d'exemple dédié.</li>
+<li>Créer un ensemble de tests unitaires.</li>
+<li>Définir notre séquence de build.</li>
+<li>L'indexer le site des plugin jQuery.</li>
+</ol>
+
+
+<h2>Trouver un nom qui déchire</h2>
+
+<p>Alors, voici ma <em>bête noire</em> de la programmation: trouver des noms aux variables, classes, projets! Je n'ai pas ce côté inventif qui va permettre de trouver le nom d'animal super cool, donc je reste très terre à terre. Notre plugin s'appellera <em>RemoveableArea</em>! super... :-(. Si quelqu'un à une meilleure idée, je suis preneur.</p>
+
+<blockquote><p>Ca c'est fait.</p></blockquote>
+
+<h2>Générer la structure du projet</h2>
+
+<p>L'avantage d'utiliser un outil tel que Grunt c'est qu'il fait une part de notre travail, donc quand on est fainéant, on ne peut plus s'en passer.
+Grunt dispose d'une tâche <code class='inline'>init</code> qui permet de générer une structure de projet type en partant d'un template. Et ça tombe bien, il y en a un pour jQuery.</p>
+
+<p>Dans l'ordre, on va:
+1. Créer un répertoire pour notre plugin.
+2. Le versionner avec GIT.
+3. Générer la structure de base.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>mkdir removablearea
+</span><span class='line'><span class="nv">$ </span><span class="nb">cd </span>removablearea
+</span><span class='line'><span class="nv">$ </span>git init
+</span><span class='line'>Initialized empty Git repository in /home/bertrand/dev/workspace/removablearea/.git/
+</span><span class='line'><span class="nv">$ </span>grunt init:jquery&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;answer the questions about the plugin&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;...&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;Initialized from template <span class="s2">&quot;jquery&quot;</span>.
+</span><span class='line'>Done, without errors.
+</span><span class='line'><span class="nv">$ </span>git add -A
+</span><span class='line'><span class="nv">$ </span>git commit -m <span class="s2">&quot;Create base plugin&quot;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Voilà, maintenant, notre structure est générée, le projet est versionné avec GIT, et si vous avez renseigné soigneusement les questions demandées par Grunt, alors un certain nombre de sections sont déjà pré-remplies.</p>
+
+<p>Normalement, vous devriez avoir l'arborescence suivante:</p>
+
+<pre>
+.
+├── grunt.js                  //fichier de build
+├── libs                      //librairies externes
+│   ├── jquery
+│   │   └── jquery.js
+│   ├── jquery-loader.js
+│   └── qunit
+│       ├── qunit.css
+│       └── qunit.js
+├── LICENSE-GPL                   //licenses
+├── LICENSE-MIT
+├── package.json              //meta données du projet
+├── README.md                 
+├── removablearea.jquery.json //meta données du plugin
+├── src                           //sources du plugin
+│   └── removablearea.js
+└── test                      //tests unitaires
+    ├── removablearea.html
+    └── removablearea_test.js
+</pre>
+
+
+<p>Nous allons modifier un peu cette structure, en y ajoutant un répertoire <span class="inline-code">sample</span> dans lequel nous allons créer des exemples d'utilisation de notre plugin.</p>
+
+<h2>Pluginification</h2>
+
+<p>Dans un premier temps, nous allons créer la structure (au sens du typage en programmation) de notre plugin jQuery, en se basant sur les bonnes pratiques détaillée dans la <a href="http://docs.jquery.com/Plugins/Authoring" title="jQuery Plugin AUthoring">documentation jQuery</a> à ce propos. Nous allons donc utiliser la structure suivante, comme base de notre fichier <span class="inline-code">src/removablearea.js</span>:</p>
+
+<p><div><script src='https://gist.github.com/3886198.js?file=removablearea.js'></script>
+<noscript><pre><code>(function($) {
+	&quot;use strict&quot;;
+
+	var RemovableArea = {
+        _opts : {
+            label       : 'Supprimer',
+            img         : '/imgs/delete.png',
+            warning     : 'Voulez-vous supprimer cet élément?',
+            hoverClass  : 'half-opac'
+        },
+        _init: function(options){
+			var opts = $.extend(true, {}, RemovableArea._opts, options);
+            return this.each(function() {
+			
+			});
+		},
+		destroy : function(){
+			this.each(function() {
+
+			});
+		}
+	};
+
+	$.fn.removableArea = function( method ) {
+        if (RemovableArea[method]) {
+			if(/^_/.test(method)){
+                $.error( 'Trying to call a private method ' + method + ' on jQuery.pluginName' );
+			} else {
+        		return RemovableArea[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
+        	}
+		} else if ( typeof method === 'object' || ! method ) {
+			return RemovableArea._init.apply( this, arguments );
+        } else {
+			$.error( 'Method ' +  method + ' does not exist on jQuery.removableArea' );
+        }
+    };
+
+}(jQuery));</code></pre></noscript></div>
+</p>
+
+<p>Tout d'abord, on peut remarquer que le code est englobé dans une closure. Ce pattern s'appelle <em>Immediately-Invoked Function Expression</em> (ou <em>LIFE</em>). Cette pratique permet d'éviter d'exécuter du code dans le scope global. Dans le cas de jQuery, cet usage permet d'utiliser le symbole dollar en étant sûr qu'il vient de jQuery et non d'un autre framework, le <span class="inline-code">$</span> est mappé à l'objet <span class="inline-code">jQuery</span> :</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="p">(</span><span class="kd">function</span><span class="p">(</span> <span class="nx">$</span> <span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="c1">//your code</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">})(</span> <span class="nx">jQuery</span> <span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Un autre point que l'on peut souligner est ce string utilisé à la ligne 2:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>La présence de ce string permet de passer le moteur Javascript en mode <em>strict</em>, qui le rend moins tolérant à certaines pratiques du langage. Vous pouvez consulter la <a href="https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Functions_and_function_scope/Strict_mode">documentation Mozilla</a> pour plus de détails sur ce mode.</p>
+
+<p>Ensuite la partie qui permet de créer le plugin jQuery peut se résumer à cette ligne:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">removableArea</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">method</span> <span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Littéralement, nous ajoutons à l'attribut <code class='inline'>fn</code> de l'objet <code class='inline'>jQuery</code> (ou <code class='inline'>$</code> pour les intimes), la fonction <code class='inline'>removableArea</code> qui prend en paramètre un nom de méthode. C'est grâce à cette ligne que nous pourrons appeler la fonction <code class='inline'>removableArea</code> sur un élément du DOM, comme <code class='inline'>$('.boo > #far').removableArea(options);</code>.</p>
+
+<p>Ensuite le contenu de cette fonction va tout simplement déléguer les appels à l'objet <code class='inline'>RemovableArea</code> définit au préalable, en fonction du contexte d'appel:</p>
+
+<ul>
+<li><code class='inline'>removableArea</code> est appelé avec un objet en paramètre (les options):
+
+<ul>
+<li>On délègue à <code class='inline'>RemovableArea.init(options)</code>.</li>
+</ul>
+</li>
+<li><code class='inline'>removableArea</code> est appelé avec un string en paramètre:
+
+<ul>
+<li>Ce string correspond à une méthode de <code class='inline'>RemovableArea</code>, alors on délègue, sauf si ce nom commence par un <em>underscore</em> (genre de méthode privée).</li>
+</ul>
+</li>
+<li><code class='inline'>removableArea</code> est appelé sans paramètre, on lève une erreur.</li>
+</ul>
+
+
+<p>Grâce à ce mécanisme de paramètres, nous pouvons appeler des méthodes à partir du même plugin:
+<div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">elt</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#id&#39;</span><span class="p">).</span><span class="nx">removableArea</span><span class="p">(</span><span class="nx">options</span><span class="p">);</span>
+</span><span class='line'><span class="nx">elt</span><span class="p">.</span><span class="nx">removableArea</span><span class="p">(</span><span class="s1">&#39;destroy&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>Refactoring</h2>
+
+<p>Maintenant, que nous avons la structure de notre plugin en place, nous allons y intégrer notre code. Pour cela, il faut se poser les questions suivantes:</p>
+
+<ul>
+<li>Quelles sont les options demander à l'utilisateur et quelles seront les valeurs par défaut ?</li>
+<li>Comment répartir notre code entre la méthode par défaut (<code class='inline'>RemovableArea.init(options)</code>) et d'autres méthodes ?</li>
+<li>Quels événements déclencher pour aider à l'implémentation du plugin ?</li>
+</ul>
+
+
+<h3>Les options</h3>
+
+<p>Par convention, le paramétrage des plugins se fait en passant un objet contenant les options pour initialiser le plugin. Le code suivant va permettre d'initialiser le composant de notre exemple:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">$</span><span class="p">.</span><span class="nx">removableArea</span><span class="p">({</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">label</span>       <span class="o">:</span> <span class="s1">&#39;Supprimer&#39;</span><span class="p">,</span>
+</span><span class='line'><span class="nx">img</span>         <span class="o">:</span> <span class="s1">&#39;/imgs/delete.png&#39;</span><span class="p">,</span>
+</span><span class='line'><span class="nx">warning</span>     <span class="o">:</span> <span class="s1">&#39;Voulez-vous supprimer cet élément?&#39;</span><span class="p">,</span>
+</span><span class='line'><span class="nx">hoverClass</span>  <span class="o">:</span> <span class="s1">&#39;half-opac&#39;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Nous avons donc définis un certain nombre de paramètres, comme l'image du <em>bouton</em> qui s'affichera pour supprimer la zone ou les différents labels. On permet aussi de définir la classe CSS qui s'appliquera sur ce <em>bouton</em> au passage de la souris.</p>
+
+<h3>Les paramètres par défaut</h3>
+
+<p>Une fois le liste des options définies, il faut leur donner des valeurs par défaut. Cela permet d'éviter de redonner toutes les options à chaque utilisation, et permet surtout de mettre en place un comportement par défaut. L'idée est que le plugin fonctionne tout de suite, mais de laisser la possibilité de le modifier plus tard.</p>
+
+<p>Pour faire cela, nous allons utiliser un méthode de jQuery qui est très utile: <code class='inline'>$.extend</code> qui permet de <em>merger</em> les options passées en paramètres et les options par défaut.</p>
+
+<p>Nous allons donc définir ces paramètres par défaut dans un attribut de notre objet <code class='inline'>RemovableArea</code>, puis les étendre avec les paramètres passés au plugin:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">RemovableArea</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">_opts</span> <span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">label</span> <span class="o">:</span> <span class="s1">&#39;Supprimer&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">img</span> <span class="o">:</span> <span class="s1">&#39;/imgs/delete.png&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">warning</span> <span class="o">:</span> <span class="s1">&#39;Voulez-vous supprimer cet élément?&#39;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nx">hoverClass</span> <span class="o">:</span> <span class="s1">&#39;half-opac&#39;</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">_init</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">){</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">opts</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">RemovableArea</span><span class="p">.</span><span class="nx">_opts</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
+</span><span class='line'>        <span class="c1">//...</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Grâce au résultat de la méthode <code class='inline'>$.extend</code> la variable <code class='inline'>opts</code> contient les options passées par l'utilisateur ou leur valeur par défaut s'ils ont été omis.</p>
+
+<h3>Le code du plugin</h3>
+
+<p>Maintenant, que nous avons une structure à notre plugin, la gestion des paramètres et options, il va falloir répartir le code entre la méthode d'initialisation et d'autres méthodes que nous rajoutons en fonction du fonctionnement souhaité. L'approche que je met souvent en place est de tout faire dans un premier temps dans la méthode d'initialisation, puis je refactor au fur et à mesure (le problème est qu'il m'arrive de n'avoir jamais le temps de refactorer...).</p>
+
+<p>Pour notre exemple, nous allons créer les éléments du DOM dans la méthode d'initialisation et une méthode <code class='inline'>destroy</code> pour supprime tout ce que le plugin a créé.</p>
+
+<p><div><script src='https://gist.github.com/4114309.js?file=removablearea.js'></script>
+<noscript><pre><code>(function($) {
+	&quot;use strict&quot;;
+
+	var RemovableArea = {
+		_opts : {
+			label       : 'Supprimer',
+			img         : 'imgs/delete.png',
+			warning     : 'Voulez-vous supprimer cet élément?',
+			hoverClass  : 'half-opac'
+		},
+		_ctrlClass : 'removable-ctrl',
+		_init: function(options){
+			var opts = $.extend(true, {}, RemovableArea._opts, options),
+				ctrlClass = RemovableArea._ctrlClass;
+
+			return this.each(function() {
+				var $elt = $(this);
+				if($elt.css('position') != 'relative'){
+					$elt.css('position', 'relative');
+				}
+				var $ctrl = $(&quot;&lt;img class='&quot;+ctrlClass+&quot;' src='&quot;+opts.img+&quot;' alt='&quot;+opts.label+&quot;' title='&quot;+opts.label+&quot;'&gt;&quot;);
+				$ctrl.css({
+						'display'   : 'none',
+						'position'  : 'absolute',
+						'right'     : '5px',
+						'top'       : '5px',
+						'cursor'    : 'pointer'
+					})
+			   		.hover(function(){
+						$(this).addClass(opts.hoverClass);
+					}, function(){
+						$(this).removeClass(opts.hoverClass);
+					});
+				
+				$elt.append($ctrl)
+					.mouseover(function(){
+						$('.' + ctrlClass, this).show();
+					}) 
+					.mouseout(function(){
+						$('.' + ctrlClass, this).hide();
+					});
+				$ctrl.click(function(){
+					if(opts.warning === false || confirm(opts.warning)){
+						$elt.trigger('removed.removablearea');
+						$elt.remove();
+					}
+				});
+				$elt.trigger('init.removablearea');
+			});
+		},
+		destroy : function(){
+			this.each(function() {
+				$('.' + RemovableArea._ctrlClass, $(this)).remove();
+			});
+		}
+	};
+
+	$.fn.removableArea = function( method ) {
+		if (RemovableArea[method]) {
+			if(/^_/.test(method)){
+				$.error( 'Trying to call a private method ' + method + ' on jQuery.pluginName' );
+			} else {
+				return RemovableArea[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
+			}	
+		} else if ( typeof method === 'object' || ! method ) {
+			return RemovableArea._init.apply( this, arguments );
+		} else {
+			$.error( 'Method ' +  method + ' does not exist on jQuery.removableArea' );
+		}
+	};
+
+}(jQuery));</code></pre></noscript></div>
+</p>
+
+<p>Voilà donc notre plugin créé! On peut aussi noter l'ajout de deux événements : le premier étant déclenché à l'initialisation du plugin et le second lors de la suppression. Le nom des événements est suffixé par <em>removablearea</em>, qui est une manière de les grouper dans des <a href="http://docs.jquery.com/Namespaced_Events">namespaces</a>.</p>
+
+<h2>Mise en oeuvre : créer une page d'exemple</h2>
+
+<p>Bon rien de bien compliqué ici, je créé juste une page HTML basique qui charge jQuery et notre plugin. Le principe est d'avoir un cas d'utilisation classique du plugin.
+Pour notre plugin, je créé cette page dans le répertoire <code class='inline'>sample</code> et je la publie avec <a href="http://pages.github.com/">Github-Pages</a> (ce qui est bien pratique). Jetez donc un oeil à cet <a href="http://krampstudio.com/jQueryRemovableArea/index.html">exemple</a> et aux sources <code class='inline'>Ctrl-U</code>.</p>
+
+<h2>Tester du Javascript</h2>
+
+<blockquote><p>Tester c'est douter :-S</p></blockquote>
+
+<p>On voit trop rarement des tests mis en place pour le code Javascript, mais pourtant tous les outils dont nous avons besoin sont disponibles (il y a en a même pas mal!). Donc comme pour n'importe quel autre langage, nous allons créer des tests unitaires automatisés pour notre plugin.</p>
+
+<p><img class="right" src="/images/qunitjs.png" title="Grunt" >
+Parmi les nombreux frameworks existant, mon dévolu c'est posé sur <a href="http://www.qunitjs.org">Qunit</a> car c'est le framework de tests de jQuery d'une part (donc il s'intègre naturellement avec un plugin jQuery) et d'autre part parce qu'il offre toutes les fonctionnalités dont nous avons besoin: tests asynchrones, <em>fixtures</em>, groupes, etc.</p>
+
+<p>Le test se compose de deux fichiers:</p>
+
+<ul>
+<li>Un fichier HTML, qui contient:
+
+<ul>
+<li>Une structure de base à ne pas modifier</li>
+<li>Un bloc <em>fixtures</em> dont l'identifiant est <code class='inline'>qunit-fixture</code>. C'est dans ce bloc uniquement que nous pouvons inclure nos éléments liés à notre test. Le contenu de ce bloc n'est pas visible et sera rechargé après l'exécution de chaque méthode de test.</li>
+</ul>
+</li>
+<li>Un fichier Javascript qui va contenir notre test.</li>
+</ul>
+
+
+<p>Du point de vue de l'API de test, Qunit nous propose:</p>
+
+<ul>
+<li>D'organiser les tests en modules. Les tests peuvent partager des attributs lorsqu'ils sont groupés en module.</li>
+<li>Un ensemble de fonctions comparables à des assertions, comme <code class='inline'>ok( boolean )</code>, <code class='inline'>equal(expected, compared)</code>, etc.</li>
+<li>Des méthodes pour tester des méthodes asynchrones.</li>
+</ul>
+
+
+<p>Testons notre plugin!</p>
+
+<p>Tout d'abord, nous créons dans les <em>fixtures</em> trois blocs qui vont nous servir comme zones de suppression:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="nt">&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;pre&gt;&lt;code&gt;</span><span class="ni">&amp;lt;</span>div id=&quot;qunit-fixture&quot;<span class="ni">&amp;gt;</span>
+</span><span class='line'>    <span class="ni">&amp;lt;</span>div<span class="ni">&amp;gt;</span>lame test markup<span class="ni">&amp;lt;</span>/div<span class="ni">&amp;gt;</span>
+</span><span class='line'>    <span class="ni">&amp;lt;</span>div<span class="ni">&amp;gt;</span>normal test markup<span class="ni">&amp;lt;</span>/div<span class="ni">&amp;gt;</span>
+</span><span class='line'>    <span class="ni">&amp;lt;</span>div<span class="ni">&amp;gt;</span>awesome test markup<span class="ni">&amp;lt;</span>/div<span class="ni">&amp;gt;</span>
+</span><span class='line'><span class="ni">&amp;lt;</span>/div<span class="ni">&amp;gt;</span>
+</span><span class='line'><span class="nt">&lt;/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;p&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Ensuite, nous définissons un module dans le test. L'ordre d'invocation des méthodes est important, car toutes les méthodes de test définies après la déclaration du module feront parties de ce module. Ce module va aussi se charger d'initialiser l'attribut <code class='inline'>targets</code> que nous faisons pointer sur les zones à supprimer, et nous pourrons utiliser cet attributs dans tous les tests du module.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">module</span><span class="p">(</span><span class="s1">&#39;jQuery#removableArea&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">setup</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="nx">targets</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#qunit-fixture&#39;</span><span class="p">).</span><span class="nx">children</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Puis nous déclarons une méthode de test classique qui s'assure que le plugin est bien chargé par jQuery:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">test</span><span class="p">(</span><span class="s1">&#39;is plugin loaded in jQuery&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>    <span class="nx">ok</span><span class="p">(</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">removableArea</span> <span class="o">===</span> <span class="s1">&#39;function&#39;</span><span class="p">),</span> <span class="s2">&quot;the plugin should be available from jQuery.fn&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Ensuite, un petit test asynchrone qui se déroule en 3 temps:</p>
+
+<ol>
+<li>Déclaration d'un <code class='inline'>asyncTest</code>.</li>
+<li>Définir le nombre d'assertion attendues via la fonction <code class='inline'>expected</code>.</li>
+<li>Appeler la fonction <code class='inline'>start</code> une fois que le code asynchrone a été exécuté.</li>
+</ol>
+
+
+<p>Ce qui donne le test suivant, qui vérifie que le plugin a bien été chargé en écoutant l'événement d'initialisation:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">asyncTest</span><span class="p">(</span><span class="s2">&quot;does the plugin initialize&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">expect</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">targets</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>    <span class="c1">//we expect 3 assertions, one by target</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">targets</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="s1">&#39;init.removablearea&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>            <span class="nx">strictEqual</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.removable-ctrl&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">).</span><span class="nx">length</span><span class="p">);</span>
+</span><span class='line'>            <span class="nx">start</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">targets</span><span class="p">.</span><span class="nx">removableArea</span><span class="p">();</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Pour lancer les tests, il suffit de charger la page HTML. Le résultat est visible depuis celle-ci, comme nous pouvons le voir sur la capture suivante:</p>
+
+<p><img src="/images/sc.test-result.png" title="Capture de la page de résultats tests" ></p>
+
+<h2>Automatisation</h2>
+
+<blockquote><p>Un makefile pour du Javascript ?</p>
+
+<blockquote><p>C'est un peu l'idée oui!</p></blockquote></blockquote>
+
+<p>Dans le but d'améliorer la qualité de nos développements et de gagner du temps, nous allons déléguer les tâches suivantes à un outils de build, <a href="http://www.gruntjs.org">Grunt</a> dont nous avons déjà parlé précédemment:</p>
+
+<ul>
+<li>Minimification des sources.</li>
+<li>Ajout de la bannière de licence.</li>
+<li>Exécution des tests.</li>
+<li>Vérification du code.</li>
+</ul>
+
+
+<p>Pour faire tout cela, c'est simple nous utilisons les plugins fournis de base avec Grunt.</p>
+
+<h3>Génération des sources finales</h3>
+
+<p>Nous allons distribuer notre plugin sous forme minimifié, mais avec tout de même une bannière rappelant les informations essentielles: le copyright, l'auteur et la licence. Ces informations vont être extraites et formatées à partir du fichier de méta-données : <code class='inline'>package.json</code>. Ce fichier est bien sûr formaté en JSON et suit la convention de description de paquet <a href="http://www.npmjs.org">NPM</a> (les paquets node.js). Vous pouvez allez voir la <a href="https://npmjs.org/doc/json.html">spécification</a> pour plus de détails.</p>
+
+<p>Dans le cas de notre plugin, les méta-données sont les suivantes:</p>
+
+<p><div><script src='https://gist.github.com/4145261.js?file=package.json'></script>
+<noscript><pre><code>{
+    &quot;name&quot; : &quot;jQueryRemovableArea&quot;,
+    &quot;description&quot;   : &quot;A plugin that enables you to remove a element from the page&quot;,
+    &quot;version&quot;       : &quot;0.1.0&quot;,
+    &quot;homepage&quot;      : &quot;https://github.com/krampstudio/jQueryRemovableArea&quot;,
+    &quot;author&quot;: {
+        &quot;name&quot;  : &quot;Bertrand Chevrier&quot;,
+        &quot;email&quot; : &quot;chevrier.bertrand@gmail.com&quot;,
+        &quot;url&quot;   : &quot;https://github.com/krampstudio&quot;
+    },
+    &quot;licenses&quot;: [{
+        &quot;type&quot;: &quot;GPL&quot;,
+        &quot;url&quot; : &quot;http://www.gnu.org/licenses/gpl-3.0.txt&quot;
+      }
+    ],
+    &quot;repository&quot;: {
+        &quot;type&quot; : &quot;git&quot;,
+        &quot;url&quot;  : &quot;git://github.com/krampstudio/jQueryRemovableArea&quot;
+    },
+    &quot;dependencies&quot;: {
+        &quot;jquery&quot;   : &quot;&gt;=1.7&quot;
+    },
+    &quot;devDependencies&quot;: {
+        &quot;grunt&quot; : &quot;0.3.x&quot;,
+        &quot;qunit&quot; : &quot;1.9.x&quot;
+    }
+}</code></pre></noscript></div>
+</p>
+
+<p>Maintenant nous souhaitons avoir en entête de nos sources le commentaire suivant:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="err">/&lt;em&gt;*</span>
+</span><span class='line'> <span class="o">*</span> <span class="nx">Copyright</span> <span class="p">(</span><span class="nx">c</span><span class="p">)</span> <span class="mi">2012</span> <span class="nx">Bertrand</span> <span class="nx">Chevrier</span>
+</span><span class='line'> <span class="o">*</span> <span class="nx">jQueryRemovableArea</span> <span class="o">-</span> <span class="nx">v0</span><span class="p">.</span><span class="mf">1.0</span>
+</span><span class='line'> <span class="o">*</span> <span class="err">@</span><span class="nx">author</span> <span class="nx">Bertrand</span> <span class="nx">Chevrier</span> <span class="o">&lt;</span><span class="nx">a</span> <span class="nx">href</span><span class="o">=</span><span class="s2">&quot;&amp;#109;&amp;#97;&amp;#x69;&amp;#108;&amp;#x74;&amp;#x6f;&amp;#58;&amp;#99;&amp;#x68;&amp;#x65;&amp;#x76;&amp;#114;&amp;#x69;&amp;#101;&amp;#x72;&amp;#x2e;&amp;#98;&amp;#x65;&amp;#x72;&amp;#x74;&amp;#114;&amp;#x61;&amp;#x6e;&amp;#x64;&amp;#x40;&amp;#103;&amp;#109;&amp;#x61;&amp;#105;&amp;#x6c;&amp;#x2e;&amp;#99;&amp;#x6f;&amp;#109;&quot;</span><span class="o">&gt;&amp;</span><span class="err">#</span><span class="mi">99</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="nx">x68</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="nx">x65</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="nx">x76</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="nx">x72</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="nx">x69</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="mi">101</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="mi">114</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="nx">x2e</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="mi">98</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="mi">101</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="mi">114</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="nx">x74</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="mi">114</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="nx">x61</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="mi">110</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="nx">x64</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="mi">64</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="nx">x67</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="mi">109</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="nx">x61</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="mi">105</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="mi">108</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="nx">x2e</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="nx">x63</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="mi">111</span><span class="p">;</span><span class="o">&amp;</span><span class="err">#</span><span class="mi">109</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/a&gt;</span>
+</span><span class='line'> <span class="o">*</span> <span class="err">@</span><span class="nx">license</span> <span class="nx">GPL</span>  <span class="o">&lt;</span><span class="nx">a</span> <span class="nx">href</span><span class="o">=</span><span class="s2">&quot;http://www.gnu.org/licenses/gpl-3.0.txt&quot;</span><span class="o">&gt;</span><span class="nx">http</span><span class="o">:</span><span class="c1">//www.gnu.org/licenses/gpl-3.0.txt&lt;/a&gt;</span>
+</span><span class='line'> <span class="o">&lt;</span><span class="sr">/em&gt;/</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Pour cela Grunt nous propose un mécanisme qui va nous permettre de récupérer le contenu du fichier <code class='inline'>package.json</code> et de l'utiliser au sein de notre fichier de build, via un mécanisme de template basique. De plus, Grunt a mis en place le concept de <code class='inline'>banner</code> qui pourra être concaténé avec notre fichier source.</p>
+
+<p>Voici le fichier de build <code class='inline'>grunt.js</code> qui va minimifier les sources et créer l'entête:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">grunt</span><span class="p">.</span><span class="nx">initConfig</span><span class="p">({</span>
+</span><span class='line'>    <span class="nx">pkg</span><span class="o">:</span> <span class="s1">&#39;&amp;lt;json:package.json&amp;gt;&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">meta</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">banner</span><span class="o">:</span> <span class="s1">&#39;/**\n&#39;</span><span class="o">+</span>
+</span><span class='line'>                <span class="s1">&#39; * Copyright (c) &amp;lt;%= grunt.template.today(&quot;yyyy&quot;) %&amp;gt; &amp;lt;%= pkg.author.name %&amp;gt;\n&#39;</span> <span class="o">+</span>
+</span><span class='line'>                <span class="s1">&#39; * &amp;lt;%= pkg.name %&amp;gt; - v&amp;lt;%= pkg.version %&amp;gt; \n&#39;</span> <span class="o">+</span>
+</span><span class='line'>                <span class="s1">&#39; * @author &amp;lt;%= pkg.author.name %&amp;gt; &amp;lt;&amp;lt;%= pkg.author.email %&amp;gt;&amp;gt;\n&#39;</span> <span class="o">+</span>
+</span><span class='line'>                <span class="s1">&#39; * @license &amp;lt;%= pkg.licenses[0].type %&amp;gt;  &amp;lt;&amp;lt;%= pkg.licenses[0].url %&amp;gt;&amp;gt;\n&#39;</span><span class="o">+</span>
+</span><span class='line'>                <span class="s1">&#39; */&#39;</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">min</span> <span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">dist</span> <span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">src</span><span class="o">:</span> <span class="s1">&#39;src/removablearea.js&#39;</span><span class="p">,</span>
+</span><span class='line'>            <span class="nx">dest</span><span class="o">:</span> <span class="s1">&#39;jquery.removablearea.min.js&#39;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nx">concat</span> <span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">dist</span> <span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">src</span> <span class="o">:</span> <span class="p">[</span> <span class="s1">&#39;&amp;lt;banner&amp;gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;jquery.removablearea.min.js&#39;</span><span class="p">],</span>
+</span><span class='line'>            <span class="nx">dest</span><span class="o">:</span> <span class="s1">&#39;jquery.removablearea.min.js&#39;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>La commande :</p>
+
+<p><code>bash
+$&gt; grunt min concat
+</code></p>
+
+<p>va produire notre fichier final <code class='inline'>jquery.removablearea.min.js</code>.</p>
+
+<h3>Tests et vérification</h3>
+
+<p>Nous pouvons automatiser l'exécution des tests Qunit avec Grunt et PhantomJs. PhantomJs permet d'exécuter le test dans un navigateur en ligne de commande: il créé un navigateur de type WebKit en <em>headless</em>.</p>
+
+<p>Pour la vérification du code source, nous utilisons <a href="http://www.jshint.com">JSHint</a> qui est plus flexible que <a href="http://www.jslint.com">JSLint</a>.</p>
+
+<p>Puisque nous utilisons les plugins fournis par défaut avec Grunt, la configuration se résume à l'ajout d'un pattern pointant sur les fichiers de tests Qunit et la définition des règles JSHint.</p>
+
+<p>Le fichier de build final ressemble à cela:</p>
+
+<p><div><script src='https://gist.github.com/4145424.js?file=grunt.js'></script>
+<noscript><pre><code>module.exports = function(grunt){
+	grunt.initConfig({
+		pkg: '&lt;json:package.json&gt;',
+        meta: {
+            banner: '/**\n'+
+                    ' * Copyright (c) &lt;%= grunt.template.today(&quot;yyyy&quot;) %&gt; &lt;%= pkg.author.name %&gt;\n' +
+					' * &lt;%= pkg.name %&gt; - v&lt;%= pkg.version %&gt; \n' +
+					' * @author &lt;%= pkg.author.name %&gt; &lt;&lt;%= pkg.author.email %&gt;&gt;\n' +
+					' * @license &lt;%= pkg.licenses[0].type %&gt;  &lt;&lt;%= pkg.licenses[0].url %&gt;&gt;\n'+
+                    ' */'
+        },
+		min : {
+			dist : {
+				src: 'src/removablearea.js',
+				dest: 'jquery.removablearea.min.js'
+			}
+		},
+		concat : {
+			dist : {
+				src : [ '&lt;banner&gt;', 'jquery.removablearea.min.js'],
+				dest: 'jquery.removablearea.min.js'
+			}
+		},
+		qunit : {
+			all : ['test/*.html']
+		},
+		lint : {
+			files : ['src/*.js']
+		},
+		jshint : {
+			options: {
+				browser : true,
+				smarttabs : true
+			},
+			globals: {
+				jQuery : true
+			}
+		}
+	});
+    grunt.registerTask('default', 'lint qunit min concat');
+};</code></pre></noscript></div>
+</p>
+
+<p>Et voici le genre de sortie que devrait retourner Grunt si tout se passe bien durant le build:</p>
+
+<p>``` bash
+$> grunt
+Running "lint:files" (lint) task
+Lint free.</p>
+
+<p>Running "qunit:all" (qunit) task
+Testing removablearea.html....OK</p>
+
+<blockquote><blockquote><p>6 assertions passed (61ms)</p></blockquote></blockquote>
+
+<p>Running "min:dist" (min) task
+File "jquery.removablearea.min.js" created.
+Uncompressed size: 2001 bytes.
+Compressed size: 660 bytes gzipped (1269 bytes minified).</p>
+
+<p>Running "concat:dist" (concat) task
+File "jquery.removablearea.min.js" created.</p>
+
+<p>Done, without errors.
+```</p>
+
+<h2>Partager</h2>
+
+<blockquote><p>On va rentrer dans la postérité</p></blockquote>
+
+<p>Bien que le <a href="http://plugins.jquery.com/">site</a> répertoriant les plugins JQuery soit <em>en cours de développement</em>, il nous donne déjà la procédure à suivre pour y inscrire notre plugin. Dès que le site sera fini, notre plugin devrait théoriquement parti de la liste, un très bon moyen pour le faire connaître et de le partager.</p>
+
+<h3>Les méta-données</h3>
+
+<p>Tout comme pour le build, nous devons créer un fichier qui va contenir les informations relatives à notre plugin. Ce fichier servira à fournir les informations nécessaires pour indexer le plugin. Ce fichier est très proche du fichier <code class='inline'>package.json</code> (car ils se sont inspirés de la spec NPM), mais trop différent pour n'utiliser qu'un seul fichier... En suivant le <a href="https://github.com/jquery/plugins.jquery.com/blob/master/docs/manifest.md">format spécifié</a>, voici à quoi ressemble ce fichier pour notre plugin:</p>
+
+<p><div><script src='https://gist.github.com/4156975.js?file=removablearea.jquery.json'></script>
+<noscript><pre><code>{
+  &quot;name&quot;: &quot;removablearea&quot;,
+  &quot;title&quot;: &quot;Removablearea&quot;,
+  &quot;description&quot;: &quot;This plugin enables you to remove any area from a web page&quot;,
+  &quot;version&quot;: &quot;0.1.0&quot;,
+  &quot;homepage&quot;: &quot;https://github.com/krampstudio/jQueryRemovableArea&quot;,
+  &quot;author&quot;: {
+    &quot;name&quot;: &quot;Bertrand Chevrier&quot;,
+    &quot;email&quot;: &quot;chevrier.bertrand@gmail.com&quot;,
+    &quot;url&quot;: &quot;http://krampstudio.com&quot;
+  },
+  &quot;repository&quot;: {
+    &quot;type&quot;: &quot;git&quot;,
+    &quot;url&quot;: &quot;git://github.com/krampstudio/jQueryRemovableArea.git&quot;
+  },
+  &quot;bugs&quot;: {
+    &quot;url&quot;: &quot;https://github.com/krampstudio/jQueryRemovableArea/issues&quot;
+  },
+  &quot;licenses&quot;: [
+    {
+      &quot;type&quot;: &quot;GPL&quot;,
+      &quot;url&quot;: &quot;http://www.gnu.org/licenses/gpl-3.0.txt&quot;
+    }
+  ],
+  &quot;dependencies&quot;: {
+    &quot;jquery&quot;: &quot;1.7&quot;
+  },
+  &quot;keywords&quot;: [&quot;remove&quot;, &quot;delete&quot;]
+}</code></pre></noscript></div>
+</p>
+
+<p>Bon, c'est un peu redondant avec le fichier <code class='inline'>package.json</code> et il est surement possible de le générer avec depuis celui-ci, d'ailleurs si quelqu'un le fait déjà n'hésitez pas à laisser un commentaire!</p>
+
+<h3>Préparer l'indexation</h3>
+
+<p>Pour préparer l'indexation sur le site <a href="http://plugins.jquery.com">plugins.jquery.com</a>, il suffit d'ajouter un <em>hook</em> sur notre dépôt Github, comme décrit le décrit cette <a href="https://github.com/jquery/plugins.jquery.com#how-to-list-a-plugin">procédure</a>. La capture suivante montre l'interface d'administration du projet sur Github qui permet de rajouter le hoot:</p>
+
+<p><img src="/images/sc.github-hook.png" title="Ajout d'un service hook dans l'administration du dépôt" ></p>
+
+<h1>Et voilà</h1>
+
+<blockquote><p>Un petit plugin jQuery aux petits oignons.</p></blockquote>
+
+<p>Le code source de l'exemple est bien entendu disponible sur mon Github <a href="https://github.com/krampstudio/jQueryRemovableArea">krampstudio/jQueryRemovableArea</a>.</p>
+
+<p><em>Enjoy javascript coding</em></p>
+]]></content>
+  </entry>
+  
+</feed>
