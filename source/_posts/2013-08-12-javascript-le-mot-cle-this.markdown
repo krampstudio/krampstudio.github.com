@@ -101,7 +101,7 @@ console.log(require('util').inspect(get_os, true));
 
 ## Scope
  
-Encore une fois, le langage se distingue de beaucoup de ses confrères sur le point du scope. La portée des variables en JavaScript se propage au niveau de la fonction et non du bloque. Bien entendu les variables globales sont accessibles globalement, mais les variables *locales* sont locales à la fonction dans la laquelle elles sont déclarées. 
+Encore une fois, le langage se distingue de beaucoup de ses confrères sur le point du scope. La portée des variables en JavaScript se propage au niveau de la fonction et non du bloc. Bien entendu les variables globales sont accessibles partout (de tout façon personne n'utilise jamais de variables globales n'est-ce pas?)), par contre les variables *locales* sont locales à la fonction dans la laquelle elles ont été déclarées. 
 
 Quand on tente d'accéder à une variable non définie, on a une jolie erreur:
 {% codeblock lang:javascript %}
@@ -119,7 +119,7 @@ get_arch();
 //stdout:    at [...]
 {% endcodeblock %}
 
-Dans un langage où la portée des variables est le block, on pourrait s'attendre à la même chose, mais:
+Dans un langage où la portée des variables est le bloc, on pourrait s'attendre à la même chose, mais:
 {% codeblock lang:javascript %}
 function get_arch(){
     if(false){
@@ -132,7 +132,7 @@ get_arch();
 //stdout: undefined 
 {% endcodeblock %}
 
-La variable `arch` est donc **accessible** à toute la fonction, même si elle n'a pas encore de valeur. Ce code est équivalent à:
+La variable `arch` est donc **accessible** à toute la fonction, même si elle n'a pas encore été définie (d'où le `undefined`). Ce code est équivalent à:
 
 {% codeblock lang:javascript %}
 function get_arch(){
@@ -148,7 +148,6 @@ get_arch();
 {% endcodeblock %}
 
 JavaScript intègre le principe du _hoisting_, c'est-à-dire que toutes les variables locales à une fonction sont accessibles dès le début de celle-ci. Une des bonne pratique veut que toutes les variables utilisées soient donc déclarées en début de fonction. 
-
 
 Ce type de comportement peut nous parraître limitant. Ce serait la cas si JS n'avais pas le mécanisme de _closure_. La closure est un principe tout simple mais très puissant, qui donne accès aux variables des scopes englobant dans le scope englobé. Comme la portée du scope est la fonction, alors on peut dire que si une fontionction en contient une autre, alors la fonction contenue a accès aux variables de la fonction contenante. Comme souvent en informatique (et avec ma prose) un princiepe peut être simple mais compliqué à expliquer, alors un bon exemple devrait eclaircir ce point:
  
