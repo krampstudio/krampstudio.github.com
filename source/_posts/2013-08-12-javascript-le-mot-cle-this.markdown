@@ -22,7 +22,8 @@ En fait le mot clé `this` est tout à fait cohérent dans le contexte d'un lang
 *Tous les exemples sont testés avec Node.js version 0.10.15*. 
 
 ## La fonction, citoyenne de 1ère classe
-
+<a name='function-first-class-object'></a>
+ 
 On dit du type `function` que c'est un objet de première classe car ce type permet de faire tout ce qu'un objet peut faire dans le langage. En gros l'instance d'une fonction se comporte comme un objet. Voici quelques caractéristiques qui illustre ce principe:
 
  - Chaque fonction est une instance du type `Object`. Bien que `typeof aFunction` renvoit `function`, `insanteof` nous permet de vérifier l'affiliation de la fonction au type `Object`.
@@ -99,6 +100,8 @@ console.log(require('util').inspect(get_os, true));
 //stdout:   arch: 'x86' }
 {% endcodeblock %}
 
+Maintenant, nous savons que la fonction est un des concepts central du langage JavaScript, vous me direz, pas étonnant pour un langage fonctionnel, un peu plus pour un langage orienté objet (même sans classe, mais ça c'est une autre histoire).
+
 ## Scope
  
 Encore une fois, le langage se distingue de beaucoup de ses confrères sur le point du scope. La portée des variables en JavaScript se propage au niveau de la fonction et non du bloc. Bien entendu les variables globales sont accessibles partout (de tout façon personne n'utilise jamais de variables globales n'est-ce pas?)), par contre les variables *locales* sont locales à la fonction dans la laquelle elles ont été déclarées. 
@@ -134,6 +137,7 @@ get_arch();
 
 La variable `arch` est donc **accessible** à toute la fonction, même si elle n'a pas encore été définie (d'où le `undefined`). Ce code est équivalent à:
 
+
 {% codeblock lang:javascript %}
 function get_arch(){
     var arch;
@@ -149,7 +153,7 @@ get_arch();
 
 JavaScript intègre le principe du _hoisting_, c'est-à-dire que toutes les variables locales à une fonction sont accessibles dès le début de celle-ci. Une des bonne pratique veut que toutes les variables utilisées soient donc déclarées en début de fonction. 
 
-Ce type de comportement peut nous parraître limitant. Ce serait la cas si JS n'avais pas le mécanisme de _closure_. La closure est un principe tout simple mais très puissant, qui donne accès aux variables des scopes englobant dans le scope englobé. Comme la portée du scope est la fonction, alors on peut dire que si une fontionction en contient une autre, alors la fonction contenue a accès aux variables de la fonction contenante. Comme souvent en informatique (et avec ma prose) un princiepe peut être simple mais compliqué à expliquer, alors un bon exemple devrait eclaircir ce point:
+Ce type de comportement peut nous parraître limitant. Ce serait la cas si JS n'avais pas le mécanisme de _closure_. La closure est un principe tout simple mais très puissant, qui donne accès aux variables des scopes englobant dans le scope englobé. Comme la portée du scope est la fonction, alors on peut dire que si une fonction en contient une autre, alors la fonction contenue a accès aux variables de la fonction contenante. Comme souvent en informatique (et avec ma prose) un principe peut être simple mais compliqué à expliquer, alors un bon exemple devrait éclaircir ce point:
  
 {% codeblock lang:javascript %}
 function desc_os(){
@@ -168,5 +172,45 @@ function desc_os(){
 console.log(desc_os());
 //stdout: GNU/Linux 3.5.0-37-generic x86_64 Ubuntu
 {% endcodeblock %}
+
+Dans l'exemple ci-dessus, la fonction `format` _capture_ les valeurs des variables de la fonction `desc_os` au moment de son appel.
+
+## Le contexte de la fonction: `this`
+
+Comme nous l'avons vus dans la [première section](#function-first-class-object) chaque fonction est aussi un objet. De plus, chaque fonction _hérite_ de plusieurs membres de manière systématiques. 
+
+Les propriétés suivantes sont accessible depuis chaque fonction  : 
+
+ - `name` : le nom de la fonction.
+ - `length` : le nombre d'arguments déclarés.
+ - `arguments` : un objet qui contient la liste des arguments passés (attention, ce n'est pas un `Array` mais un objet qui se comporte comme tel).
+ - `caller` : contient une référence à la fonction appelante.
+
+{% codeblock lang:javascript %}
+function showFileSystem(mountPoint){
+    console.log(showFileSystem.name);
+    console.log(showFileSystem.length);
+    console.log(showFileSystem.arguments[0]); //also available as the `arguments` variable
+    console.log(showFileSystem.caller.name);
+}
+function discCheck(){
+    showFileSystem('/dev/sda');
+}
+
+discCheck();
+
+//stdout: showFileSystem
+//stdout: 1
+//stdout: /dev/sda
+//stdout: discCheck
+{% endcodeblock %}
+
+Il existe d'autre propriétés qui peuvent changer entre les implémentations ou dont l'usage sort du scope de ce post (à moins d'une closure, d'accord c'ert nul ;).
+
+Parmis les méthodes accessibles, les suivantes nous intéressent particulièrement:
+
+ - `call`
+ - `apply`
+ - `bind` 
 
 
