@@ -179,7 +179,7 @@ Dans l'exemple ci-dessus, la fonction `format` _capture_ les valeurs des variabl
 
 Comme nous l'avons vus dans la [première section](#function-first-class-object) chaque fonction est aussi un objet. De plus, chaque fonction _hérite_ de plusieurs membres de manière systématiques. 
 
-Les propriétés suivantes sont accessible depuis chaque fonction  : 
+Les propriétés suivantes sont accessible à partir de chaque fonction  : 
 
  - `name` : le nom de la fonction.
  - `length` : le nombre d'arguments déclarés.
@@ -205,12 +205,218 @@ discCheck();
 //stdout: discCheck
 {% endcodeblock %}
 
-Il existe d'autre propriétés qui peuvent changer entre les implémentations ou dont l'usage sort du scope de ce post (à moins d'une closure, d'accord c'ert nul ;).
+Il existe d'autre propriétés qui peuvent changer entre les implémentations ou dont l'usage sort du scope de ce post (à moins d'une closure... bon, d'accord c'est nul ;).
 
 Parmis les méthodes accessibles, les suivantes nous intéressent particulièrement:
 
- - `call`
- - `apply`
- - `bind` 
+ - `call` : permet d'exécuter la fonction
+ - `apply` : permet aussi d'exécuter la fonction 
+ - `bind` : créé une nouvelle fonction associée à un nouveau contexte 
+
+`call` et `apply` ont la même finalité, seul la manière dont les paramètres sont passés changent. On pourrait penser que ces fonctions sont peu utiles, comme dans l'exemple suivant:
+
+{% codeblock lang:javascript %}
+function kill(pid, signal){
+    if(!signal){
+        signal = '9';
+    }
+    console.log('Running: kill -'+ signal  +  ' ' + pid);
+}
+
+//usual way to invoke function
+kill(1234, 'TERM');
+
+//invoke the function using it's own method call
+kill.call(null, 1234);
+
+//invoke the function using it's own method apply
+kill.apply(null, [1234, 'PIPE']);
+
+//stdout: Running: kill -TERM 1234
+//stdout: Running: kill -9 1234
+//stdout: Running: kill -PIPE 1234
+
+{% endcodeblock %}
+
+Dans ce cas, il n'y a effectivement pas un très grand intérêt, les méthodes `call` et `apply` semblent identiques. La méthode `apply` a pour particluarité d'utiliser un tableau pour les paramètres ce qui permet de faciliter les exécution dynamiques de fonction, par exemple :
+
+{% codeblock lang:javascript %}
+var fs = require('fs');
+
+//returns an array of files name for a service
+function get_logs(service){
+    var logDir = '/var/log/' + service + '/';
+    var logFiles = fs.readdirSync(logDir);
+    if(logFiles && logFiles instanceof Array){
+        return logFiles;
+    }
+    return [];
+}
+i
+//merge the content of the array of files
+function merge(files){
+    var merged = '';
+    for(var i in files){
+        merged += fs.readSync(files[i]);
+    }
+    console.log(files.length +' files merged'); 
+}
+
+//backup each of the files
+function backup(files){
+    for(var i in files){
+        fs.createReadStream(files[i]).pipe(fs.createWriteStream(files[i] + '.backup'));
+    }
+    console.log(files.length +' files backed up'); 
+}
+
+//do actions on logs of a service
+function doOnLogs(service, action){
+    //action is a callback, on wich we apply arguments dynamically
+    if(typeof action === 'function'){
+        action.apply(null, get_logs(service));
+    }
+}
+
+console.log(get_logs('redis'));
+
+//stdout: ['redis-server.log', redis-server.1.log']
+
+
+doOnLogs('redis', merge);
+doOnLogs('redis', backup);
+
+//stdout: 2 files merged
+//stdout: 2 files backed up
+{% endcodeblock %}
+
+C'est bon, j'arrête de vous tenir en haleine, maintenant je vais vous parlez du premier paramètre de ces méthodes, car vous vous demandez quel est donc ce paramètre qui a la valeur `null`? Et bien ce paramètre c'est *le contexte de la fonction*, il permet de définir la valeur du mot clé `this` au sein de la fonction.
+
+
+{% codeblock lang:javascript %}
+var cpu = {
+    cores : 2,
+    vendor : 'Intel',
+    ghz : 2.13,
+    model : 'Intel(R) Core(TM)2 Duo CPU P7450 @ 2.13GHz',
+
+    isMultiCore : function(){
+        return this.cores > 1;
+    }
+};
+
+console.log(cpu.isMulticore());
+//stdout: true
+
+var old_cpu = {
+    cores : 1
+};
+
+cpu.isMulticore.call(old_cpu);
+//stdout: false
+{% endcodeblock %}
+
+Dans l'exemple ci-dessus, nous avons modifié le contexte de la fonction. Lors d'un appel de méthode avec l'opérateur `.` classique, le contexte de fonction est celui de l'objet, donc dans `cpu.isMultiCore()`, `this` se rapporte à l'objet `cpu`. Dans le 2nd appel, nous utilisons la méthode `call` pour changer le contexte de la fonction: `this` fera référence à `old_cpu`.
+
+Jusqu'ici tout va bien. On a tous compris (enfin j'espère) que `this` ne se rapporte pas à une instance comme dans d'autres langages mais bien au contexte. Corsons un peu les choses, avec le code suivant:
+
+{% codeblock lang:javascript %}
+var cpu = {
+    temperature : 65,
+
+    monitorTemperature : function(){
+        var monitor = setInterval(function(){
+            var temp = this.temperatue;
+            if(temp > 180){
+                console.log("Fire, fire, please help"); 
+            } else {
+                console.log("Temperature at "+ temp + "° is ok");
+            }
+        }, 1000);
+
+        setTimeout(function(){
+            clearInterval(monitor);
+        }, 5000);
+    }
+}
+cpu.monitorTemperature();
+//stdout: Temperature at undefined° is ok
+//stdout: Temperature at undefined° is ok
+//stdout: Temperature at undefined° is ok
+//stdout: Temperature at undefined° is ok
+{% endcodeblock %}
+
+Oh!(Ndt: traduction de  _WTF!_) C'est quoi ce vieux `undefined`? Et bien oui, si vous avez suivis, chaque fonction a un contexte et ce contexte est accessible via le mot clé `this`. De plus, comme le scope porte sur la fonction et que nous déclarons une fonction anonyme comme _callback_ de `setInterval` et bien `this` ne se raporte plus au contexte de `monitorTemperature` mais à celui de la fonction anonyme. 
+
+Mais comment on va s'en sortir? C'est là que les _closures_ vont venir à notre secours. Nous allons garder une référence vers le contexte de la fonction :
+
+
+{% codeblock lang:javascript %}
+var cpu = {
+    temperature : 65,
+
+    monitorTemperature : function(){
+        var self = this;
+        var monitor = setInterval(function(){
+            var temp = self.temperatue;
+            if(temp > 180){
+                console.log("Fire, fire, please help"); 
+            } else {
+                console.log("Temperature at "+ temp + "° is ok");
+            }
+        }, 1000);
+
+        setTimeout(function(){
+            clearInterval(monitor);
+        }, 5000);
+    }
+}
+cpu.monitorTemperature();
+//stdout: Temperature at 65° is ok
+//stdout: Temperature at 65° is ok
+//stdout: Temperature at 65° is ok
+//stdout: Temperature at 65° is ok
+{% endcodeblock %}
+
+Et voilà !
+
+Ce même exemple avec une _pseudo classe_, donne cela:
+
+{% codeblock lang:javascript %}
+function Cpu(){
+    this.cores = 2;
+    this.vendor = 'Intel';
+    this.ghz = 2.13;
+    this.modelName = 'Intel(R) Core(TM)2 Duo CPU P7450 @ 2.13GHz';
+
+    this.isMultiCore = function(){
+        return this.cores > 0;
+    }
+}
+var cpu = new Cpu();
+console.log(cpu.isMultiCore());
+//stdout: true
+{% endcodeblock %}
+
+Le mot clé `new` peut être compris comme une sorte d'alias à la méthode `call`. En gros `new Cpu()` revient à faire `Cpu.call({})`, c'est-à-dire à créer un nouvel objet (le `{}`) et à le passer en tant que contexte de fonction. 
+
+Une erreur fréquente est d'utiliser `this` au sein d'une fonction en vue de l'utiliser comme une pseudo classe et de l'appeler sans le mot clé `new`. Et là, c'est le drame: `this` va se référer au contexte dans lequel il a été appelé. Prenons l'exemple:
+
+{% codeblock lang:javascript %}
+function UnixProcess(){
+    this.pid = process.pid;
+    console.log(this);
+}
+
+var unixProcess = new UnixProcess();
+console.log(unixProcess);
+//stdout: { pid: 6565 }
+{% endcodeblock %}
+
+Si vous exécutez ce code dans la console node.js et qu'ensuite vous lancer `UnixProcess()` (sans le `new`), vous allez retrouvez toutes les variables globales, et oui... de même que si vous lancez `console.log(this)` à l'extérieur d'une fonction. 
+
+
+
+
 
 
