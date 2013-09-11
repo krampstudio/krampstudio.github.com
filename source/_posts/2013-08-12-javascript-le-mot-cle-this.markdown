@@ -8,8 +8,8 @@ categories: JavaScript
 
 {% img left /images/js-badge.png JavaScriptLogo %}
 
-Si comme moi vous aviez plutôt l'habitude des langages de programmation orientés objets *classiques*, vous avez sans doute aussi été surpris (entre autre) de l'utilisation du mot clé `this` en JavaScript. Il y a quelques temps déjà, l'envie de comprendre cette particularité m'a permis d'appréhender les concepts fondateurs du langage. Au final, en essyant de comprendre l'utilisation de `this`, ma vision du langage a complètement changé et depuis c'est avec plaisir que je code en JS.
-Je vais donc essayer de retracer ce cheminement, en expliquant quelques principes simples mais tellement important. Ca devrait éviter quelques prises de têtes.
+Si comme moi vous aviez plutôt l'habitude des langages de programmation orientés objets *classiques*, vous avez sans doute aussi été surpris (entre autre) de l'utilisation du mot clé `this` en JavaScript. Il y a quelques temps déjà, l'envie de comprendre cette particularité m'a permis d'appréhender les concepts fondateurs du langage. Au final, en essayant de comprendre l'utilisation de `this`, ma vision du langage a complètement changé et depuis c'est avec plaisir que je code en JS.
+Je vais donc essayer de retracer ce cheminement, en expliquant quelques principes simples mais tellement important. Ça devrait éviter quelques prises de têtes.
 
 En fait le mot clé `this` est tout à fait cohérent dans le contexte d'un langage où :
 
@@ -26,7 +26,7 @@ En fait le mot clé `this` est tout à fait cohérent dans le contexte d'un lang
  
 On dit du type `function` que c'est un objet de première classe car ce type permet de faire tout ce qu'un objet peut faire dans le langage. En gros l'instance d'une fonction se comporte comme un objet. Voici quelques caractéristiques qui illustre ce principe:
 
- - Chaque fonction est une instance du type `Object`. Bien que `typeof aFunction` renvoit `function`, `insanteof` nous permet de vérifier l'affiliation de la fonction au type `Object`.
+ - Chaque fonction est une instance du type `Object`. Bien que `typeof aFunction` renvoie `function`, `insanteof` nous permet de vérifier l'affiliation de la fonction au type `Object`.
 {% codeblock lang:javascript %}
 function test() {
     //do stuffs
@@ -86,7 +86,7 @@ os_scanner(function(os){
 //stdout: 'function'
 //stdout: 'Oh Crap'
 {% endcodeblock %}
- -  Une fonction étant une instance, c'est une structure de données. Elle contient des propriétés instrinsèques (name, arguments, etc.), mais on peut aussi lui assigner de nouvelles propriétés.
+ -  Une fonction étant une instance, c'est une structure de données. Elle contient des propriétés intrinsèques (name, arguments, etc.), mais on peut aussi lui assigner de nouvelles propriétés.
 {% codeblock lang:javascript %}
 get_os.arch='x86';
 
@@ -153,7 +153,7 @@ get_arch();
 
 JavaScript intègre le principe du _hoisting_, c'est-à-dire que toutes les variables locales à une fonction sont accessibles dès le début de celle-ci. Une des bonne pratique veut que toutes les variables utilisées soient donc déclarées en début de fonction. 
 
-Ce type de comportement peut nous parraître limitant. Ce serait la cas si JS n'avais pas le mécanisme de _closure_. La closure est un principe tout simple mais très puissant, qui donne accès aux variables des scopes englobant dans le scope englobé. Comme la portée du scope est la fonction, alors on peut dire que si une fonction en contient une autre, alors la fonction contenue a accès aux variables de la fonction contenante. Comme souvent en informatique (et avec ma prose) un principe peut être simple mais compliqué à expliquer, alors un bon exemple devrait éclaircir ce point:
+Ce type de comportement peut nous paraître limitant. Ce serait la cas si JS n'avais pas le mécanisme de _closure_. La closure est un principe tout simple mais très puissant, qui donne accès aux variables des scopes englobant dans le scope englobé. Comme la portée du scope est la fonction, alors on peut dire que si une fonction en contient une autre, alors la fonction contenue a accès aux variables de la fonction contenante. Comme souvent en informatique (et avec ma prose) un principe peut être simple mais compliqué à expliquer, alors un bon exemple devrait éclaircir ce point:
  
 {% codeblock lang:javascript %}
 function desc_os(){
@@ -205,9 +205,9 @@ discCheck();
 //stdout: discCheck
 {% endcodeblock %}
 
-Il existe d'autre propriétés qui peuvent changer entre les implémentations ou dont l'usage sort du scope de ce post (à moins d'une closure... bon, d'accord c'est nul ;).
+Il existe d'autre propriétés qui peuvent changer entre les implémentions ou dont l'usage sort du scope de ce post (à moins d'une closure... bon, d'accord c'est nul ;).
 
-Parmis les méthodes accessibles, les suivantes nous intéressent particulièrement:
+Parmi les méthodes accessibles, les suivantes nous intéressent particulièrement:
 
  - `call` : permet d'exécuter la fonction
  - `apply` : permet aussi d'exécuter la fonction 
@@ -238,7 +238,7 @@ kill.apply(null, [1234, 'PIPE']);
 
 {% endcodeblock %}
 
-Dans ce cas, il n'y a effectivement pas un très grand intérêt, les méthodes `call` et `apply` semblent identiques. La méthode `apply` a pour particluarité d'utiliser un tableau pour les paramètres ce qui permet de faciliter les exécution dynamiques de fonction, par exemple :
+Dans ce cas, il n'y a effectivement pas un très grand intérêt, les méthodes `call` et `apply` semblent identiques. La méthode `apply` a pour particularités d'utiliser un tableau pour les paramètres ce qui permet de faciliter les exécution dynamiques de fonction, par exemple :
 
 {% codeblock lang:javascript %}
 var fs = require('fs');
@@ -272,7 +272,7 @@ function backup(files){
 
 //do actions on logs of a service
 function doOnLogs(service, action){
-    //action is a callback, on wich we apply arguments dynamically
+    //action is a callback, on which we apply arguments dynamically
     if(typeof action === 'function'){
         action.apply(null, get_logs(service));
     }
@@ -346,7 +346,7 @@ cpu.monitorTemperature();
 //stdout: Temperature at undefined° is ok
 {% endcodeblock %}
 
-Oh!(Ndt: traduction de  _WTF!_) C'est quoi ce vieux `undefined`? Et bien oui, si vous avez suivis, chaque fonction a un contexte et ce contexte est accessible via le mot clé `this`. De plus, comme le scope porte sur la fonction et que nous déclarons une fonction anonyme comme _callback_ de `setInterval` et bien `this` ne se raporte plus au contexte de `monitorTemperature` mais à celui de la fonction anonyme. 
+Oh!(Ndt: traduction de  _WTF!_) C'est quoi ce vieux `undefined`? Et bien oui, si vous avez suivis, chaque fonction a un contexte et ce contexte est accessible via le mot clé `this`. De plus, comme le scope porte sur la fonction et que nous déclarons une fonction anonyme comme _callback_ de `setInterval` et bien `this` ne se rapporte plus au contexte de `monitorTemperature` mais à celui de la fonction anonyme. 
 
 Mais comment on va s'en sortir? C'est là que les _closures_ vont venir à notre secours. Nous allons garder une référence vers le contexte de la fonction :
 
@@ -398,7 +398,7 @@ console.log(cpu.isMultiCore());
 //stdout: true
 {% endcodeblock %}
 
-Le mot clé `new` peut être compris comme une sorte d'alias à la méthode `call`. En gros `new Cpu()` revient à faire `Cpu.call({})`, c'est-à-dire à créer un nouvel objet (le `{}`) et à le passer en tant que contexte de fonction. 
+Le mot clé `new` peut être compris comme une sorte d'allias à la méthode `call`. En gros `new Cpu()` revient à faire `Cpu.call({})`, c'est-à-dire à créer un nouvel objet (le `{}`) et à le passer en tant que contexte de fonction. 
 
 Une erreur fréquente est d'utiliser `this` au sein d'une fonction en vue de l'utiliser comme une pseudo classe et de l'appeler sans le mot clé `new`. Et là, c'est le drame: `this` va se référer au contexte dans lequel il a été appelé. Prenons l'exemple:
 
