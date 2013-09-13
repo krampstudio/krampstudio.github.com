@@ -415,6 +415,20 @@ console.log(unixProcess);
 
 Si vous exécutez ce code dans la console node.js et qu'ensuite vous lancer `UnixProcess()` (sans le `new`), vous allez retrouvez toutes les variables globales, et oui... de même que si vous lancez `console.log(this)` à l'extérieur d'une fonction. 
 
+## Dans la vrai vie
+
+Voici un template d'un plugin jQuery, on se penchant dessus on voit bien l'usage du mot clé `this` qui permet d'accéder au contexte de l'élément jQuery (toujours un tableau d'où les `this.each`) ou de l'objet `Plugin`:
+
+{% gist 6536208 pluginName.jquery.js %}
+
+## Pour aller plus loin
+
+Je vous conseil de lire ces deux ouvrages écrits par les gourous du JavaScript : 
+
+ - [JavaScript The Good Parts](http://www.amazon.fr/JavaScript-The-Good-Parts-ebook/dp/B0026OR2ZY/ref=sr_1_1?ie=UTF8&qid=1378985428&sr=8-1&keywords=javascript+the+good+parts) de Douglas Crockford
+ - [Secrets of the JavaScript Ninja](http://www.amazon.fr/Secrets-JavaScript-Ninja-John-Resig/dp/193398869X/ref=sr_1_1?ie=UTF8&qid=1378985699&sr=8-1&keywords=secret+of+the+javascript+ninjas) de John Resig
+ 
+
 
 
 
