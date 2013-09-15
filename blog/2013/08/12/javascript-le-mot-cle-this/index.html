@@ -1,0 +1,1139 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>JavaScript le mot clé this - Krampstudio</title>
+  <meta name="author" content="Bertrand Chevrier">
+
+  
+  <meta name="description" content="Si comme moi vous aviez plutôt l&#8217;habitude des langages de programmation orientés objets classiques, vous avez sans doute aussi été surpris ( &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://krampstudio.github.com/blog/2013/08/12/javascript-le-mot-cle-this/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Krampstudio" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=Galindo|Orienta' rel='stylesheet' type='text/css'>
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-3993348-6']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Krampstudio</a></h1>
+  
+    <h2>Du dev, du web, du libre en français et en toute subjectivité.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:krampstudio.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/projects/">Projets</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about/">A propos</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">JavaScript Le Mot Clé This</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-12T18:36:00+02:00" pubdate data-updated="true">12/08/13</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img class="left" src="/images/js-badge.png" title="JavaScriptLogo" ></p>
+
+<p>Si comme moi vous aviez plutôt l&#8217;habitude des langages de programmation orientés objets <em>classiques</em>, vous avez sans doute aussi été surpris (entre autre) de l&#8217;utilisation du mot clé <code>this</code> en JavaScript. Il y a quelques temps déjà, l&#8217;envie de comprendre cette particularité m&#8217;a permis d&#8217;appréhender les concepts fondateurs du langage. Au final, en essayant de comprendre l&#8217;utilisation de <code>this</code>, ma vision du langage a complètement changé et depuis c&#8217;est avec plaisir que je code en JS.
+Je vais donc essayer de retracer ce cheminement, en expliquant quelques principes simples mais tellement important. Ça devrait éviter quelques prises de têtes.</p>
+
+<p>En fait le mot clé <code>this</code> n&#8217;est pas du tout ce que l&#8217;on croit. Ce n&#8217;est pas une référence vers une instance d&#8217;un objet, mais le contexte de la fonction. Pour comprendre cela, il y a quelques concepts du langage qu&#8217;il faut explorer :</p>
+
+<ul>
+<li>le type <code>Function</code> est un objet de première classe (<a href="http://en.wikipedia.org/wiki/First-class_function">First-class function</a>),</li>
+<li>le portée des variables locales est hissée au niveau de la fonction,</li>
+<li>le mot clé <code>new</code> n&#8217;est seulement qu&#8217;un alias</li>
+</ul>
+
+
+<!-- more -->
+
+
+<p><em>Tous les exemples présentés ont été testés avec <a href="http://nodejs.org/">node.js</a> version 0.10.15. Vous pouvez les reproduire et aller plus en vous amusant avec <a href="http://nodejs.org/api/repl.html">REPL</a> (la console node).</em></p>
+
+<h2>La fonction, citoyenne de 1ère classe</h2>
+
+<p><a name='function-first-class-object'></a></p>
+
+<p>On dit du type <code>Function</code> que c&#8217;est un objet de première classe car ce type permet de faire tout ce qu&#8217;un objet peut faire dans le langage. En gros l&#8217;instance d&#8217;une fonction se comporte comme un objet. Voici quelques caractéristiques qui illustre ce principe:</p>
+
+<ul>
+<li>Chaque fonction est une instance du type <code>Object</code>. Bien que <code>typeof aFunction</code> renvoie <code>function</code>, <code>insanteof</code> nous permet de vérifier l&#8217;affiliation de la fonction au type <code>Object</code>.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">test</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">//do stuffs</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">test</span> <span class="k">instanceof</span> <span class="nb">Object</span><span class="p">);</span>
+</span><span class='line'><span class="c1">//stdout: true</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;util&#39;</span><span class="p">).</span><span class="nx">inspect</span><span class="p">(</span><span class="nx">test</span><span class="p">,</span> <span class="kc">true</span><span class="p">));</span>
+</span><span class='line'><span class="c1">//stdout: { [Function: test]</span>
+</span><span class='line'><span class="c1">//stdout:   [length]: 0,</span>
+</span><span class='line'><span class="c1">//stdout:   [name]: &#39;test&#39;,</span>
+</span><span class='line'><span class="c1">//stdout:   [arguments]: null,</span>
+</span><span class='line'><span class="c1">//stdout:   [caller]: null,</span>
+</span><span class='line'><span class="c1">//stdout:   [prototype]: { [constructor]: [Circular] } }</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Une fonction peut être assignée à une variable, comme un objet ou n&#8217;importe quel type.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">getOs</span> <span class="o">=</span> <span class="kd">function</span> <span class="nx">get_os</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="s1">&#39;windows&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="k">typeof</span> <span class="nx">getOs</span> <span class="p">);</span>
+</span><span class='line'><span class="c1">//stdout: &#39;function&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>une fonction peut être passée en paramètre d&#8217;une fonction, permettant ainsi d&#8217;utiliser (en autre) le pattern du <code>callback</code>, très utile pour la programmation événementielle et les traitements asynchrones.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">os_scanner</span><span class="p">(</span> <span class="nx">getOs</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="k">typeof</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">);</span>
+</span><span class='line'>  
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span> <span class="nx">getOs</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;windows&#39;</span> <span class="p">){</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s1">&#39;Oh crap&#39;</span> <span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s2">&quot;I know that, it&#39;s a Unix&quot;</span> <span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">os_scanner</span><span class="p">(</span><span class="nx">getOs</span><span class="p">);</span>
+</span><span class='line'><span class="c1">//stdout: &#39;function&#39;</span>
+</span><span class='line'><span class="c1">//stdout: &#39;Oh Crap&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Une fonction étant une instance, c&#8217;est une structure de données. Elle contient des propriétés intrinsèques (<code>name</code>, <code>arguments</code>, etc.), mais on peut aussi lui assigner de nouvelles propriétés.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">get_os</span><span class="p">.</span><span class="nx">arch</span><span class="o">=</span><span class="s1">&#39;x86&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;util&#39;</span><span class="p">).</span><span class="nx">inspect</span><span class="p">(</span><span class="nx">get_os</span><span class="p">,</span> <span class="kc">true</span><span class="p">));</span>
+</span><span class='line'><span class="c1">//stdout: { [Function: get_os]</span>
+</span><span class='line'><span class="c1">//stdout:   [length]: 0,</span>
+</span><span class='line'><span class="c1">//stdout:   [name]: &#39;get_os&#39;,</span>
+</span><span class='line'><span class="c1">//stdout:   [arguments]: null,</span>
+</span><span class='line'><span class="c1">//stdout:   [caller]: null,</span>
+</span><span class='line'><span class="c1">//stdout:   [prototype]: { [constructor]: [Circular] },</span>
+</span><span class='line'><span class="c1">//stdout:   arch: &#39;x86&#39; }</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Maintenant, nous savons que la fonction est un des concepts central du langage JavaScript, vous me direz, pas étonnant pour un langage fonctionnel, un peu plus pour un langage orienté objet (même sans classe, mais ça c&#8217;est une autre histoire).</p>
+
+<h2>Scope</h2>
+
+<p>Encore une fois, le langage se distingue de beaucoup de ses confrères sur le point du scope. La portée des variables en JavaScript se propage au niveau de la fonction et non du bloc. Bien entendu les variables globales sont accessibles partout (de tout façon personne n&#8217;utilise jamais de variables globales, n&#8217;est-ce pas?), par contre les variables <em>locales</em> sont locales à la fonction dans la laquelle elles ont été déclarées.</p>
+
+<p>Quand on tente d&#8217;accéder à une variable non définie, on a une jolie erreur:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">get_os</span><span class="p">(){</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">arch</span> <span class="o">=</span> <span class="s1">&#39;x86&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">get_arch</span><span class="p">(){</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arch</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">get_arch</span><span class="p">();</span>
+</span><span class='line'><span class="c1">//stdout: ReferenceError: arch is not defined</span>
+</span><span class='line'><span class="c1">//stdout:    at get_arch (repl:1:34)</span>
+</span><span class='line'><span class="c1">//stdout:    at [...]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Dans un langage où la portée des variables est le bloc, on pourrait s&#8217;attendre à la même chose, mais:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">get_arch</span><span class="p">(){</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="kc">false</span><span class="p">){</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">arch</span> <span class="o">=</span> <span class="s1">&#39;windows&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arch</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">get_arch</span><span class="p">();</span>
+</span><span class='line'><span class="c1">//stdout: undefined </span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>La variable <code>arch</code> est donc <strong>accessible</strong> à toute la fonction, même si elle n&#8217;a pas encore été définie (d&#8217;où le <code>undefined</code>). Ce code est équivalent à:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">get_arch</span><span class="p">(){</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">arch</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="kc">false</span><span class="p">){</span>
+</span><span class='line'>        <span class="nx">arch</span> <span class="o">=</span> <span class="s1">&#39;windows&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arch</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">get_arch</span><span class="p">();</span>
+</span><span class='line'><span class="c1">//stdout: undefined</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>JavaScript intègre le principe du <em>hoisting</em>, c&#8217;est-à-dire que toutes les variables locales à une fonction sont accessibles dès le début de celle-ci. Une des bonnes pratiques veut que toutes les variables utilisées soient déclarées en début de fonction.</p>
+
+<p>Ce type de comportement peut nous paraître limitant. Ce serait la cas si JS n&#8217;avais pas un mécanisme de <em>closure</em>. La closure est un principe tout simple mais très puissant, qui donne accès aux variables des scopes englobant dans le scope englobé. Comme la portée du scope est la fonction, alors on peut dire que si une fonction en contient une autre, alors la fonction contenue a accès aux variables de la fonction contenante. Comme souvent en informatique (et avec ma prose) un principe peut être simple mais compliqué à expliquer, alors un bon exemple devrait éclaircir ce point:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">desc_os</span><span class="p">(){</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">os</span> <span class="o">=</span> <span class="s1">&#39;GNU/Linux&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">version</span> <span class="o">=</span> <span class="s1">&#39;3.5.0-37-generic&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">arch</span> <span class="o">=</span> <span class="s1">&#39;x86_64&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">distrib</span> <span class="o">=</span> <span class="s1">&#39;Ubuntu&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">format</span><span class="p">(){</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">os</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nx">version</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nx">arch</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nx">distrib</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">format</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">desc_os</span><span class="p">());</span>
+</span><span class='line'><span class="c1">//stdout: GNU/Linux 3.5.0-37-generic x86_64 Ubuntu</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Dans l&#8217;exemple ci-dessus, la fonction <code>format</code> <em>capture</em> les valeurs des variables de la fonction <code>desc_os</code> au moment de son appel.</p>
+
+<h2>Le contexte de la fonction: <code>this</code></h2>
+
+<p><img class="right" src="/images/this.png" title="'Source theburnsider dot com slash stop this'" ></p>
+
+<p>Comme nous l&#8217;avons vus dans la <a href="#function-first-class-object">première section</a> chaque fonction est aussi un objet. De plus, chaque fonction <em>hérite</em> de plusieurs membres de manière systématiques.</p>
+
+<p>Les propriétés suivantes sont accessible à partir de chaque fonction  :</p>
+
+<ul>
+<li><code>name</code> : le nom de la fonction.</li>
+<li><code>length</code> : le nombre d&#8217;arguments déclarés.</li>
+<li><code>arguments</code> : un objet qui contient la liste des arguments passés (attention, ce n&#8217;est pas un <code>Array</code> mais un objet qui se comporte comme tel).</li>
+<li><code>caller</code> : contient une référence à la fonction appelante.</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">showFileSystem</span><span class="p">(</span><span class="nx">mountPoint</span><span class="p">){</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">showFileSystem</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">showFileSystem</span><span class="p">.</span><span class="nx">length</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">showFileSystem</span><span class="p">.</span><span class="nx">arguments</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">//also available as the `arguments` variable</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">showFileSystem</span><span class="p">.</span><span class="nx">caller</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">discCheck</span><span class="p">(){</span>
+</span><span class='line'>    <span class="nx">showFileSystem</span><span class="p">(</span><span class="s1">&#39;/dev/sda&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">discCheck</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//stdout: showFileSystem</span>
+</span><span class='line'><span class="c1">//stdout: 1</span>
+</span><span class='line'><span class="c1">//stdout: /dev/sda</span>
+</span><span class='line'><span class="c1">//stdout: discCheck</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Il existe d&#8217;autre propriétés qui peuvent changer entre les implémentions ou dont l&#8217;usage sort du scope de ce post (à moins d&#8217;une closure&#8230; bon, d&#8217;accord c&#8217;est nul ;).</p>
+
+<p>Parmi les méthodes accessibles, les suivantes nous intéressent particulièrement:</p>
+
+<ul>
+<li><code>call</code> : permet d&#8217;exécuter la fonction</li>
+<li><code>apply</code> : permet aussi d&#8217;exécuter la fonction</li>
+<li><code>bind</code> : créé une nouvelle fonction associée à un nouveau contexte</li>
+</ul>
+
+
+<p><code>call</code> et <code>apply</code> ont la même finalité, seul la manière dont les paramètres sont passés changent. On pourrait penser que ces fonctions sont peu utiles, comme dans l&#8217;exemple suivant:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">kill</span><span class="p">(</span><span class="nx">pid</span><span class="p">,</span> <span class="nx">signal</span><span class="p">){</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">signal</span><span class="p">){</span>
+</span><span class='line'>        <span class="nx">signal</span> <span class="o">=</span> <span class="s1">&#39;9&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Running: kill -&#39;</span><span class="o">+</span> <span class="nx">signal</span>  <span class="o">+</span>  <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nx">pid</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//usual way to invoke function</span>
+</span><span class='line'><span class="nx">kill</span><span class="p">(</span><span class="mi">1234</span><span class="p">,</span> <span class="s1">&#39;TERM&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//invoke the function using it&#39;s own method call</span>
+</span><span class='line'><span class="nx">kill</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="mi">1234</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//invoke the function using it&#39;s own method apply</span>
+</span><span class='line'><span class="nx">kill</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="p">[</span><span class="mi">1234</span><span class="p">,</span> <span class="s1">&#39;PIPE&#39;</span><span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//stdout: Running: kill -TERM 1234</span>
+</span><span class='line'><span class="c1">//stdout: Running: kill -9 1234</span>
+</span><span class='line'><span class="c1">//stdout: Running: kill -PIPE 1234</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Dans ce cas, il n&#8217;y a effectivement pas un très grand intérêt, les méthodes <code>call</code> et <code>apply</code> semblent identiques. La méthode <code>apply</code> a pour particularité d&#8217;utiliser un tableau pour les paramètres ce qui facilite les exécutions dynamiques de fonction, par exemple :</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//returns an array of files name for a service</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">get_logs</span><span class="p">(</span><span class="nx">service</span><span class="p">){</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">logDir</span> <span class="o">=</span> <span class="s1">&#39;/var/log/&#39;</span> <span class="o">+</span> <span class="nx">service</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">logFiles</span> <span class="o">=</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readdirSync</span><span class="p">(</span><span class="nx">logDir</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="nx">logFiles</span> <span class="o">&amp;&amp;</span> <span class="nx">logFiles</span> <span class="k">instanceof</span> <span class="nb">Array</span><span class="p">){</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">logFiles</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="p">[];</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//merge the content of the array of files</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">merge</span><span class="p">(</span><span class="nx">files</span><span class="p">){</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">merged</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">files</span><span class="p">){</span>
+</span><span class='line'>        <span class="nx">merged</span> <span class="o">+=</span> <span class="nx">fs</span><span class="p">.</span><span class="nx">readSync</span><span class="p">(</span><span class="nx">files</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">files</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span><span class="s1">&#39; files merged&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//backup each of the files</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">backup</span><span class="p">(</span><span class="nx">files</span><span class="p">){</span>
+</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">files</span><span class="p">){</span>
+</span><span class='line'>        <span class="nx">fs</span><span class="p">.</span><span class="nx">createReadStream</span><span class="p">(</span><span class="nx">files</span><span class="p">[</span><span class="nx">i</span><span class="p">]).</span><span class="nx">pipe</span><span class="p">(</span><span class="nx">fs</span><span class="p">.</span><span class="nx">createWriteStream</span><span class="p">(</span><span class="nx">files</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.backup&#39;</span><span class="p">));</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">files</span><span class="p">.</span><span class="nx">length</span> <span class="o">+</span><span class="s1">&#39; files backed up&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//do actions on logs of a service</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">doOnLogs</span><span class="p">(</span><span class="nx">service</span><span class="p">,</span> <span class="nx">action</span><span class="p">){</span>
+</span><span class='line'>    <span class="c1">//action is a callback, on which we apply arguments dynamically</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">action</span> <span class="o">===</span> <span class="s1">&#39;function&#39;</span><span class="p">){</span>
+</span><span class='line'>        <span class="nx">action</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">get_logs</span><span class="p">(</span><span class="nx">service</span><span class="p">));</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">get_logs</span><span class="p">(</span><span class="s1">&#39;redis&#39;</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//stdout: [&#39;redis-server.log&#39;, redis-server.1.log&#39;]</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="nx">doOnLogs</span><span class="p">(</span><span class="s1">&#39;redis&#39;</span><span class="p">,</span> <span class="nx">merge</span><span class="p">);</span>
+</span><span class='line'><span class="nx">doOnLogs</span><span class="p">(</span><span class="s1">&#39;redis&#39;</span><span class="p">,</span> <span class="nx">backup</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//stdout: 2 files merged</span>
+</span><span class='line'><span class="c1">//stdout: 2 files backed up</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>C&#8217;est bon, j&#8217;arrête de vous tenir en haleine, maintenant je vais vous parlez du premier paramètre de ces méthodes, car vous vous demandez quel est donc ce paramètre qui a la valeur <code>null</code>? Et bien ce paramètre c&#8217;est <em>le contexte de la fonction</em>, il permet de définir la valeur du mot clé <code>this</code> au sein de la fonction.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">cpu</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">cores</span> <span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">vendor</span> <span class="o">:</span> <span class="s1">&#39;Intel&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">ghz</span> <span class="o">:</span> <span class="mf">2.13</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">model</span> <span class="o">:</span> <span class="s1">&#39;Intel(R) Core(TM)2 Duo CPU P7450 @ 2.13GHz&#39;</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">isMultiCore</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">cores</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">cpu</span><span class="p">.</span><span class="nx">isMulticore</span><span class="p">());</span>
+</span><span class='line'><span class="c1">//stdout: true</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">old_cpu</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">cores</span> <span class="o">:</span> <span class="mi">1</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">cpu</span><span class="p">.</span><span class="nx">isMulticore</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">old_cpu</span><span class="p">);</span>
+</span><span class='line'><span class="c1">//stdout: false</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Dans l&#8217;exemple ci-dessus, nous avons modifié le contexte de la fonction. Lors d&#8217;un appel de méthode avec l&#8217;opérateur <code>.</code> classique, le contexte de fonction est celui de l&#8217;objet, donc dans <code>cpu.isMultiCore()</code>, <code>this</code> se rapporte à l&#8217;objet <code>cpu</code>. Dans le 2nd appel, nous utilisons la méthode <code>call</code> pour changer le contexte de la fonction: <code>this</code> fera référence à <code>old_cpu</code>.</p>
+
+<p>Jusqu&#8217;ici tout va bien. On a tous compris (enfin j&#8217;espère) que <code>this</code> ne se rapporte pas à une instance comme dans d&#8217;autres langages mais bien au contexte. Corsons un peu les choses, avec le code suivant:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">cpu</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">temperature</span> <span class="o">:</span> <span class="mi">65</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">monitorTemperature</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">monitor</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">temp</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">temperatue</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span><span class="nx">temp</span> <span class="o">&gt;</span> <span class="mi">180</span><span class="p">){</span>
+</span><span class='line'>                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Fire, fire, please help&quot;</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Temperature at &quot;</span><span class="o">+</span> <span class="nx">temp</span> <span class="o">+</span> <span class="s2">&quot;° is ok&quot;</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">},</span> <span class="mi">1000</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>            <span class="nx">clearInterval</span><span class="p">(</span><span class="nx">monitor</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">},</span> <span class="mi">5000</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">cpu</span><span class="p">.</span><span class="nx">monitorTemperature</span><span class="p">();</span>
+</span><span class='line'><span class="c1">//stdout: Temperature at undefined° is ok</span>
+</span><span class='line'><span class="c1">//stdout: Temperature at undefined° is ok</span>
+</span><span class='line'><span class="c1">//stdout: Temperature at undefined° is ok</span>
+</span><span class='line'><span class="c1">//stdout: Temperature at undefined° is ok</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Oh!(Ndt: traduction de  <em>WTF!</em>) C&#8217;est quoi ce vieux <code>undefined</code>? Et bien oui, si vous avez suivis, chaque fonction a un contexte et ce contexte est accessible via le mot clé <code>this</code>. De plus, comme le scope porte sur la fonction et que nous déclarons une fonction anonyme comme <em>callback</em> de <code>setInterval</code> et bien <code>this</code> ne se rapporte plus au contexte de <code>monitorTemperature</code> mais à celui de la fonction anonyme.</p>
+
+<p>Mais comment on va s&#8217;en sortir? C&#8217;est là que les <em>closures</em> vont venir à notre secours. Nous allons garder une référence vers le contexte de la fonction :</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">cpu</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">temperature</span> <span class="o">:</span> <span class="mi">65</span><span class="p">,</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">monitorTemperature</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">monitor</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">temp</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">temperatue</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span><span class="nx">temp</span> <span class="o">&gt;</span> <span class="mi">180</span><span class="p">){</span>
+</span><span class='line'>                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Fire, fire, please help&quot;</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>                <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Temperature at &quot;</span><span class="o">+</span> <span class="nx">temp</span> <span class="o">+</span> <span class="s2">&quot;° is ok&quot;</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">},</span> <span class="mi">1000</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>            <span class="nx">clearInterval</span><span class="p">(</span><span class="nx">monitor</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">},</span> <span class="mi">5000</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">cpu</span><span class="p">.</span><span class="nx">monitorTemperature</span><span class="p">();</span>
+</span><span class='line'><span class="c1">//stdout: Temperature at 65° is ok</span>
+</span><span class='line'><span class="c1">//stdout: Temperature at 65° is ok</span>
+</span><span class='line'><span class="c1">//stdout: Temperature at 65° is ok</span>
+</span><span class='line'><span class="c1">//stdout: Temperature at 65° is ok</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Et voilà !</p>
+
+<p>Ce même exemple avec une <em>pseudo classe</em>, donne cela:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">Cpu</span><span class="p">(){</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">cores</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">vendor</span> <span class="o">=</span> <span class="s1">&#39;Intel&#39;</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">ghz</span> <span class="o">=</span> <span class="mf">2.13</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">modelName</span> <span class="o">=</span> <span class="s1">&#39;Intel(R) Core(TM)2 Duo CPU P7450 @ 2.13GHz&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">isMultiCore</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">cores</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">cpu</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Cpu</span><span class="p">();</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">cpu</span><span class="p">.</span><span class="nx">isMultiCore</span><span class="p">());</span>
+</span><span class='line'><span class="c1">//stdout: true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Le mot clé <code>new</code> peut être compris comme une sorte d&#8217;alias à la méthode <code>call</code>. En gros <code>new Cpu()</code> revient à faire <code>Cpu.call({})</code>, c&#8217;est-à-dire à créer un nouvel objet (le <code>{}</code>) et à le passer en tant que contexte de fonction.</p>
+
+<p>Une erreur fréquente est d&#8217;utiliser <code>this</code> au sein d&#8217;une fonction en vue de l&#8217;utiliser comme une pseudo classe et de l&#8217;appeler sans le mot clé <code>new</code>. Et là, c&#8217;est le drame: <code>this</code> va se référer au contexte dans lequel il a été appelé. Prenons l&#8217;exemple:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">UnixProcess</span><span class="p">(){</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="nx">pid</span> <span class="o">=</span> <span class="nx">process</span><span class="p">.</span><span class="nx">pid</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">unixProcess</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">UnixProcess</span><span class="p">();</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">unixProcess</span><span class="p">);</span>
+</span><span class='line'><span class="c1">//stdout: { pid: 6565 }</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Si vous exécutez ce code dans la console node.js et qu&#8217;ensuite vous lancer <code>UnixProcess()</code> (sans le <code>new</code>), vous allez retrouvez toutes les variables globales, et oui&#8230; de même que si vous lancez <code>console.log(this)</code> à l&#8217;extérieur d&#8217;une fonction.</p>
+
+<h2>Dans la vrai vie</h2>
+
+<p>Voici un template d&#8217;un plugin jQuery, on se penchant dessus on voit bien l&#8217;usage du mot clé <code>this</code> qui permet d&#8217;accéder au contexte de l&#8217;élément jQuery (toujours un tableau d&#8217;où les <code>this.each</code>) ou de l&#8217;objet <code>Plugin</code>:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="cm">/*</span>
+</span><span class='line'><span class="cm">* $(&#39;#target&#39;).pluginName(options); calls Plugin.init(options)</span>
+</span><span class='line'><span class="cm">* $(&#39;#target&#39;).pluginName(&#39;aMethod&#39;); calls public method Plugin.aMethod();</span>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'><span class="p">(</span><span class="kd">function</span><span class="p">(</span> <span class="nx">$</span> <span class="p">){</span>
+</span><span class='line'>    <span class="s2">&quot;use strict&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//default options</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">defaults</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">Plugin</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">//initialisation code</span>
+</span><span class='line'>        <span class="nx">init</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">){</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="nx">options</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">defaults</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
+</span><span class='line'>            <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>                <span class="kd">var</span> <span class="nx">$elt</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class='line'>                <span class="nx">$elt</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;pluginName&#39;</span><span class="p">,</span> <span class="nx">self</span><span class="p">.</span><span class="nx">options</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="p">});</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">//a plublic method </span>
+</span><span class='line'>        <span class="nx">aMethod</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>                <span class="kd">var</span> <span class="nx">$elt</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="p">});</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">//a private method</span>
+</span><span class='line'>        <span class="nx">_anotherMethod</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">//destroy code</span>
+</span><span class='line'>        <span class="nx">destroy</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>             <span class="kd">var</span> <span class="nx">$elt</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="p">});</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">pluginName</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">method</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span> <span class="nx">Plugin</span><span class="p">[</span><span class="nx">method</span><span class="p">]</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span><span class="sr">/^_/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">method</span><span class="p">)){</span>
+</span><span class='line'>                <span class="nx">$</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span> <span class="s1">&#39;Trying to call a private method &#39;</span> <span class="o">+</span> <span class="nx">method</span> <span class="o">+</span> <span class="s1">&#39; on jQuery.pluginName&#39;</span> <span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>                <span class="k">return</span> <span class="nx">Plugin</span><span class="p">[</span><span class="nx">method</span><span class="p">].</span><span class="nx">apply</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">arguments</span><span class="p">,</span> <span class="mi">1</span> <span class="p">));</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">method</span> <span class="o">===</span> <span class="s1">&#39;object&#39;</span> <span class="o">||</span> <span class="o">!</span> <span class="nx">method</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="nx">Plugin</span><span class="p">.</span><span class="nx">init</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span> <span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>           <span class="nx">$</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span> <span class="s1">&#39;Method &#39;</span> <span class="o">+</span> <span class="nx">method</span> <span class="o">+</span> <span class="s1">&#39; does not exist on jQuery.pluginName&#39;</span> <span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">})(</span> <span class="nx">jQuery</span> <span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Pour aller plus loin</h2>
+
+<p>Je vous conseil de lire ces deux ouvrages écrits par les gourous du JavaScript :</p>
+
+<ul>
+<li><a href="http://www.amazon.fr/JavaScript-The-Good-Parts-ebook/dp/B0026OR2ZY/ref=sr_1_1?ie=UTF8&amp;qid=1378985428&amp;sr=8-1&amp;keywords=javascript+the+good+parts">JavaScript The Good Parts</a> de Douglas Crockford</li>
+<li><a href="http://www.amazon.fr/Secrets-JavaScript-Ninja-John-Resig/dp/193398869X/ref=sr_1_1?ie=UTF8&amp;qid=1378985699&amp;sr=8-1&amp;keywords=secret+of+the+javascript+ninjas">Secrets of the JavaScript Ninja</a> de John Resig</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Bertrand Chevrier</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-12T18:36:00+02:00" pubdate data-updated="true">12/08/13</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript/'>JavaScript</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://krampstudio.github.com/blog/2013/08/12/javascript-le-mot-cle-this/" data-via="@kramp" data-counturl="http://krampstudio.github.com/blog/2013/08/12/javascript-le-mot-cle-this/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="small"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/02/26/petite-liste-des-outils-javascript/" title="Previous Post: Petite liste des outils JavaScript">&laquo; Petite liste des outils JavaScript</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/08/12/javascript-le-mot-cle-this/">JavaScript le mot clé this</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/26/petite-liste-des-outils-javascript/">Petite liste des outils JavaScript</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/18/github-effect/">L'effet Github</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/11/27/pluginifier-vos-composants-jquery/">Pluginifier vos composants jQuery</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/09/13/et-cest-parti-avec-octopress/">Et c'est parti avec octopress</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("@kramp", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/@kramp" class="twitter-follow-button" data-show-count="false">Follow @@kramp</a>
+  
+</section>
+
+
+<section class="googleplus">
+  <h1>
+    <a href="https://plus.google.com/105949826536803223545?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'krampstudio',
+            count: 8,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>On Delicious</h1>
+  <div id="delicious"></div>
+  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/kramp?count=3&amp;sort=date&amp;callback=renderDeliciousLinks"></script>
+  <p><a href="http://delicious.com/kramp">My Delicious Bookmarks &raquo;</a></p>
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Bertrand Chevrier -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'krampstudio';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://krampstudio.github.com/blog/2013/08/12/javascript-le-mot-cle-this/';
+        var disqus_url = 'http://krampstudio.github.com/blog/2013/08/12/javascript-le-mot-cle-this/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

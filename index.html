@@ -9,7 +9,7 @@
   <meta name="author" content="Bertrand Chevrier">
 
   
-  <meta name="description" content="Javascript est devenu un langage à la mode. Une profusion d&#8217;outils et de librairies fleurissent chaque jour. Lorsqu&#8217;on commence un &hellip;">
+  <meta name="description" content="Si comme moi vous aviez plutôt l&#8217;habitude des langages de programmation orientés objets classiques, vous avez sans doute aussi été surpris ( &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -77,6 +77,61 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/08/12/javascript-le-mot-cle-this/">JavaScript Le Mot Clé This</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-12T18:36:00+02:00" pubdate data-updated="true">12/08/13</time>
+        
+         | <a href="/blog/2013/08/12/javascript-le-mot-cle-this/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img class="left" src="/images/js-badge.png" title="JavaScriptLogo" ></p>
+
+<p>Si comme moi vous aviez plutôt l&#8217;habitude des langages de programmation orientés objets <em>classiques</em>, vous avez sans doute aussi été surpris (entre autre) de l&#8217;utilisation du mot clé <code>this</code> en JavaScript. Il y a quelques temps déjà, l&#8217;envie de comprendre cette particularité m&#8217;a permis d&#8217;appréhender les concepts fondateurs du langage. Au final, en essayant de comprendre l&#8217;utilisation de <code>this</code>, ma vision du langage a complètement changé et depuis c&#8217;est avec plaisir que je code en JS.
+Je vais donc essayer de retracer ce cheminement, en expliquant quelques principes simples mais tellement important. Ça devrait éviter quelques prises de têtes.</p>
+
+<p>En fait le mot clé <code>this</code> n&#8217;est pas du tout ce que l&#8217;on croit. Ce n&#8217;est pas une référence vers une instance d&#8217;un objet, mais le contexte de la fonction. Pour comprendre cela, il y a quelques concepts du langage qu&#8217;il faut explorer :</p>
+
+<ul>
+<li>le type <code>Function</code> est un objet de première classe (<a href="http://en.wikipedia.org/wiki/First-class_function">First-class function</a>),</li>
+<li>le portée des variables locales est hissée au niveau de la fonction,</li>
+<li>le mot clé <code>new</code> n&#8217;est seulement qu&#8217;un alias</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/08/12/javascript-le-mot-cle-this/">Lire l&#8217;article &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
