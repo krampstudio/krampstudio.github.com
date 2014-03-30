@@ -1,0 +1,15 @@
+/*
+ * Base style, that applies to all elements.
+ */
+
+@mixin shadow(){
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow:    0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+    box-shadow:         0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+}
+
+@mixin radius($r : 6px){
+    -webkit-border-radius: $r;
+    -moz-border-radius:  $r;
+    border-radius:  $r;
+}

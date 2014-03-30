@@ -1,0 +1,21 @@
+/*
+ * Specific styling, by element.
+ */
+
+body > header {
+    background-color: #1B6DA2;
+    background-image: url('../img/cloud.png');
+    background-repeat: no-repeat;
+    background-position: right center;
+
+    h1 a, h2 {
+       color: #BCCFDC;
+    }
+}
+
+.main {
+    background-color: #fff;
+    border: solid 1px #ddd;
+    @include shadow;
+    @include radius(6px);
+}

@@ -2,7 +2,7 @@ module.exports = function(grunt) {
     'use strict';
 
     //display times
-    require('time-grunt')(grunt);
+   // require('time-grunt')(grunt);
 
     //load npm tasks
     require('load-grunt-tasks')(grunt);
@@ -40,22 +40,23 @@ module.exports = function(grunt) {
 
         watch : {
             dev : {
-                files: ['app/index.html', 'app/scss/*.scss', 'app/js/*.js'],
-                tasks: ['sass:dev', 'open:dev'],
-                options: {
-                    livereload : true
-                }
+                files: ['app/**/*.html', 'app/scss/**/*.scss', 'app/js/**/*.js'],
+                tasks: ['sass']
+                //options: {
+                    //livereload : true
+                //}
             }
         },
 
         open : {
             dev : {
                 path : 'http://localhost:4000',
-                app : 'Firefox'
+                app : 'firefox -p dev -no-remote'
             }
         }
     });
 
+
     // Tasks flow.
-    grunt.registerTask('dev', ['server:dev', 'open:dev', 'watch:dev']);
+    grunt.registerTask('dev', ['connect:dev', 'open:dev', 'watch:dev']);
 };

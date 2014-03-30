@@ -1,3 +1,10 @@
+/*
+ * Agregates styles.
+ */
+@import url(http://fonts.googleapis.com/css?family=Galindo|PT+Serif:400,400italic,700,700italic);
+/*
+ * Base style, that applies to all elements.
+ */
 /*! normalize.css v3.0.1 | MIT License | git.io/normalize */
 /**
  * 1. Set default font family to sans-serif.
@@ -318,3 +325,73 @@ table {
 
 td, th {
   padding: 0; }
+
+/* 
+ * Theming options and variables
+ */
+/*
+ * The layout, position, etc.
+ */
+body > header {
+  position: relative;
+  height: 200px; }
+  body > header h1, body > header h2 {
+    margin: 0;
+    padding-left: 3%; }
+
+.main {
+  position: relative;
+  top: -100px;
+  margin: 0 auto;
+  width: 94%; }
+  .main nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0; }
+    .main nav ul li {
+      display: inline-block; }
+
+/*
+ * Base style, that applies to all elements.
+ */
+*, *:before, *:after {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Galindo', cursive; }
+
+h1 {
+  font-size: 45px;
+  font-weight: bold; }
+
+h2 {
+  font-size: 20px;
+  font-weight: bold; }
+
+a {
+  text-decoration: none; }
+
+/*
+ * Specific styling, by element.
+ */
+body > header {
+  background-color: #1B6DA2;
+  background-image: url('../img/cloud.png');
+  background-repeat: no-repeat;
+  background-position: right center; }
+  body > header h1 a, body > header h2 {
+    color: #BCCFDC; }
+
+.main {
+  background-color: #fff;
+  border: solid 1px #ddd;
+  -webkit-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+  -moz-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+  box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px; }
+
+/*# sourceMappingURL=main.css.map */
