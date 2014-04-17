@@ -41,10 +41,10 @@ module.exports = function(grunt) {
         watch : {
             dev : {
                 files: ['app/**/*.html', 'app/scss/**/*.scss', 'app/js/**/*.js'],
-                tasks: ['sass']
-                //options: {
-                    //livereload : true
-                //}
+                tasks: ['sass'],
+                options: {
+                    livereload : true
+                }
             }
         },
 
