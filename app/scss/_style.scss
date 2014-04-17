@@ -11,11 +11,36 @@ body > header {
     h1 a, h2 {
        color: #BCCFDC;
     }
+    
+    .lg-switcher a {
+        opacity: 0.6;
+        @include unhover;
+        &:hover, &.active{
+            opacity: 1;
+            @include hover;
+        }
+    }
 }
 
 .main {
     background-color: #fff;
-    border: solid 1px #ddd;
     @include shadow;
     @include radius(6px);
+    overflow: hidden;
+
+    nav {
+        @include gradient(#FFE27C, #EDC229, #EDC229);
+        a {
+            font-family: $headingFont;
+            font-size: 18px;
+            color: #073E62;
+            text-shadow: 0px 1px #aaa;
+            text-decoration: none;
+            @include unhover;
+            &:hover{
+                color: #0B67A2;
+                @include hover;
+            }
+        }
+    }
 }
