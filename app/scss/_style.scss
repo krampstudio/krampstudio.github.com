@@ -34,16 +34,17 @@ body > header {
         a {
             font-family: $headingFont;
             font-size: 18px;
-            /*color: #073E62;*/
-            color: #888;
-            text-shadow: 1px 1px #555;
             text-decoration: none;
+            @include intextshadow(#666, #EDC229); 
             @include unhover;
             &:hover{
                 color: #0B67A2;
                 @include hover;
             }
         }
+    }
+    aside {
+        background-color: #eee;
     }
 }
 

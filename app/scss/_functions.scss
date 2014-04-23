@@ -40,3 +40,12 @@
 @mixin unhover{
     @include transition(all, 300ms, ease-in) ;
 }
+
+@mixin intextshadow($color : #eee, $bg : #fff){
+    
+    color: $color;
+    text-shadow: 1px 4px 6px $bg, 0 0 0 #000, 1px 4px 6px $bg;
+    
+    &::-moz-selection { text-shadow: none; }
+    &::selection { text-shadow: none; }
+}

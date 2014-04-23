@@ -21,6 +21,7 @@ body > header {
         right: 3%;
     }
 }
+
 .main {
     position: relative;
     top: -100px;
@@ -43,6 +44,17 @@ body > header {
                 padding: 0 10px;
             }   
         }
+    }
+    #content {
+        margin-right: 200px;
+        padding: 10px;
+    }
+    aside {
+        position: absolute;
+        width: 200px;
+        top: 40px;
+        right: 0;
+        bottom: 0; 
     }
 }
 
