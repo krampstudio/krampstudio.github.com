@@ -1,7 +1,6 @@
 /*
  * Agregates styles.
  */
-@import url(http://fonts.googleapis.com/css?family=Galindo|PT+Serif:400,400italic,700,700italic);
 /*
  * Base style, that applies to all elements.
  */
@@ -368,12 +367,25 @@ body > header {
   .main #content {
     margin-right: 200px;
     padding: 10px; }
+    @media only screen and (max-width: 480px) {
+      .main #content {
+        margin-right: 0; } }
+    @media only screen and (min-width: 481px) and (max-width: 768px) {
+      .main #content {
+        margin-right: 0; } }
   .main aside {
     position: absolute;
     width: 200px;
     top: 40px;
     right: 0;
-    bottom: 0; }
+    bottom: 0;
+    padding: 5px; }
+    @media only screen and (max-width: 480px) {
+      .main aside {
+        display: none; } }
+    @media only screen and (min-width: 481px) and (max-width: 768px) {
+      .main aside {
+        display: none; } }
 
 footer {
   position: absolute;
@@ -401,7 +413,20 @@ h2 {
   font-weight: bold; }
 
 a {
-  text-decoration: none; }
+  text-decoration: none;
+  color: #2C5A78;
+  -webkit-transition: all 300ms ease-in;
+  -moz-transition: all 300ms ease-in;
+  -ms-transition: all 300ms ease-in;
+  -o-transition: all 300ms ease-in;
+  transition: all 300ms ease-in; }
+  a:hover {
+    color: #3A769D;
+    -webkit-transition: all 400ms ease-out;
+    -moz-transition: all 400ms ease-out;
+    -ms-transition: all 400ms ease-out;
+    -o-transition: all 400ms ease-out;
+    transition: all 400ms ease-out; }
 
 /*
  * Specific styling, by element.
@@ -470,7 +495,14 @@ body > header {
         -o-transition: all 400ms ease-out;
         transition: all 400ms ease-out; }
   .main aside {
-    background-color: #eee; }
+    border-left: solid 1px #ccc; }
+  .main article .read-more {
+    display: block;
+    height: 30px;
+    line-height: 30px; }
+    .main article .read-more:after {
+      content: ' >> ';
+      font-size: 12px; }
 
 footer, footer a {
   background: #333;

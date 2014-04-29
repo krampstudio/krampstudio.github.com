@@ -49,3 +49,26 @@
     &::-moz-selection { text-shadow: none; }
     &::selection { text-shadow: none; }
 }
+
+@mixin respond-to($media : medium)  {
+  $break-micro :  480px;
+  $break-mini  :  768px;
+  $break-small : 1024px;
+  $break-wide  : 1280px;
+
+  @if $media == micro {
+    @media only screen and (max-width: $break-micro) { @content; }
+  }
+  @else if $media == mini {
+    @media only screen and (min-width: $break-micro + 1) and (max-width: $break-mini) { @content; }
+  }
+  @else if $media == small {
+    @media only screen and (max-width: $break-mini + 1) and (max-width: $break-small) { @content; }
+  }
+  @else if $media == medium {
+    @media only screen and (min-width: $break-small + 1) and (max-width: $break-wide) { @content; }
+  }
+  @else if $media == wide {
+    @media only screen and (min-width: $break-wide + 1) { @content; }
+  }
+}

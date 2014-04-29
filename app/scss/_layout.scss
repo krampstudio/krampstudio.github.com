@@ -48,6 +48,12 @@ body > header {
     #content {
         margin-right: 200px;
         padding: 10px;
+        @include respond-to(micro) {
+            margin-right: 0;    
+        }
+        @include respond-to(mini) {
+            margin-right: 0;    
+        }
     }
     aside {
         position: absolute;
@@ -55,8 +61,18 @@ body > header {
         top: 40px;
         right: 0;
         bottom: 0; 
+        padding: 5px;
+        @include respond-to(micro) {
+            display: none;    
+        }
+        @include respond-to(mini) {
+            display: none;    
+        }
     }
 }
+
+
+
 
 footer {
     position: absolute;
