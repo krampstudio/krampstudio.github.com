@@ -21,6 +21,7 @@
     "grunt-contrib-connect": "^0.7.1",
     "grunt-open": "^0.2.3",
     "grunt-notify": "^0.2.20",
-    "grunt-markdown": "^0.5.0"
+    "grunt-markdown": "^0.5.0",
+    "grunt-concurrent": "^0.5.0"
   }
 }

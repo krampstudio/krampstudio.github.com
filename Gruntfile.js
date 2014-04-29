@@ -61,15 +61,24 @@ module.exports = function(grunt) {
                 files: ['app/**/*.html', 'app/scss/**/*.scss', 'app/js/**/*.js'],
                 tasks: ['sass:dev'],
                 options: {
-                    livereload : true
+                    livereload : 35729
                 }
             },
             md : {
                 files: ['src/**/*.md'],
                 tasks: ['markdown'],
                 options: {
-                    livereload : true
+                    livereload : 35728
                 }
+            }
+        },
+
+        concurrent: {
+            options: {
+                logConcurrentOutput: true
+            },
+            dev: {
+                tasks: ["watch:sass", "watch:md"]
             }
         },
 
@@ -82,6 +91,6 @@ module.exports = function(grunt) {
     });
 
     // Tasks flow.
-    grunt.registerTask('dev', ['connect:dev', 'open:dev', 'watch:sass', 'watch:md']);
+    grunt.registerTask('dev', ['connect:dev', 'open:dev', 'concurrent:dev']);
     grunt.registerTask('compile', ['sass:compile', 'markdown']);
 };
