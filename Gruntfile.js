@@ -22,6 +22,24 @@ module.exports = function(grunt) {
             }
         },
 
+        markdown: {
+            all: {
+                files: [{
+                    cwd : 'src',
+                    expand: true,
+                    src: '**/*.md',
+                    dest: '../app/',
+                    ext: '.html'
+                }],
+                options: {
+                    markdownOptions: {
+                        gfm: true,
+                        highlight: 'auto'
+                    }
+                }
+            }
+        },
+
         sass : {
             compile: {
                 files : {
@@ -39,9 +57,16 @@ module.exports = function(grunt) {
         },
 
         watch : {
-            dev : {
+            sass : {
                 files: ['app/**/*.html', 'app/scss/**/*.scss', 'app/js/**/*.js'],
-                tasks: ['sass'],
+                tasks: ['sass:dev'],
+                options: {
+                    livereload : true
+                }
+            },
+            md : {
+                files: ['src/**/*.md'],
+                tasks: ['markdown'],
                 options: {
                     livereload : true
                 }
@@ -56,7 +81,7 @@ module.exports = function(grunt) {
         }
     });
 
-
     // Tasks flow.
-    grunt.registerTask('dev', ['connect:dev', 'open:dev', 'watch:dev']);
+    grunt.registerTask('dev', ['connect:dev', 'open:dev', 'watch:sass', 'watch:md']);
+    grunt.registerTask('compile', ['sass:compile', 'markdown']);
 };
