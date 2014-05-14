@@ -87,8 +87,28 @@ module.exports = function(grunt) {
                 path : 'http://localhost:4000',
                 app : 'firefox -p dev -no-remote'
             }
+        },
+
+
+        staticatr: {
+            dist: {
+                options : {
+                    engine : 'handlebars',
+                    templates   : 'src/tpl/**/*.hbs'
+                },
+                files: [{
+                    cwd : 'src',
+                    expand: true,
+                    src: '**/*.md',
+                    dest: '../app/',
+                    ext: '.html'
+                }]
+            }
         }
     });
+
+    // Load local tasks.
+    grunt.loadTasks('tasks');
 
     // Tasks flow.
     grunt.registerTask('dev', ['connect:dev', 'open:dev', 'concurrent:dev']);
