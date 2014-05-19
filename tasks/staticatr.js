@@ -1,27 +1,59 @@
-var marked = require('meta-marked');
+var marked  = require('meta-marked');
+var path    = require('path');
+var _       = require('lodash');
 
 module.exports = function staticatrTask(grunt) {
 	'use strict';
 
+    var d = require('util').inspect;
+    var langPattern = /-([^-]*)+\.(.*)$/;
+
     var staticatr = function staticatr(){
+        var siteModel = {};
+        var options = this.options({
+            defaultLang : 'en'
+        });
         
         this.files.forEach(function(file){
 
-            grunt.log.debug(file.src);
-
-            var result = marked(grunt.file.read(file.src));
+            //grunt.log.debug(d(file, true));
             
-            console.log(result.meta);
-            console.log(result.html);
+            var matches = file.src[0].match(langPattern);
+            var lang    = matches ? matches[1] : options.defaultLang;
+            var url     = file.dest;
+            var content = marked(grunt.file.read(file.src));
+            var meta    = content.meta || {};
+            var title   = meta.title ? meta.title : path.basename(file.dest);
+            var layout  = meta.layout || 'page';
+            
+            if(!siteModel[layout]){
+               siteModel[layout] = {};
+            }
+            if(!siteModel[layout][title]){
+               siteModel[layout][title] = {};
+            }
+            _.merge(siteModel[layout][title], meta); 
 
-            grunt.log.debug(file.dest);
+
+            
+            //grunt.log.debug(file.src);
+            //console.log(lang);
+            //console.log(result.meta);
+            //console.log(result.html);
+
+            //grunt.log.debug('-------------');
         });
+
         
+        grunt.log.debug(d(siteModel));
     };
     
     var blog = {
         url : 'index.html',
-        content : 'html',
+        content : {
+            'en' : 'html',
+            'fr' : 'hteumeule'
+        },
         pages : [{
             url : '/projects.html',
             content : 'projects',

@@ -1,7 +1,7 @@
 ---
 Title:   My awesome markdown file
 Author:  Me
-Type: post
+layout: post
 Date: 2013-09-11
 Publish: true
 Tags:
