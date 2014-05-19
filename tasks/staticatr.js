@@ -16,7 +16,7 @@ module.exports = function staticatrTask(grunt) {
         
         this.files.forEach(function(file){
 
-            //grunt.log.debug(d(file, true));
+            grunt.log.debug(d(file, true));
             
             var matches = file.src[0].match(langPattern);
             var lang    = matches ? matches[1] : options.defaultLang;
