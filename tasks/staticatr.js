@@ -16,18 +16,22 @@ module.exports = function staticatrTask(grunt) {
         var siteModel = {};
         
         var options = this.options({
-            defaultLang : 'en'
+            defaultLang : 'en',
+            base : 'src',
+            dest : 'app'
         });
+
+        grunt.log.debug(d(this.filesSrc));
         
         //build siteModel
-        this.files.forEach(function(file){
+        this.filesSrc.forEach(function(file){
 
-            var matches = file.src[0].match(langPattern);
+            var matches = file.match(langPattern);
             var lang    = matches ? matches[1] : options.defaultLang;
-            var content = marked(grunt.file.read(file.src));
+            var content = marked(grunt.file.read(file));
             var meta    = content.meta || {};
             var layout  = meta.layout || 'page';
-            var title   = path.basename(file.dest)
+            var title   = path.basename(file)
                               .replace(/\.([^.]*)$/, '')
                               .replace('-' + lang, '');
 
@@ -39,21 +43,14 @@ module.exports = function staticatrTask(grunt) {
             }
 
             siteModel[layout][title][lang] = _.merge({
-                content : content.html,
-                dest    : file.dest 
+                content : content.html
             }, meta);
 
-            grunt.file.write(file.dest, content.html);
+            grunt.file.write(file.replace(options.base, options.dest), content.html);
+            grunt.log.debug(file.replace(options.base, options.dest));
         });
 
-        //build posts
-        //_.forEach(siteModel.post, function(page, title){
-            //grunt.log.debug(title);
-            //grunt.log.debug(d(page, true));
-            //grunt.log.debug("-------------");
-        //});
-        
-        //grunt.log.debug(d(siteModel, true));
+        grunt.verbose.write(d(siteModel));
     };
 
     var rebuildHome = function rebuildHome(){

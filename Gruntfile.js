@@ -96,13 +96,8 @@ module.exports = function(grunt) {
                     engine : 'handlebars',
                     templates   : 'src/tpl/**/*.hbs'
                 },
-                files: [{
-                    cwd : 'src',
-                    expand: true,
-                    src: '**/*.md',
-                    dest: '../app/',
-                    ext: '.html'
-                }]
+                src: 'src/**/*.md',
+                dest: 'app' 
             }
         }
     });
