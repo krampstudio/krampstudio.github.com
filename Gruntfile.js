@@ -92,11 +92,7 @@ module.exports = function(grunt) {
 
         staticatr: {
             dist: {
-                options : {
-                    engine : 'handlebars',
-                    templates   : 'src/tpl/**/*.hbs'
-                },
-                src: 'src/**/*.md',
+                src: 'src',
                 dest: 'app' 
             }
         }
