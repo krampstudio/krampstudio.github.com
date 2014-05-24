@@ -18,17 +18,25 @@ module.exports = function staticatrTask(grunt) {
         
         var options = this.options({
             defaultLang : 'en',
+            homePosts   : 3,
+            morePattern : /<!--\s?more\s?-->/gi,
             extension   : 'html',
             content     : '**/*.md',
             engine      : 'handlebars',
             index       : 'src/index.hbs',
             partials    : 'src/partials/*.hbs'
         });
-        var src  = this.data.src;
-        var dest = this.data.dest;
-        var model = createModel(src, dest, options);
+
+        var src     = this.data.src;
+        var dest    = this.data.dest;
+        var model   = createModel(src, dest, options);
+        var langs   = getAvailableLangs(model);
+
         home(model, options); 
-        //grunt.log.debug("Site model generated : " +  d(siteModel));
+        //grunt.log.debug("Site model generated : " +  d(model));
+        //grunt.log.debug("Langs : " +  d(getAvailableLangs(model)));
+        //grunt.log.debug("FR posts : " +  d(getPostsByLang(model, 'fr')));
+        //grunt.log.debug("FR Home posts : " +  d(getHomePosts(model, 'fr', options)));
     };
 
     var createModel = function createModel(src, dest, options){
@@ -82,9 +90,38 @@ module.exports = function staticatrTask(grunt) {
             hbs.registerPartial(name, hbs.compile(grunt.file.read(file))); 
         });
 
-        var main = index();
+        var main = index({
+            posts : getHomePosts(model, 'fr', options)
+        });
         grunt.file.write('tmp/index.html', main);
-        grunt.log.debug(d(main));
+        //grunt.log.debug(d(main));
+    };
+
+    var getAvailableLangs = function getAvailableLangs(model){
+        var langs = [];
+        _({}).merge(model.post, model.page).forEach(function(item){
+            langs = langs.concat(_.keys(item));
+        });
+        return _.uniq(langs);
+    };
+
+    var getPostsByLang = function getPostsByLang(model, lang){
+        return _(model.post).pluck(lang).sortBy('date').value();
+    };
+
+    var getHomePosts = function getHomePosts(model, lang, options){
+       return getPostsByLang(model, lang)
+                    .slice(0, options.homePosts)
+                    .map(function(post){
+                       var index = post.content.search(options.morePattern);
+                       if(index > -1){
+                            post.summary = post.content.substring(0, index);
+                       } else {
+                            post.summary = post.content;
+                       }
+                       return post;
+                    });
+        
     };
 
 	grunt.registerMultiTask('staticatr', 'Generates static web sites', staticatr);
