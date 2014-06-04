@@ -1,0 +1,10 @@
+{
+    "en" : {
+        "desc" : "About dev, web and free software",
+        "readmore" : "Read more"
+    },
+    "fr" : {
+        "desc" : "Du dev, du web et du logiciel libre",
+        "readmore" : "Lire la suite"
+    }
+}

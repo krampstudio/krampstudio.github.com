@@ -92,8 +92,9 @@ module.exports = function(grunt) {
 
         staticatr: {
             preview: {
-                src: 'src',
-                dest: 'tmp' 
+                src       : 'src',
+                dest      : 'tmp',
+                cleanDest : true 
             }
         }
     });
