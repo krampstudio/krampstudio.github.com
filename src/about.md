@@ -2,6 +2,7 @@
 layout: page
 title: "about"
 date: 2013-02-06 21:51
+order: 12
 comments: false
 sharing: true
 footer: true

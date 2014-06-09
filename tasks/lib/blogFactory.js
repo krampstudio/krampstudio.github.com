@@ -20,9 +20,9 @@ module.exports = function blogFactory(grunt, src, dest, options){
 
         blog : {
             src  : src,
-            dest : dest
+            dest : dest 
         },
-            
+        
         loadContent : function loadPosts(){
             var self = this;
             //content
@@ -74,19 +74,38 @@ module.exports = function blogFactory(grunt, src, dest, options){
                 var content = indexTmpl({
                     posts : posts,
                     blog  : _.merge({}, translations, {
-                        url  : options.url,
+                        url  : options.url + '/' + lang + '/' + fileName,
                         name : options.name
                     }),
+                    navs  : self.getNav(lang),
                     page  : {
                         title : translations.desc 
                     }
                 });
                 self.blog.page.home[lang] = {
-                    dest    : dest + '/' + lang + '/index.' + options.extension,
+                    dest    : dest + '/' + lang + '/' + fileName,
                     content : content
                 };
             });
 
+            return this;
+        },
+
+        loadPostsPage : function loadPostsPage(){
+            var self        = this; 
+            var fileName    = options.extension ? 'posts.' + options.extension : 'index'; 
+            var langs       = this.getAvailableLangs();
+            
+            this.blog.page.posts = {};
+            langs.forEach(function(lang){       
+                var posts = self.getPostsSummary(lang);
+                var content = posts.join('<br />'); 
+                
+                self.blog.page.posts[lang] = {
+                    dest    : dest + '/' + lang + '/' + fileName,
+                    content : content
+                };
+            });
             return this;
         },
         
@@ -108,7 +127,15 @@ module.exports = function blogFactory(grunt, src, dest, options){
         },
 
         getPostsByLang : function getPostsByLang(lang){
-            return _(this.blog.post).pluck(lang).sortBy('date').value();
+            return this.getContentByLang('post', lang, 'date');
+        },
+
+        getPagesByLang : function getPagesByLang(lang){
+            return this.getContentByLang('page', lang, 'order');
+        },
+
+        getContentByLang : function getContentByLang(layout, lang, sort){
+            return _(this.blog[layout]).pluck(lang).compact().sortBy(sort || 'date').value();
         },
 
         getTranslations : function getTranslations(lang){
@@ -116,9 +143,8 @@ module.exports = function blogFactory(grunt, src, dest, options){
             return _.defaults(translations[lang], translations[options.defaultLang]);
         },
 
-        getHomePosts : function getHomePosts(lang){
+        getPostsSummary : function getPostsSummary(lang){
            return this.getPostsByLang(lang)
-                        .slice(0, options.homePosts)
                         .map(function(post){
                            var index = post.content.search(options.morePattern);
                            if(index > -1){
@@ -128,6 +154,14 @@ module.exports = function blogFactory(grunt, src, dest, options){
                            }
                            return post;
                         });
+        },
+
+        getHomePosts : function getHomePosts(lang){
+            return this.getPostsSummary(lang).slice(0, options.homePosts); 
+        },
+
+        getNav : function getNav(lang){
+            return this.getPagesByLang(lang);
         }
     }; 
 };

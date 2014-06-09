@@ -53,10 +53,11 @@ module.exports = function staticatrTask(grunt) {
 
         //build the site model        
         factory =blogFactory(grunt, src, dest, options);
-    
-       blog = factory.loadContent()
-                     .loadHome()
-                     .blog;
+
+        blog = factory.loadContent()
+                      .loadPostsPage()
+                      .loadHome()
+                      .blog;
          
         grunt.log.debug(
             format('Model extracted from src (%s) :\n' +

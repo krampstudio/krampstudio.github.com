@@ -2,6 +2,7 @@
 layout: page
 title: "projects"
 date: 2013-07-04 07:49
+order : 11
 comments: true
 sharing: true
 footer: true
