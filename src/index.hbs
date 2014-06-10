@@ -34,11 +34,7 @@
 
                 <div id="content">
                     {{#each posts}}
-                    <article>
-                        <h1><a href="{{url}}">{{title}}</a></h1>
-                        {{{summary}}}
-                        <a href="{{url}}" class="read-more">{{blog.readmore}}</a>
-                    </article>
+                        {{> post-entry}}
                     {{/each}}
 {{!
                     <article>

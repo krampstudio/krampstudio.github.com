@@ -63,7 +63,7 @@ module.exports = function blogFactory(grunt, src, dest, options){
             //register partials
             grunt.file.expand(options.partials).forEach(function(file){
                 var name = path.basename(file)
-                               .replace(patterns.ext, '');
+                                   .replace(patterns.ext, '');
                 hbs.registerPartial(name, hbs.compile(grunt.file.read(file))); 
             });
 
@@ -94,14 +94,21 @@ module.exports = function blogFactory(grunt, src, dest, options){
         loadPostsPage : function loadPostsPage(){
             var self        = this; 
             var fileName    = options.extension ? 'posts.' + options.extension : 'index'; 
+            var postTpl     = hbs.compile(grunt.file.read(options.posts));
             var langs       = this.getAvailableLangs();
-            
+             
             this.blog.page.posts = {};
             langs.forEach(function(lang){       
+                var translations = self.getTranslations(lang);
                 var posts = self.getPostsSummary(lang);
-                var content = posts.join('<br />'); 
+                var content = posts.map(function(post){
+                    return postTpl(_.assign({ blog : translations }, post));
+                }).join('<br>');
                 
                 self.blog.page.posts[lang] = {
+                    order   : 1,
+                    title   : 'posts',
+                    url     : fileName,
                     dest    : dest + '/' + lang + '/' + fileName,
                     content : content
                 };

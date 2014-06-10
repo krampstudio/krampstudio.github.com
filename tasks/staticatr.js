@@ -30,9 +30,10 @@ module.exports = function staticatrTask(grunt) {
             morePattern : /<!--\s?more\s?-->/gi,
             extension   : 'html',
             content     : '**/*.md',
-            resources   : '**/*.png',
+            resources   : ['fonts/**/*', 'css/**/*', 'js/**/*', 'img/**/*', 'favicon.ico', '*.txt'],
             engine      : 'handlebars',
             index       : 'src/index.hbs',
+            posts       : 'src/partials/post-entry.hbs',
             partials    : 'src/partials/*.hbs',
             i18n        : 'src/i18n.json',
             cleanDest   : false
@@ -46,13 +47,14 @@ module.exports = function staticatrTask(grunt) {
             grunt.log.debug('mkdir -p ' + dest); 
             grunt.file.mkdir(dest);
         } else if (options.cleanDest === true){
+            grunt.log.debug('Clean up ' + dest); 
             grunt.file.delete(dest);
         }
 
         options.contentFiles = expand(src, options.content);
 
         //build the site model        
-        factory =blogFactory(grunt, src, dest, options);
+        factory = blogFactory(grunt, src, dest, options);
 
         blog = factory.loadContent()
                       .loadPostsPage()
