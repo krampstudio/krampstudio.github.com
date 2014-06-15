@@ -24,6 +24,13 @@ module.exports = function blogFactory(grunt, src, dest, options){
             src  : src,
             dest : dest 
         },
+
+        getBlog : function(){
+            return this.loadContent()
+                       .loadPostsPage()
+                       .loadHome()
+                       .blog;
+        },
         
         loadContent : function loadPosts(){
             var self = this;

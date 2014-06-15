@@ -60,10 +60,7 @@ module.exports = function staticatrTask(grunt) {
         //build the site model        
         factory = blogFactory(grunt, src, dest, options);
 
-        blog = factory.loadContent()
-                      .loadPostsPage()
-                      .loadHome()
-                      .blog;
+        blog = factory.getBlog();
          
         grunt.log.debug(
             format('Model extracted from src (%s) :\n' +
