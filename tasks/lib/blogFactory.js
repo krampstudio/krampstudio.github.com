@@ -81,6 +81,8 @@ module.exports = function blogFactory(grunt, src, dest, options){
                 var posts = self.getHomePosts(lang);
                 var tr = self.getTranslations(lang);
                 var content = indexTmpl(_.defaults({
+                    name  : options.name,
+                    url   : options.url + '/' + lang + '/' + fileName,
                     posts : posts,
                     navs  : self.getNav(lang)
                 }, tr));
@@ -142,7 +144,9 @@ module.exports = function blogFactory(grunt, src, dest, options){
         },
 
         getContentByLang : function getContentByLang(layout, lang, sort){
-            return _(this.blog[layout]).pluck(lang).compact().sortBy(sort || 'date').value();
+            return _(this.blog[layout])
+                    .pluck(lang).compact()
+                    .sortBy(sort || 'date').value().reverse();
         },
 
         getTranslations : function getTranslations(lang){

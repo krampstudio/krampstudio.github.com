@@ -13,84 +13,64 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON('package.json'),        
         
         connect : {
-            dev : {
+            preview : {
                 options: {
                     port: 4000,
-                    base: 'app',
+                    base: 'tmp',
                     livereload: true
                 }
             }
         },
 
-        markdown: {
-            all: {
-                files: [{
-                    cwd : 'src',
-                    expand: true,
-                    src: '**/*.md',
-                    dest: '../app/',
-                    ext: '.html'
-                }],
-                options: {
-                    markdownOptions: {
-                        gfm: true,
-                        highlight: 'auto'
-                    }
-                }
-            }
-        },
-
-        sass : {
-            compile: {
-                files : {
-                    'app/css/main.css' : 'app/scss/main.scss'
-                }
-            },
-            dev: {
-                files : {
-                    'app/css/main.css' : 'app/scss/main.scss'
-                },
-                options: {
-                    sourceComments : 'map'
-                }
-            },
-        },
-
-        watch : {
-            sass : {
-                files: ['app/**/*.html', 'app/scss/**/*.scss', 'app/js/**/*.js'],
-                tasks: ['sass:dev'],
-                options: {
-                    livereload : 35729
-                }
-            },
-            md : {
-                files: ['src/**/*.md'],
-                tasks: ['markdown'],
-                options: {
-                    livereload : 35728
-                }
+        open : {
+            preview : {
+                path : 'http://localhost:4000/en/index.html',
+                app : 'firefox -p dev -no-remote'
             }
         },
 
         concurrent: {
             options: {
                 logConcurrentOutput: true
+            }
+        },
+
+        sass : {
+            options: {
+                sourceComments : 'map'
             },
-            dev: {
-                tasks: ["watch:sass", "watch:md"]
-            }
+            compile: {
+                files : {
+                    'src/css/main.css' : 'src/scss/main.scss'
+                }
+            },
+            preview: {
+                files : {
+                    'tmp/css/main.css' : 'src/scss/main.scss'
+                }
+            },
         },
 
-        open : {
-            dev : {
-                path : 'http://localhost:4000',
-                app : 'firefox -p dev -no-remote'
+        watch : {
+            sasssrc : {
+                files: ['src/scss/**/*.scss'],
+                tasks: ['sass:compile'],
+            },
+            sasspreview : {
+                files: ['src/scss/**/*.scss'],
+                tasks: ['sass:preview'],
+                options: {
+                    livereload : 35729
+                }
             }
         },
-
 
         staticatr: {
+            build: {
+                src       : 'src',
+                dest      : 'dist',
+                cleanDest : true 
+            },
             preview: {
                 src       : 'src',
                 dest      : 'tmp',
@@ -103,6 +83,6 @@ module.exports = function(grunt) {
     grunt.loadTasks('tasks');
 
     // Tasks flow.
-    grunt.registerTask('dev', ['connect:dev', 'open:dev', 'concurrent:dev']);
-    grunt.registerTask('compile', ['sass:compile', 'markdown']);
+    grunt.registerTask('build', ['sass:compile', 'staticatr:build']);
+    grunt.registerTask('preview', ['sass:compile', 'staticatr:preview', 'connect:preview', 'open:preview', 'watch:sasspreview']);
 };

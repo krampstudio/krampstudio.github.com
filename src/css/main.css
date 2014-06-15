@@ -526,6 +526,8 @@ body > header {
         transition: all 400ms ease-out; }
   .main aside {
     border-left: solid 1px #ccc; }
+  .main article img {
+    float: left; }
   .main article .read-more {
     display: block;
     height: 30px;
