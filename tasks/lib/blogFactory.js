@@ -16,6 +16,8 @@ module.exports = function blogFactory(grunt, src, dest, options){
         colors : true
     });
 
+    var translations = grunt.file.readJSON(options.i18n);
+
     return {
 
         blog : {
@@ -69,19 +71,12 @@ module.exports = function blogFactory(grunt, src, dest, options){
 
             this.blog.page.home = {};
             langs.forEach(function(lang){       
-                var translations = self.getTranslations(lang);
                 var posts = self.getHomePosts(lang);
-                var content = indexTmpl({
+                var tr = self.getTranslations(lang);
+                var content = indexTmpl(_.defaults({
                     posts : posts,
-                    blog  : _.merge({}, translations, {
-                        url  : options.url + '/' + lang + '/' + fileName,
-                        name : options.name
-                    }),
-                    navs  : self.getNav(lang),
-                    page  : {
-                        title : translations.desc 
-                    }
-                });
+                    navs  : self.getNav(lang)
+                }, tr));
                 self.blog.page.home[lang] = {
                     dest    : dest + '/' + lang + '/' + fileName,
                     content : content
@@ -101,9 +96,7 @@ module.exports = function blogFactory(grunt, src, dest, options){
             langs.forEach(function(lang){       
                 var translations = self.getTranslations(lang);
                 var posts = self.getPostsSummary(lang);
-                var content = posts.map(function(post){
-                    return postTpl(_.assign({ blog : translations }, post));
-                }).join('<br>');
+                var content = posts.map(postTpl).join('<br>');
                 
                 self.blog.page.posts[lang] = {
                     order   : 1,
@@ -146,11 +139,11 @@ module.exports = function blogFactory(grunt, src, dest, options){
         },
 
         getTranslations : function getTranslations(lang){
-            var translations = grunt.file.readJSON(options.i18n);
             return _.defaults(translations[lang], translations[options.defaultLang]);
         },
 
         getPostsSummary : function getPostsSummary(lang){
+           var tr = this.getTranslations(lang);
            return this.getPostsByLang(lang)
                         .map(function(post){
                            var index = post.content.search(options.morePattern);
@@ -159,6 +152,7 @@ module.exports = function blogFactory(grunt, src, dest, options){
                            } else {
                                 post.summary = post.content;
                            }
+                           post.readmore = tr.readmore; 
                            return post;
                         });
         },
