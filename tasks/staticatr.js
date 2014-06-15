@@ -15,9 +15,13 @@ module.exports = function staticatrTask(grunt) {
         if(!_.isArray(patterns)){
             patterns = [patterns];
         }
-        return grunt.file.expand(patterns.map(function(pattern){
-            return src + '/' + pattern.replace(/^\//, '');
-        }));
+        return grunt.file.expand({
+                filter : 'isFile',
+            },
+            patterns.map(function(pattern){
+                return src + '/' + pattern.replace(/^\//, '');
+            })
+        );
     };
 
     grunt.registerMultiTask('staticatr', 'Generates static web sites', function staticatr(){
@@ -30,7 +34,7 @@ module.exports = function staticatrTask(grunt) {
             morePattern : /<!--\s?more\s?-->/gi,
             extension   : 'html',
             content     : '**/*.md',
-            resources   : ['fonts/**/*', 'css/**/*', 'js/**/*', 'img/**/*', 'favicon.ico', '*.txt'],
+            resources   : ['fonts/**', 'css/**', 'scss/**', 'js/**', 'img/**', 'favicon.ico', '*.txt'],
             engine      : 'handlebars',
             index       : 'src/index.hbs',
             posts       : 'src/partials/post-entry.hbs',
@@ -83,6 +87,7 @@ module.exports = function staticatrTask(grunt) {
         
         //copy resources
         expand(src, options.resources).forEach(function(resource){
+            grunt.log.debug(resource);
             grunt.file.copy(resource, dest + '/' + resource.replace(src, '').replace(/^\//, ''));
         });
     });
