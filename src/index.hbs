@@ -7,9 +7,9 @@
         <meta name="description" content="{{desc}}">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="../css/main.css">
+        <link rel="stylesheet" href="{{paths.css}}main.css">
 
-        <script src="../js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+        <script src="{{paths.js}}vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -20,8 +20,8 @@
                 <h1><a href="{{url}}">{{name}}</a></h1>
                 <h2>{{desc}}</h2>
                 <div class="lg-switcher">
-                    <a href="#" class="active" title="Krampstudio en français"><img src="../img/fr.png" alt="fr" /></a>
-                    <a href="#" title="Krampstudio in English"><img src="../img/gb.png" alt="gb" /></a>
+                    <a href="#" class="active" title="Krampstudio en français"><img src="{{paths.img}}fr.png" alt="fr" /></a>
+                    <a href="#" title="Krampstudio in English"><img src="{{paths.img}}gb.png" alt="gb" /></a>
                 </div>
             </header>
 
@@ -43,7 +43,7 @@
 
         {{>footer}}
 
-        <script src="js/main.js"></script>
+        <script src="{{paths.js}}main.js"></script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>

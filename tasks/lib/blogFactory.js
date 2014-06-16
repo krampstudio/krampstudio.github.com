@@ -82,6 +82,7 @@ module.exports = function blogFactory(grunt, src, dest, options){
                 var tr = self.getTranslations(lang);
                 var content = indexTmpl(_.defaults({
                     name  : options.name,
+                    paths : options.paths,
                     url   : options.url + '/' + lang + '/' + fileName,
                     posts : posts,
                     navs  : self.getNav(lang)

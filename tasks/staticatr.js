@@ -40,6 +40,12 @@ module.exports = function staticatrTask(grunt) {
             posts       : 'src/partials/post-entry.hbs',
             partials    : 'src/partials/*.hbs',
             i18n        : 'src/i18n.json',
+            paths       : {
+                css     : '../css/',
+                js      : '../js/',
+                img     : '../img/',
+                postImg : '../img/posts/images/' 
+            },
             cleanDest   : false
         });
 
