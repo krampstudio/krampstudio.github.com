@@ -2,7 +2,7 @@ module.exports = function(grunt) {
     'use strict';
 
     //display times
-    require('time-grunt')(grunt);
+//    require('time-grunt')(grunt);
 
     //load npm tasks
     require('load-grunt-tasks')(grunt);
@@ -47,7 +47,8 @@ module.exports = function(grunt) {
 
         watch : {
             options: {
-                livereload : 35729
+                livereload : 35729,
+                debounceDelay: 1000
             },
             sasspreview : {
                 files: ['src/scss/**/*.scss'],
