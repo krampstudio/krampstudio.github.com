@@ -1,5 +1,5 @@
 var _            = require('lodash');
-var blogFactory = require('./lib/blogFactory');
+var blogFactory  = require('./lib/blogFactory');
 var format       = require('util').format;
 
 module.exports = function staticatrTask(grunt) {
@@ -80,14 +80,16 @@ module.exports = function staticatrTask(grunt) {
             )
         );
 
+ 
+       console.log('cwd : ' + process.cwd());
+ 
         _.forEach(_.merge({}, blog.page, blog.post), function(page, title){
-            grunt.log.debug('Creating page : ' + title);
             _.forEach(page, function (pageModel, lang){
-                grunt.log.debug('  to ' + pageModel.dest);
+                grunt.log.debug('Creating page : ' + title + '  to ' + pageModel.dest);
                 grunt.file.write(pageModel.dest, pageModel.content);
             });
         });
-        
+    
         //copy resources
         expand(src, options.resources).forEach(function(resource){
             grunt.log.debug(resource);
