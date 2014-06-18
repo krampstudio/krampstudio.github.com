@@ -2,7 +2,7 @@ module.exports = function(grunt) {
     'use strict';
 
     //display times
-   // require('time-grunt')(grunt);
+    require('time-grunt')(grunt);
 
     //load npm tasks
     require('load-grunt-tasks')(grunt);
@@ -29,12 +29,6 @@ module.exports = function(grunt) {
             }
         },
 
-        concurrent: {
-            options: {
-                logConcurrentOutput: true
-            }
-        },
-
         sass : {
             options: {
                 sourceComments : 'map'
@@ -52,16 +46,16 @@ module.exports = function(grunt) {
         },
 
         watch : {
-            sasssrc : {
-                files: ['src/scss/**/*.scss'],
-                tasks: ['sass:compile'],
+            options: {
+                livereload : 35729
             },
             sasspreview : {
                 files: ['src/scss/**/*.scss'],
-                tasks: ['sass:preview'],
-                options: {
-                    livereload : 35729
-                }
+                tasks: ['sass:preview']
+            },
+            blogpreview : {
+                files: ['src/**/*.js', 'src/**/*.hbs', 'src/**/*.md'],
+                tasks: ['staticatr:preview']
             }
         },
 
@@ -84,5 +78,5 @@ module.exports = function(grunt) {
 
     // Tasks flow.
     grunt.registerTask('build', ['sass:compile', 'staticatr:build']);
-    grunt.registerTask('preview', ['sass:compile', 'staticatr:preview', 'connect:preview', 'open:preview', 'watch:sasspreview']);
+    grunt.registerTask('preview', ['sass:compile', 'staticatr:preview', 'connect:preview', 'open:preview', 'watch']);
 };
