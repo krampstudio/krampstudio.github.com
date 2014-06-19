@@ -45,6 +45,16 @@ module.exports = function(grunt) {
             },
         },
 
+        bower : {
+            install :  {
+                options: {
+                    targetDir: 'src/js/vendor',
+                    copy: true,
+                    cleanup: true
+                }
+            }
+        },
+
         watch : {
             options: {
                 livereload : 35729,
@@ -78,6 +88,7 @@ module.exports = function(grunt) {
     grunt.loadTasks('tasks');
 
     // Tasks flow.
+    grunt.registerTask('install', ['bower:install', 'sass:compile']);
     grunt.registerTask('build', ['sass:compile', 'staticatr:build']);
     grunt.registerTask('preview', ['sass:compile', 'staticatr:preview', 'connect:preview', 'open:preview', 'watch']);
 };
