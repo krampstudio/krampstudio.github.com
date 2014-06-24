@@ -2,7 +2,9 @@
     <nav role="navigation">
         <ul>
             {{#each navs}}
-            <li><a href="{{url}}">{{title}}</a></li>
+            <li>
+                <x-load href="{{url}}" target="#content">{{title}}</x-load>
+            </li>
             {{/each}}
         </ul>
     </nav>
