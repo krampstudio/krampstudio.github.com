@@ -33,7 +33,7 @@ module.exports = function staticatrTask(grunt) {
             homePosts   : 3,
             morePattern : /<!--\s?more\s?-->/gi,
             extension   : 'html',
-            content     : '**/*.md',
+            content     : ['**/*.md', '!src/js/vendor/**/*.md'],
             resources   : ['fonts/**', 'css/**', 'scss/**', 'js/**', 'img/**', 'favicon.ico', '*.txt'],
             engine      : 'handlebars',
             index       : 'src/index.hbs',
