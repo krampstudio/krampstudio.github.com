@@ -1,74 +1,89 @@
+/**
+ * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
+ * @license AGPL 
+ */
 (function(xtag, History, Promise){
     'use strict';
 
-    //window.onpopstate = function pop(e){
-        //console.log('pop', e); 
-        //if(e.state && e.state.selector){
-            ////load(e.state.targetSelector, e.target.location);
-        //}
-    //};
-    var State = History.getState(); // Note: We are using History.getState() instead of event.state
-	console.log('initial:', State.data, State.title, State.url);
+    //restor initial state if needed
+    restoreState(History.getState());
 
-    History.Adapter.bind(window, 'statechange', function stateChanged(){
-        var State = History.getState(); // Note: We are using History.getState() instead of event.state
-	    console.log('changed:', State.data, State.title, State.url);
-
+    //back & forward button, and push state
+    History.Adapter.bind(window, 'statechange', function stateChange(){
+        restoreState(History.getState());
     });
-
-    function pushState(url, selector, title){
-        History.pushState({selector : selector}, title || '', url);
-    }
     
-    function load(url, selector, title){
+    /**
+     * Restore a state from the history
+     * @private
+     * @param {History.State} state - the state to restore
+     * @returns {Promise?} the load promise if a state is restored
+     */
+    function restoreState(state){
+        if(state && state.data && state.data.selector){
+			return load(state.data.url, state.data.selector);
+        }
+    }
+
+    /**
+     * Push a new state to the history
+     * @private
+     * @param {String} url - the new state URL
+     * @param {String} selector - the DOM selector where the content will be set
+     * @param {String} [title] - the page title
+     */
+    function pushState(url, selector, title){
+        History.pushState({
+                selector : selector,
+                url : url
+            }, 
+            title || '', 
+            url
+        );
+    }
+   
+    /**
+     * Loads content to the selector using
+     * @private
+     * @param {String} url - the content URL
+     * @param {String} selector - the DOM selector where the content will be loaded
+     * @returns {Promise?} to chain sucess/error
+     */
+    function load(url, selector){
         return new Promise(function(done, err){
             var target  = document.querySelector(selector);
             var request  = new XMLHttpRequest();
 
             var success  = function success(){
                 update(request.responseText);
-                pushState(url, selector, title);
                 done(request.responseText);
             };  
             var update   = function update(content){
+                console.log('update', target);
                 if(target){
                     target.innerHTML = content;
                 }   
             }; 
 
             request.open('GET', url, true);
+            request.setRequestHeader('X-Load', '1'); 
             update('loading...');
             request.onload = success;
             request.onerror = err;
             request.send();
         }); 
     }
-
-    //function load(targetSelector, url, title){
-        //var target  = document.querySelector(targetSelector);
-        //var request  = new XMLHttpRequest();
-        //var success  = function success(){
-            //window.history.pushState({targetSelector : targetSelector}, title || '', url);
-            //update(request.responseText);
-        //};  
-        //var error    = function error(){
-            //console.error('error', arguments, request);
-        //}; 
-        //var update   = function update(content){
-            //if(target){
-                //target.innerHTML = content;
-            //}   
-        //}; 
-        //request.open('GET', url, true);
-        //update('loading...');
-        //request.onload = success;
-        //request.onerror = error;
-        //request.send();
-    //}
-
-    xtag.register('x-load', {
+    
+    /**
+     * Register the <x-load> component. 
+     * It behaves like a <a> tag but loads content into the target using xhr.
+     * @class xLoad
+     * @example <x-load href="test.html" target="section .content" title="Test page">Show the test</x-load>
+     */
+    xtag.register('x-load', 
+    /** @lends xLoad */
+    {
         events : {
-            //'tap:delegate(a)' : function(e){
             'tap' : function(e){
                e.preventDefault();
                this.load();
@@ -87,8 +102,8 @@
         },
         methods : {
             load : function(){
-                //Delegate to the load function
-                load(this.href, this.target, this.title);
+                //Delegate to the history
+                pushState(this.href, this.target, this.title);
             }
         }
     });
