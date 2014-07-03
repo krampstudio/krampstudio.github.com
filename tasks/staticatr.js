@@ -12,16 +12,20 @@ module.exports = function staticatrTask(grunt) {
     });
 
     var expand = function expand(src, patterns){
+        var toExpand;
         if(!_.isArray(patterns)){
             patterns = [patterns];
         }
-        return grunt.file.expand({
-                filter : 'isFile',
-            },
-            patterns.map(function(pattern){
-                return src + '/' + pattern.replace(/^\//, '');
-            })
-        );
+        toExpand = patterns.map(function(pattern){
+            var scoped;
+            if(/^\!/.test(pattern)){
+                scoped = '!' + src + '/' +  pattern.replace(/^\!/, '').replace(/^\//, '');
+            } else {
+               scoped = src + '/' + pattern.replace(/^\//, '');
+            }
+            return scoped;
+        });
+        return grunt.file.expand({filter: 'isFile'}, toExpand);
     };
 
     grunt.registerMultiTask('staticatr', 'Generates static web sites', function staticatr(){
@@ -33,7 +37,7 @@ module.exports = function staticatrTask(grunt) {
             homePosts   : 3,
             morePattern : /<!--\s?more\s?-->/gi,
             extension   : 'html',
-            content     : ['**/*.md', '!src/js/vendor/**/*.md'],
+            content     : ['**/*.md', '!js/vendor/**/*.md'],
             resources   : ['fonts/**', 'css/**', 'scss/**', 'js/**', 'img/**', 'favicon.ico', '*.txt'],
             engine      : 'handlebars',
             index       : 'src/index.hbs',
@@ -62,7 +66,7 @@ module.exports = function staticatrTask(grunt) {
         }
 
         options.contentFiles = expand(src, options.content);
-
+        
         //build the site model        
         factory = blogFactory(grunt, src, dest, options);
 
@@ -79,10 +83,6 @@ module.exports = function staticatrTask(grunt) {
                     _.size(blog.page)
             )
         );
-
- 
-       console.log('cwd : ' + process.cwd());
- 
         _.forEach(_.merge({}, blog.page, blog.post), function(page, title){
             _.forEach(page, function (pageModel, lang){
                 grunt.log.debug('Creating page : ' + title + '  to ' + pageModel.dest);

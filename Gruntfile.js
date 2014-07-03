@@ -3,9 +3,6 @@ var fs = require('fs');
 module.exports = function(grunt) {
     'use strict';
 
-    //display times
-//    require('time-grunt')(grunt);
-
     //load npm tasks
     require('load-grunt-tasks')(grunt);
 
