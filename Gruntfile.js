@@ -15,22 +15,7 @@ module.exports = function(grunt) {
             preview : {
                 options: {
                     port: 4000,
-                    base: 'tmp',
-                    middleware: function(connect, options, middlewares) {
-                        return [
-                            //todo support lang
-                            function(req, res, next) {
-
-                                if(!req.headers['x-load'] && 
-                                   !/index\.html$/.test(req.url) && 
-                                    /\.html$/.test(req.url)){                                                                  
-                                    res.statusCode = 200;
-                                    return fs.createReadStream('tmp/en/index.html').pipe(res);
-                                }
-                                return next();
-                             }
-                        ].concat(middlewares);
-                    }
+                    base: 'tmp'
                 }
             }
         },

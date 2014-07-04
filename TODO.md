@@ -5,6 +5,8 @@
 - [] Yo generator
 - [] Move code base to its own repo
 - [] Staticatr web page
+- [x] History
+- [] Append redirect to pages (see about.md)
  
 
 

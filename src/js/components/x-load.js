@@ -5,6 +5,8 @@
 (function(xtag, History, Promise){
     'use strict';
 
+    var scriptRegex = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
+
     //restor initial state if needed
     restoreState(History.getState());
 
@@ -21,7 +23,7 @@
      */
     function restoreState(state){
         if(state && state.data && state.data.selector){
-			return load(state.data.url, state.data.selector);
+			return load(state.data.state, state.data.selector);
         }
     }
 
@@ -35,10 +37,10 @@
     function pushState(url, selector, title){
         History.pushState({
                 selector : selector,
-                url : url
+                state    : url
             }, 
             title || '', 
-            url
+            '?state=' + url
         );
     }
    
@@ -59,14 +61,12 @@
                 done(request.responseText);
             };  
             var update   = function update(content){
-                console.log('update', target);
                 if(target){
-                    target.innerHTML = content;
+                    target.innerHTML = content.replace(scriptRegex, '');
                 }   
             }; 
 
             request.open('GET', url, true);
-            request.setRequestHeader('X-Load', '1'); 
             update('loading...');
             request.onload = success;
             request.onerror = err;

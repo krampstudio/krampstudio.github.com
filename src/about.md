@@ -14,3 +14,6 @@ Dans ce blog je traiterais des sujets qui m'intéresse et je ne serais absolueme
 
 Enfin voilà, tout ça dans ma langue maternelle plutôt que dans un mauvais anglais. 
 
+<script type="text/javascript">
+    document.location = 'index.html?state=about.html';
+</script>
