@@ -21,11 +21,11 @@ h2 {
     font-weight: bold;
 }
 
-a {
+a, x-load {
     text-decoration: none;
     color: #2C5A78;
     @include unhover;
-    
+    cursor: pointer;
     &:hover {
         color: #3A769D;
         @include hover;

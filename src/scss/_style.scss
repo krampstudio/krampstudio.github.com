@@ -31,10 +31,11 @@ body > header {
 
     nav {
         @include gradient(#FFE27C, #EDC229, #EDC229);
-        a {
+        x-load {
             font-family: $headingFont;
             font-size: 18px;
             text-decoration: none;
+            text-transform: capitalize;
             @include intextshadow(#666, #EDC229); 
             @include unhover;
             &:hover{
