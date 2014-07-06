@@ -158,7 +158,7 @@ Dans l'exemple ci-dessus, la fonction `format` _capture_ les valeurs des variabl
 
 ## Le contexte de la fonction: `this`
 
-{% img right /images/this.png 'Source theburnsider dot com slash stop this' %}
+![This](../img/posts/images/this.png "Source theburnsider dot com slash stop this")
 
 Comme nous l'avons vus dans la [première section](#function-first-class-object) chaque fonction est aussi un objet. De plus, chaque fonction _hérite_ de plusieurs membres de manière systématiques. 
 

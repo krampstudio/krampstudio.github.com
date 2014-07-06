@@ -6,7 +6,7 @@ comments: true
 categories: JavaScript
 ---
 
-{% img left /images/js-badge.png JavaScriptLogo %}
+![JS Logo](../img/posts/images/js-badge.png "js.this")
 
 Si comme moi vous aviez plutôt l'habitude des langages de programmation orientés objets *classiques*, vous avez sans doute aussi été surpris (entre autre) de l'utilisation du mot clé `this` en JavaScript. Il y a quelques temps déjà, l'envie de comprendre cette particularité m'a permis d'appréhender les concepts fondateurs du langage. Au final, en essayant de comprendre l'utilisation de `this`, ma vision du langage a complètement changé et depuis c'est avec plaisir que je code en JS.
 Je vais donc essayer de retracer ce cheminement, en expliquant quelques principes simples mais tellement important. Ça devrait éviter quelques prises de têtes.
@@ -158,7 +158,7 @@ Dans l'exemple ci-dessus, la fonction `format` _capture_ les valeurs des variabl
 
 ## Le contexte de la fonction: `this`
 
-{% img right /images/this.png 'Source theburnsider dot com slash stop this' %}
+![This](../img/posts/images/this.png "Source theburnsider dot com slash stop this")
 
 Comme nous l'avons vus dans la [première section](#function-first-class-object) chaque fonction est aussi un objet. De plus, chaque fonction _hérite_ de plusieurs membres de manière systématiques. 
 

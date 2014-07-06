@@ -1,5 +1,5 @@
     <article>
-        <h1><a href="{{url}}">{{title}}</a></h1>
+        <h1><x-load href="{{url}}" target="#content" title="{{title}}">{{title}}</x-load></h1>
         {{{summary}}}
-        <a href="{{url}}" class="read-more">{{readmore}}</a>
+        <x-load href="{{url}}" target="#content" title="{{title}}" class="read-more">{{readmore}}</a>
     </article>

@@ -442,15 +442,16 @@ h2 {
   font-size: 20px;
   font-weight: bold; }
 
-a {
+a, x-load {
   text-decoration: none;
   color: #2C5A78;
   -webkit-transition: all 300ms ease-in;
   -moz-transition: all 300ms ease-in;
   -ms-transition: all 300ms ease-in;
   -o-transition: all 300ms ease-in;
-  transition: all 300ms ease-in; }
-  a:hover {
+  transition: all 300ms ease-in;
+  cursor: pointer; }
+  a:hover, x-load:hover {
     color: #3A769D;
     -webkit-transition: all 400ms ease-out;
     -moz-transition: all 400ms ease-out;
@@ -502,10 +503,11 @@ body > header {
     background: -ms-linear-gradient(top, #FFE27C 0%, #EDC229 100%);
     background: linear-gradient(to bottom, #FFE27C 0%, #EDC229 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$start', endColorstr='$stop',GradientType=0 ); }
-    .main nav a {
+    .main nav x-load {
       font-family: 'Galindo', cursive;
       font-size: 18px;
       text-decoration: none;
+      text-transform: capitalize;
       color: #666;
       text-shadow: 1px 4px 6px #EDC229, 0 0 0 #000, 1px 4px 6px #EDC229;
       -webkit-transition: all 300ms ease-in;
@@ -513,11 +515,11 @@ body > header {
       -ms-transition: all 300ms ease-in;
       -o-transition: all 300ms ease-in;
       transition: all 300ms ease-in; }
-      .main nav a::-moz-selection {
+      .main nav x-load::-moz-selection {
         text-shadow: none; }
-      .main nav a::selection {
+      .main nav x-load::selection {
         text-shadow: none; }
-      .main nav a:hover {
+      .main nav x-load:hover {
         color: #0B67A2;
         -webkit-transition: all 400ms ease-out;
         -moz-transition: all 400ms ease-out;

@@ -31,3 +31,10 @@ a, x-load {
         @include hover;
     }
 }
+
+blockquote {
+    font-style: italic;
+    color: #666;
+    border-left: solid 5px #ddd;
+    padding-left: 5px;
+}

@@ -14,27 +14,33 @@ _N'hésitez pas à m'aider à la compléter._
 
 <!-- more -->
 
-## <a name="node"></a>node.js et npm
+## <a name="node"></a>node.js
 
-{% img right /images/tools/nodejs.png node.js %}
+![node](../img/posts/images/tools/nodejs.png "node.js")
 
 Node.js est une implémentation JavaScript côté serveur. Node.js utilise V8, le moteur JavaScript de Chromium/Chrome, et fournit des API de développement réseau basé sur un modèle de programmation événementiel et des I/O non bloquantes. 
 
-Npm (_Node Package Manager_) est le gestionnaire de paquets pour node.js. 
+> Mon nouvel amour
 
-{% img right /images/tools/npm.png npm %}
+Site web : [nodejs.org](http://nodejs.org)
+
+## <a name="npm"></a>npm
+
+![npm](../img/posts/images/tools/npm.png "npm")
+
+Npm (_Node Package Manager_) est le gestionnaire de paquets pour node.js. 
 
 Même dans le cadre de développement client, avoir node.js sur votre machine vous permettra d'avoir à votre disposition beaucoup d'outils et de librairies distribuée sous forme de module node.js (build, qualité, instrumentation, optimisation, etc.). Grâce à npm, vous pourrez les installer et les mettre à jour très facilement. Par exemple, pour installer l'outils _uglify_ (qui permet notamment de minimiser les fichiers sources), il suffira de faire un petit `npm install -g uglify`. 
 
 > On ne peut s'en passer
 
-Sites webs : [nodejs.org](http://nodejs.org) et [npmjs.org](https://npmjs.org)
+Site web : [npmjs.org](https://npmjs.org)
 
 Licence : MIT
 
 ## <a name="jquery"></a>jQuery
 
-{% img right /images/tools/jquery.png jquery %}
+![jquery](../img/posts/images/tools/jquery.png "jquery")
 
 Est-il encore besoin de présenter jQuery? Au cas où vous sortez d'une longue hibernation, jQuery est le framework Javascript permettant de s'affranchir des différences entre navigateurs. Cette librairie de bas niveau permet notamment de récupérer des éléments du DOM en fonction de requêtes CSS (d'ailleurs cette seule fonctionnalité, extrêmement puissante a été externalisé dans un moteur à part: [Sizzle](#sizzle)), de manipuler le DOM et ces événements, de faire des requêtes Ajax. jQuery fournit aussi tout un tas d'outils qui facilite la vie du développeur Javascript. 
 
@@ -46,7 +52,7 @@ Licence : MIT
 
 ## <a name="sizzle"></a> Sizzle
 
-{% img right /images/tools/sizzle.png Sizzle %}
+![sizzle](../img/posts/images/tools/sizzle.png "sizzle")
 
 Sizzle est un projet qui a pour but de permettre de sélectionner un nœud du DOM en utilisant les sélecteurs CSS3. Sizzle est le moteur utilisé au sein de jQuery pour la partie sélection. 
 
@@ -58,7 +64,7 @@ Licence : MIT
 
 ## <a name="jqueryui"></a>jQuery UI
 
-{% img right /images/tools/jquery-ui.png jQuery UI %}
+![jqueryui](../img/posts/images/tools/jquery-ui.png "jquery ui")
 
 jQuery UI est, comme son nom l'indique, une surcouche à jQuery dédiée aux composants graphiques. Cette librairie offre quelques composants prêt à l'emploi comme les sliders, les tabulations, date-pickers, etc. ainsi que des éléments plus basique pouvant servir à créer ses propres composants comme les effets, le _drag n'drop_, la gestion des positions, etc. 
 
@@ -72,7 +78,7 @@ Licence : MIT
 
 ## <a name="qunit"></a>QUnit
 
-{% img right /images/tools/qunit.png QUnit %}
+![qunit](../img/posts/images/tools/qunit.png "qunit")
 
 QUnit est un framework de tests unitaires JavaScript orienté client. Bien que développé initialement pour tester les différents projets de la fondation jQuery, c'est un framework de test généraliste facile à utiliser et qui s'adapte bien aux tests de code client. Il propose les fonctionnalités de bases comme les assertions, le regroupement des tests ainsi que des fonctionnalités plus avancées comme les tests asynchrones ou les fixtures (une sorte de mock HTML qui permet de réaliser le test avec des éléments externes du DOM dont le code JavaScript peut dépendre).
 
@@ -84,7 +90,7 @@ Licence : MIT
 
 ## <a name="jquerymobile"></a>jQuery Mobile
 
-{% img right /images/tools/jquery-mobile.png jQuery Mobile %}
+![jquery mobile](../img/posts/images/tools/jquery-mobile.png "jquery mobile")
 
 jQuery Mobile est un framework d'interface graphique orienté mobile. Il propose une solution complète de création d'une interface web adaptée aux appareils mobiles (smartphones et tablettes). Cette librairie ne nécessite que peu de code JavaScript et utilise plutôt une sémantique HTML5 qui permettra de définir les éléments d'interface. 
 
@@ -101,7 +107,7 @@ Plutôt que de lister les différents moteurs de template en JavaScript, je vous
 
 ## <a name="grunt"></a>Grunt
 
-{% img right /images/tools/grunt.png grunt %}
+![grunt](../img/posts/images/tools/grunt.png "grunt")
 
 Grunt se définit comme un _task runner_, c'est donc un outils de _build_ au sens large qui vous permettra d'automatiser un certain nombre de tâches comme la minimification des fichiers, l'orchestration des tests ou la génération de la documentation. Chaque tâche se présente sous la forme d'un plugin et il est très facile de créer ces propres tâches bien qu'il en existe déjà un nombre important. Grunt est distribué sous la forme de packages [node.js](#node).
 
@@ -115,7 +121,7 @@ Licence : MIT
 
 ## <a name="bower"></a> Bower
 
-{% img right /images/tools/bower.png bower %}
+![bower](../img/posts/images/tools/bower.png "bower")
 
 Bower est un outils de gestion de composants et de dépendances orienté navigateur. Les packages sont ni plus ni moins que des projets Github, car Bower se base uniquement sur Github comme dépôt de packages. Cela offre tous les avantages de la plate-forme : fork, clone, etc. et aussi les inconvénients : la qualité de service dépend directement de la disponibilité de Github . Les paquets ou composants ne se limitent pas à Javascript mais peuvent contenir n'importe quel type de ressource web: html, css, etc.
 
@@ -129,7 +135,7 @@ Licence : MIT
 
 ## <a name="yeoman"></a>Yeoman
 
-{% img right /images/tools/yeoman.png yeoman %}
+![yeoman](../img/posts/images/tools/yeoman.png "yeoman")
 
 Yeoman est au Javascript ce que Maven est à Java: c'est un outils de gestion du cycle de vie de l'application. Il se compose de 3 outils différents et complémentaires:
 
@@ -151,7 +157,7 @@ Licence : Apache version 2.0
 
 ## <a name="jslint"></a> JSLint
 
-{% img right /images/tools/jslint.png jslint %}
+![jslint](../img/posts/images/tools/jslint.png "jslint")
 
 JSLint est un analyseur de code statique, c'est un outils qui permet de vérifier la qualité du code source Javascript.  JSLint va vérifier la conformité des sources avec des conventions de codes basée sur de bonnes pratiques de programmation, comme l'obligation de mettre des points virgules à la fin des lignes, l'utilisation de l'opérateur de vérité, la vérification des scopes, des variables globales, etc.
 JSLint est déjà très répandu et il y a sûrement un plugin pour votre éditeur/IDE JavaScript favori ou votre système de build/qualité.
@@ -166,7 +172,7 @@ Licence : MIT?_
 
 ## <a name="jshint"></a>JSHint
 
-{% img right /images/tools/jshint.png jshint %}
+![jshint](../img/posts/images/tools/jshint.png "jshint")
 
 JSHint est un fork de JSLint avec pour but de rendre ce dernier plus configurable. Il permet d'autoriser certaines pratiques ou d'autres styles de programmation que celui défini par JSLint. 
 Une des fonctionnalité intéressante de JSHint sont les profiles, qui adaptent la vérification en fonction du contexte ou du framework utilisé (browser, jQuery, node, etc.)
@@ -179,7 +185,7 @@ Licence : MIT
 
 ## <a name="jasmine"></a>Jasmine
 
-{% img right /images/tools/jasmine.png Jasmine %}
+![jasmine](../img/posts/images/tools/jasmine.png "jasmine")
 
 Jasmine est une librairie de tests intégrant les principes du _BDD_ (_Behavior Driven Developement_), elle ne dépend d'aucune autre librairies et peut être utilisée aussi bien pour tester un contexte client que serveur (node) et s'intègre avec de nombreuses plates-formes.
 
@@ -191,7 +197,7 @@ Licence : MIT
 
 ## Phantom.js
 
-{% img right /images/tools/phantomjs.png Phantom.js %}
+![phantomjs](../img/posts/images/tools/phantomjs.png "phantomjs")
 
 Phantom.js est un des outils qu'il est nécessaire d'installer sur sa machine. Cette libraire est un navigateur WebKit sans interface graphique (_headless_). Phantom.js permet notamment de faire tourner des tests JavaScript clients depuis un terminal, sur un serveur et surtout de lancer des suites de tests sans dépendre d'un navigateur classique. Phantom.js expose une API et est donc scriptable.
 
@@ -203,7 +209,7 @@ Licence : BSD
 
 ## <a name="karma"></a>Karma
 
-{% img right /images/tools/karma.png Karma %}
+![karma](../img/posts/images/tools/karma.png "karma")
 
 Précédemment nommé Testacular, Karma est un utilitaire permettant de faciliter l'exécution des tests en JavaScript. Karma vous permettra de configurer, de piloter et d'intégrer vos suites de tests. Quelques fonctionnalités peuvent vous faciliter la vie comme le contrôle des navigateurs. 
 
@@ -215,7 +221,7 @@ Licence : MIT
 
 ## <a name="modernizr"></a>Modernizr
 
-{% img right /images/tools/modernizr.png Modernizr %}
+![modernizr](../img/posts/images/tools/modernizr.png "modernizr")
 
 Modernizr est une librairie de détection de fonctionnalités HTML5 et CSS3. Elle permet de vérifier pour le navigateur courant si une fonctionnalité particulière est présente ou non, car comme nous le savons tous, la détection par type de navigateur est à proscrire. 
 
@@ -227,7 +233,7 @@ Licence : MIT
 
 ## <a name="underscore"></a>Underscore.js
 
-{% img right /images/tools/underscore.png underscore.js %}
+![underscore](../img/posts/images/tools/underscore.png "underscore")
 
 Underscore.js est un framework généraliste qui augmente le langage avec un certain nombre d'utilitaires fait pour vous faciliter la vie. Il est difficile de synthétiser son contenu car très hétéroclite, il permet autant de faire du map/reduce sur des collections que de la memoization de fonction ou de la manipulation de strings. Underscore va simplement vous éviter de réécrire pas mal de fonctions qui ne sont pas incluses dans le langage. 
 
@@ -239,7 +245,7 @@ Licence : MIT
 
 ## <a name="requirejs"></a>Require.js
 
-{% img right /images/tools/require-js.png require.js %}
+![requirejs](../img/posts/images/tools/require-js.png "requirejs")
 
 Require.js est une librairie qui permet de pallier à une lacune du langage JavaScript: la gestion des librairies, des dépendances et des imports. Pour cela, Require.js implémente la spécification [AMD](https://github.com/amdjs/amdjs-api/wiki/AMD) (Asynchronous Module Definition) et est aussi compatible [CommonJs](http://www.commonjs.org/). Grâce à Require.js, vous pouvez définir des _modules_ et importer ces modules depuis d'autres modules. La notion de dépendance entre module est gérée et le chargement peut se faire ne mode synchrone ou asynchrone (le module est chargé au moment où il est importé). 
 
@@ -261,7 +267,7 @@ Licence : BSD
 
 ## <a name="uglifyjs"></a>UglifyJS
 
-{% img right /images/tools/uglifyjs.png UglifyJS %}
+![uglifyjs](../img/posts/images/tools/require-js.png "uglifyjs")
 
 UglifyJS est une librairie de minimification et de compression de code source JavaScript écrit en JavaScript. Cette librairie est performante et offre des résultats très satisfaisant. Elle se distingue des alternatives car elle offre des APIs de parsing et de manipulation du code source basées sur le pattern _AST_ (Abstract Syntax Tree).
 
@@ -273,7 +279,7 @@ Licence : BSD
 
 ## <a name=""></a>Raphaël
 
-{% img right /images/tools/raphael.png Raphaël %}
+![raphaeljs](../img/posts/images/tools/raphael.png "raphaeljs")
 
 Raphaël est une librairie de dessin graphique vectoriel pour le web. Elle utilise soit SVG, soit VML comme technologie de rendu pour être compatible avec un grand nombre de navigateur. Raphaël propose une API généraliste de maniuplation de dessin vectoriel (formes, chemins, couleurs, animations, etc.) et d'intéraction utilisateur. Il existe de nombreux _plugins_ ou projets se basant sur Raphaël pour fournir des services de plus haut niveaux (charts, etc.)
 
@@ -285,7 +291,7 @@ Licence : MIT
 
 ## <a name="prototype"></a>Prototype.js 
 
-{% img right /images/tools/prototype.png Prototype.js %}
+![prototype](../img/posts/images/tools/prototype.png "prototype")
 
 Prototype est une des première librairie JavaScript fournissant des services cross-browser de haut niveau tels que la manipulation du DOM ou les requêtes AJAX. 
 
@@ -297,7 +303,7 @@ Licence : MIT
 
 ## Script.aculo.us
 
-{% img right /images/tools/scriptaculous.png Script.aculo.us %}
+![scriptaculous](../img/posts/images/tools/scriptaculous.png "scriptaculous")
 
 Script.aculo.us est à Prototype ce que jQuery UI est à jQuery: il l'augmente de fonctionnalités dédiées à l'interface graphique: effets, drag n'drop, widgets, etc.
 

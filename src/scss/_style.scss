@@ -49,11 +49,6 @@ body > header {
     }
 
     article {
-        
-        img {
-            float: left;
-        }       
- 
         .read-more {
             display: block;
             height: 30px;
@@ -64,6 +59,21 @@ body > header {
                 font-size: 12px;
             }
         }
+    }
+    #content img {
+        float: left;
+        margin: 0 25px 10px 0;
+        padding: 3px;
+        border: solid 1px #eee;
+        @include radius(3px);
+        @include shadow;
+ 
+        article img {
+            max-height: 150px;
+        }
+    }
+    blockquote {
+        clear: both;
     }
 }
 

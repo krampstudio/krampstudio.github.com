@@ -41,7 +41,7 @@ Pour les autres, vous pouvez vous reporter au site de [node.js](http://nodejs.or
 
 ### Grunt
 
-{% img right /images/grunt.png Grunt %}
+![grunt](../img/posts/images/grunt.png "Grunt")
 
 Une fois la commande npm disponible, il va falloir installer [Grunt](http://gruntjs.com), l'outils que nous utiliserons pour automatiser les tâches de build de notre plugin. Nous allons donc l'installer avec npm, en mode _global_ (donc accessible pour tous les utilisateurs), d'où le commutateur <code class='inline'>g</code>. C'est pourquoi il faut l'installer avec les droits root.
 
@@ -51,7 +51,7 @@ $> sudo npm install -g grunt
 
 ### Phantom.js
 
-{% img right /images/phantomjs.png Phantom.js %}
+![phantomjs](../img/posts/images/phantomjs.png "phantomjs")
 
 Le dernier outils a installer sur votre système est [Phantom.js](http://phantomjs.org), qui va nous servir pour simuler un browser durant nos tests. Il est aussi disponible depuis le gestionnaire de paquet sur les distributions récentes:
 
@@ -250,7 +250,8 @@ Pour notre plugin, je créé cette page dans le répertoire <code class='inline'
 
 On voit trop rarement des tests mis en place pour le code Javascript, mais pourtant tous les outils dont nous avons besoin sont disponibles (il y a en a même pas mal!). Donc comme pour n'importe quel autre langage, nous allons créer des tests unitaires automatisés pour notre plugin. 
 
-{% img right /images/qunitjs.png Grunt %}
+![qunit](../img/posts/images/qunitjs.png "qunit")
+
 Parmi les nombreux frameworks existant, mon dévolu c'est posé sur [Qunit](http://www.qunitjs.org) car c'est le framework de tests de jQuery d'une part (donc il s'intègre naturellement avec un plugin jQuery) et d'autre part parce qu'il offre toutes les fonctionnalités dont nous avons besoin: tests asynchrones, _fixtures_, groupes, etc.
 
 Le test se compose de deux fichiers:
@@ -319,7 +320,7 @@ Ce qui donne le test suivant, qui vérifie que le plugin a bien été chargé en
 
 Pour lancer les tests, il suffit de charger la page HTML. Le résultat est visible depuis celle-ci, comme nous pouvons le voir sur la capture suivante: 
 
-{% img /images/sc.test-result.png Capture de la page de résultats tests %}
+![shot1](../img/posts/images/sc.test-result.png "Capture de la page de résultats tests ")
 
 ## Automatisation
 
@@ -444,7 +445,7 @@ Bon, c'est un peu redondant avec le fichier <code class='inline'>package.json</c
 
 Pour préparer l'indexation sur le site [plugins.jquery.com](http://plugins.jquery.com), il suffit d'ajouter un _hook_ sur notre dépôt Github, comme décrit le décrit cette [procédure](https://github.com/jquery/plugins.jquery.com#how-to-list-a-plugin). La capture suivante montre l'interface d'administration du projet sur Github qui permet de rajouter le hoot:
 
-{% img /images/sc.github-hook.png Ajout d'un service hook dans l'administration du dépôt %}
+![shot2](../img/posts/images/sc.github-hook.png "Ajout d'un service hook dans l'administration du dépôt")
 
 # Et voilà
 
