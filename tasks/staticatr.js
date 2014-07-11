@@ -41,6 +41,7 @@ module.exports = function staticatrTask(grunt) {
             resources   : ['fonts/**', 'css/**', 'scss/**', 'js/**', 'img/**', 'favicon.ico', '*.txt'],
             engine      : 'handlebars',
             index       : 'src/index.hbs',
+            contentTpl  : 'src/partials/content.hbs',
             posts       : 'src/partials/post-entry.hbs',
             partials    : 'src/partials/*.hbs',
             i18n        : 'src/i18n.json',

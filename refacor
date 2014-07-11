@@ -1,0 +1,20 @@
+- options in
+- defaults in 
+
+
+- model : 
+    - blog
+    - utils 
+
+- model : factory (options)
+
+    1. load contents
+    2. load hom
+    3. load post page
+
+- htmlifier(md, meta?)
+  -> content 
+  -> meta ?
+
+
+- write files (blog files dest)

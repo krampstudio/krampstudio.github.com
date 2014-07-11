@@ -52,6 +52,15 @@ module.exports = function(grunt) {
                 }
             }
         },
+        
+        mochaTest: {
+          test: {
+            options: {
+              reporter: 'spec'
+            },
+            src: ['test/**/*.js']
+          }
+        },
 
         watch : {
             options: {
@@ -89,4 +98,5 @@ module.exports = function(grunt) {
     grunt.registerTask('install', ['bower:install', 'sass:compile']);
     grunt.registerTask('build', ['sass:compile', 'staticatr:build']);
     grunt.registerTask('preview', ['sass:compile', 'staticatr:preview', 'connect:preview', 'open:preview', 'watch']);
+    grunt.registerTask('test', ['mochaTest:test']);
 };
