@@ -13,9 +13,6 @@ var d = _.partialRight(require('util').inspect, {
 
 module.exports = function blogFactory(options){
 
-    console.log(d(blog));    
-
-
     var homePageName    = options.extension ? 'index.' + options.extension : 'index'; 
     var indexTpl        = hbs.compile(fs.readFileSync(options.index, 'utf-8'));
 
@@ -37,7 +34,6 @@ module.exports = function blogFactory(options){
         layout      = content.layout;
         title       = content.title;
         lang        = content.lang;
-        content.content = '...';
 
         if(!blog[layout]){
            blog[layout] = {};
@@ -56,14 +52,13 @@ module.exports = function blogFactory(options){
 
         blog.page.home[lang] = {
             dest    : options.dest + '/' + lang + '/' + homePageName,
-            content : '...'
-            //content : indexTpl(_.defaults({
-                //name  : options.name,
-                //paths : options.paths,
-                //url   : options.url + '/' + lang + '/' + homePageName,
-                //posts : blog.getHomePosts(lang),
-                //navs  : blog.getNav(lang)
-            //}, tr))
+            content : indexTpl(_.defaults({
+                name  : options.name,
+                paths : options.paths,
+                url   : options.url + '/' + lang + '/' + homePageName,
+                posts : blog.getHomePosts(lang),
+                navs  : blog.getNav(lang)
+            }, tr))
         };
 
         blog.page.posts[lang] = {
@@ -71,11 +66,11 @@ module.exports = function blogFactory(options){
             title   : 'posts',
             url     : postsPageName,
             dest    : options.dest + '/' + lang + '/' + postsPageName,
-            content : '...' //blog.getPostsSummary(lang, tr.readmore).map(postTpl).join('<br>')
+            content : blog.getPostsSummary(lang, tr.readmore).map(postTpl).join('<br>')
         };
     });
 
-    fs.writeFileSync('result.json', JSON.stringify(blog, null, '\t'));
+    //fs.writeFileSync('result.json', JSON.stringify(blog, null, '\t'));
 
     return blog;
 };

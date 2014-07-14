@@ -459,6 +459,12 @@ a, x-load {
     -o-transition: all 400ms ease-out;
     transition: all 400ms ease-out; }
 
+blockquote {
+  font-style: italic;
+  color: #666;
+  border-left: solid 5px #ddd;
+  padding-left: 5px; }
+
 /*
  * Specific styling, by element.
  */
@@ -528,8 +534,6 @@ body > header {
         transition: all 400ms ease-out; }
   .main aside {
     border-left: solid 1px #ccc; }
-  .main article img {
-    float: left; }
   .main article .read-more {
     display: block;
     height: 30px;
@@ -537,6 +541,21 @@ body > header {
     .main article .read-more:after {
       content: ' >> ';
       font-size: 12px; }
+  .main #content img {
+    float: left;
+    margin: 0 25px 10px 0;
+    padding: 3px;
+    border: solid 1px #eee;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+    box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75); }
+    .main #content img article img {
+      max-height: 150px; }
+  .main blockquote {
+    clear: both; }
 
 footer, footer a {
   background: #333;
