@@ -52,34 +52,34 @@ module.exports = function staticatrTask(grunt) {
                 postImg : '../img/posts/images/' 
             },
             cleanDest   : false
+
         });
 
-        var src  = this.data.src.replace(/\/$/, '');
-        var dest = this.data.dest.replace(/\/$/, '');
+        options.src  = this.data.src.replace(/\/$/, '');
+        options.dest = this.data.dest.replace(/\/$/, '');
+        options.contentFiles = expand(options.src, options.content);
+        options.partialFiles = grunt.file.expand(options.partials);
+        options.translations = grunt.file.readJSON(options.i18n); 
 
-        grunt.log.debug('Going to generate into ' + dest); 
-        if(!grunt.file.exists(dest)){
-            grunt.log.debug('mkdir -p ' + dest); 
-            grunt.file.mkdir(dest);
+        grunt.log.debug('Going to generate into ' + options.dest); 
+        if(!grunt.file.exists(options.dest)){
+            grunt.log.debug('mkdir -p ' + options.dest); 
+            grunt.file.mkdir(options.dest);
         } else if (options.cleanDest === true){
-            grunt.log.debug('Clean up ' + dest); 
-            grunt.file.delete(dest);
+            grunt.log.debug('Clean up ' + options.dest); 
+            grunt.file.delete(options.dest);
         }
-
-        options.contentFiles = expand(src, options.content);
         
         //build the site model        
-        factory = blogFactory(grunt, src, dest, options);
-
-        blog = factory.getBlog();
+        blog = blogFactory(options);
          
         grunt.log.debug(
             format('Model extracted from src (%s) :\n' +
                          'langs : %j\n' + 
                          'posts : %d\n' + 
                          'pages : %d\n', 
-                    src, 
-                    factory.getAvailableLangs(), 
+                    options.src, 
+                    blog.getAvailableLangs(), 
                     _.size(blog.post), 
                     _.size(blog.page)
             )
@@ -92,9 +92,9 @@ module.exports = function staticatrTask(grunt) {
         });
     
         //copy resources
-        expand(src, options.resources).forEach(function(resource){
+        expand(options.src, options.resources).forEach(function(resource){
             grunt.log.debug(resource);
-            grunt.file.copy(resource, dest + '/' + resource.replace(src, '').replace(/^\//, ''));
+            grunt.file.copy(resource, options.dest + '/' + resource.replace(options.src, '').replace(/^\//, ''));
         });
     });
 };

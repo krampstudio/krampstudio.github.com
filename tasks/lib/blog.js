@@ -9,9 +9,12 @@ var patterns = {
 
 var blog = {
 
-    _translations : {},
+    page : {
+        home : {},
+        posts: {}
+    },
     
-
+    post : {},
 
     getAvailableLangs : function getAvailableLangs(){
         var langs = [];
@@ -35,12 +38,7 @@ var blog = {
                 .sortBy(sort || 'date').value().reverse();
     },
 
-    getTranslations : function getTranslations(lang, defaultLang){
-        return _.defaults(this._translations[lang], this._translations[defaultLang]);
-    },
-
-    getPostsSummary : function getPostsSummary(lang, morePattern){
-       var tr = this.getTranslations(lang);
+    getPostsSummary : function getPostsSummary(lang, morePattern, moreLabel){
        return this.getPostsByLang(lang)
                     .map(function(post){
                        var index = post.content.search(morePattern);
@@ -49,7 +47,7 @@ var blog = {
                        } else {
                             post.summary = post.content;
                        }
-                       post.readmore = tr.readmore; 
+                       post.readmore = moreLabel; 
                        return post;
                     });
     },

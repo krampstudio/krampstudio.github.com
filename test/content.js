@@ -1,6 +1,6 @@
 
 var expect = require('chai').expect;
-var contentParser = require('../tasks/lib/content.js');
+var contentExtractor = require('../tasks/lib/content').extractor;
 
 // tests.js
 describe('contentParser', function(){
@@ -15,28 +15,23 @@ describe('contentParser', function(){
 
 
     it('should be a function', function(){
-        expect(contentParser).to.be.a('function');
+        expect(contentExtractor).to.be.a('function');
     });
 
     it('should extract meta from a file', function(){
 
         var file = options.src + '/about-en.md';
 
-        var content = contentParser(file, options);
+        var content = contentExtractor(file, options);
         expect(content).to.be.a('object');
-        expect(content).to.have.property('src');
-        expect(content).to.have.property('dest');
-        expect(content).to.have.property('url');
-        expect(content).to.have.property('lang');
-        expect(content).to.have.property('fileTitle');
-        expect(content).to.have.property('content');
+        expect(content).to.contain.keys(['src', 'dest', 'url', 'lang', 'fileTitle', 'content']);
     });
 
     it('should extract correct meta from a file', function(){
 
         var file = options.src + '/about-en.md';
 
-        var content = contentParser(file, options);
+        var content = contentExtractor(file, options);
         expect(content).to.be.a('object');
         expect(content.src).to.equal(file);
         expect(content.url).to.equal('about.html');
@@ -47,14 +42,28 @@ describe('contentParser', function(){
 
         var file = options.src + '/about-en.md';
 
-        var content = contentParser(file, options);
+        var content = contentExtractor(file, options);
         expect(content).to.be.a('object');
-        expect(content).to.have.property('layout');
+        expect(content).to.contain.keys(['layout', 'title', 'author', 'date', 'comments', 'sharing']);
         expect(content.layout).to.equal('page');
-        expect(content).to.have.property('title');
         expect(content.title).to.equal('about');
-        expect(content).to.have.property('date');
-        expect(content).to.have.property('comments');
+        expect(content.comments).to.be.false();
     });
 
+    it('should render the content', function(){
+
+        var file = options.src + '/about-en.md';
+
+        var content = contentExtractor(file, options);
+        
+        expect(content).to.be.a('object');
+        expect(content.render).to.be.a('function');
+
+        var rendered = content.render();
+
+        expect(rendered).to.be.a('string');
+        expect(rendered).to.contain('<h1>about</h1>');
+        expect(rendered).to.not.contain('');
+
+    });
 });

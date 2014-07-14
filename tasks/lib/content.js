@@ -32,32 +32,20 @@ function extractUrl(file, title, src, extension){
               .replace(/^\//, ''); 
 }
 
-function loadContent(file, options){
-
-    if(!contentTpl){
-        contentTpl = hbs.compile(fs.readFileSync(options.contentTpl, 'utf-8'));
-    }
-
-    //marked tranform md to html and read yml metas.
-    var content = marked(fs.readFileSync(file, 'utf-8'));
+exports.extractor = function extractor(file, options){
     
-    ////HERE/////
-
-    return content;
-}
- 
-function contentParser(file, options){
-    
-
-
     var lang    = extractLang(file, options.defaultLang);
     var title   = extractTitle(file, lang);
     var url     = extractUrl(file, title, options.src, options.extension);
 
-    var content = loadContent(file, options);
+    //marked tranform md to html and read yml metas.
+    var content = marked(fs.readFileSync(file, 'utf-8'));
     var meta    = content.meta || {};
     var layout  = meta.layout || 'page';
 
+    if(!contentTpl){
+        contentTpl = hbs.compile(fs.readFileSync(options.contentTpl, 'utf-8'));
+    }
 
     return _.merge({
         src         : file,
@@ -65,9 +53,11 @@ function contentParser(file, options){
         url         : url,
         lang        : lang,
         fileTitle   : title,
-        content     : content.html
+        content     : content.html,
+
+        render      : function(){
+            return contentTpl(this);
+        }
+
     }, meta);
 }
-
-module.exports = contentParser;
-

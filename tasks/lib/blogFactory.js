@@ -1,12 +1,9 @@
 var _      = require('lodash');
-var marked = require('meta-marked');
+var fs     = require('fs');
 var path   = require('path');
 var hbs    = require('handlebars');
-
-var patterns = {
-    lang : /-([^-]{2,3})+\.(.*)$/,
-    ext  : /\.([^.]*)$/
-};
+var blog   = require('./blog')
+var contentExtractor = require('./content').extractor; 
 
 var d = _.partialRight(require('util').inspect, {
     showHidden : true,
@@ -14,95 +11,71 @@ var d = _.partialRight(require('util').inspect, {
     colors : true
 });
 
-module.exports = function blogFactory(src, dest, options){
+module.exports = function blogFactory(options){
 
-    var translations = require(options.i18n);
+    console.log(d(blog));    
 
 
-    var loadContent = function loadContent(files){
-        var blogMeta = {};
-        
-        //content
-        files.forEach(function(file){
-            var matches = file.match(patterns.lang);
-            var lang    = matches ? matches[1] : options.defaultLang;
-            //var content = marked(grunt.file.read(file));
-            var meta    = content.meta || {};
-            var layout  = meta.layout || 'page';
-            var title   = self.getPostTitle(file, lang);
-            var url     = path.dirname(file).replace(src, '') + '/' + title + '.' + options.extension;
-            url = url.replace(/^\//, '');               
+    var homePageName    = options.extension ? 'index.' + options.extension : 'index'; 
+    var indexTpl        = hbs.compile(fs.readFileSync(options.index, 'utf-8'));
 
-            if(!blogMeta[layout]){
-               blogMeta[layout] = {};
-            }
-            if(!blogMeta[layout][title]){
-               blogMeta[layout][title] = {};
-            }
+    var postsPageName   = options.extension ? 'posts.' + options.extension : 'index'; 
+    var postTpl         = hbs.compile(fs.readFileSync(options.posts, 'utf-8'));
 
-            blogMeta[layout][title][lang] = _.merge({
-                src     : file,
-                dest    : dest + '/' + lang + '/' + url,
-                url     : url,
-                content : content.html
-            }, meta);
-        });
-        return blogMeta;
-    };
-        
-        var loadHome = function loadHome(){    
-            var self        = this; 
-            var fileName    = options.extension ? 'index.' + options.extension : 'index'; 
-            var langs       = this.getAvailableLangs();
-            var indexTmpl   = hbs.compile(grunt.file.read(options.index)); 
+    //register partials
+    options.partialFiles.forEach(function(file){
+        var name = path.basename(file)
+                       .replace(/\.([^.]*)$/, '');
+        hbs.registerPartial(name, hbs.compile(fs.readFileSync(file, 'utf-8'))); 
+    });
 
-            //register partials
-            grunt.file.expand(options.partials).forEach(function(file){
-                var name = path.basename(file)
-                                   .replace(patterns.ext, '');
-                hbs.registerPartial(name, hbs.compile(grunt.file.read(file))); 
-            });
+    //load content from files
+    options.contentFiles.forEach(function loadContent(file){
+        //build blog model from each files
+        var layout, title, lang;
+        var content = contentExtractor(file, options);
+        layout      = content.layout;
+        title       = content.title;
+        lang        = content.lang;
+        content.content = '...';
 
-            this.blog.page.home = {};
-            langs.forEach(function(lang){       
-                var posts = self.getHomePosts(lang);
-                var tr = self.getTranslations(lang);
-                var content = indexTmpl(_.defaults({
-                    name  : options.name,
-                    paths : options.paths,
-                    url   : options.url + '/' + lang + '/' + fileName,
-                    posts : posts,
-                    navs  : self.getNav(lang)
-                }, tr));
-                self.blog.page.home[lang] = {
-                    dest    : dest + '/' + lang + '/' + fileName,
-                    content : content
-                };
-            });
+        if(!blog[layout]){
+           blog[layout] = {};
+        }
+        if(!blog[layout][title]){
+           blog[layout][title] = {};
+        }
 
-            return this;
+        blog[layout][title][lang] = content;
+    });
+
+    //load pages generated from meta : home and the post page
+    blog.getAvailableLangs().forEach(function(lang){
+ 
+        var tr = _.defaults(options.translations[lang] || {}, options.translations[options.defaultLang]);
+
+        blog.page.home[lang] = {
+            dest    : options.dest + '/' + lang + '/' + homePageName,
+            content : '...'
+            //content : indexTpl(_.defaults({
+                //name  : options.name,
+                //paths : options.paths,
+                //url   : options.url + '/' + lang + '/' + homePageName,
+                //posts : blog.getHomePosts(lang),
+                //navs  : blog.getNav(lang)
+            //}, tr))
         };
 
-        var loadPostsPage = function loadPostsPage(){
-            var self        = this; 
-            var fileName    = options.extension ? 'posts.' + options.extension : 'index'; 
-            var postTpl     = hbs.compile(grunt.file.read(options.posts));
-            var langs       = this.getAvailableLangs();
-             
-            this.blog.page.posts = {};
-            langs.forEach(function(lang){       
-                var translations = self.getTranslations(lang);
-                var posts = self.getPostsSummary(lang);
-                var content = posts.map(postTpl).join('<br>');
-                
-                self.blog.page.posts[lang] = {
-                    order   : 1,
-                    title   : 'posts',
-                    url     : fileName,
-                    dest    : dest + '/' + lang + '/' + fileName,
-                    content : content
-                };
-            });
-            return this;
+        blog.page.posts[lang] = {
+            order   : 1,
+            title   : 'posts',
+            url     : postsPageName,
+            dest    : options.dest + '/' + lang + '/' + postsPageName,
+            content : '...' //blog.getPostsSummary(lang, tr.readmore).map(postTpl).join('<br>')
         };
+    });
+
+    fs.writeFileSync('result.json', JSON.stringify(blog, null, '\t'));
+
+    return blog;
 };
