@@ -1,3 +1,7 @@
+/**
+ * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
+ * @license GPL3 
+ */
 var _      = require('lodash');
 var fs     = require('fs');
 var path   = require('path');
@@ -11,6 +15,14 @@ var d = _.partialRight(require('util').inspect, {
     colors : true
 });
 
+/**
+ * It builds for you (with love) a {@link Blog} from the options you give him
+ * 
+ * @exports tasks/lib/blogFactory
+ * @param {Object} options
+ * TODO document options we need!
+ * @returns {Blog}
+ */
 module.exports = function blogFactory(options){
 
     var homePageName    = options.extension ? 'index.' + options.extension : 'index'; 
@@ -50,27 +62,31 @@ module.exports = function blogFactory(options){
  
         var tr = _.defaults(options.translations[lang] || {}, options.translations[options.defaultLang]);
 
-        blog.page.home[lang] = {
-            dest    : options.dest + '/' + lang + '/' + homePageName,
-            content : indexTpl(_.defaults({
-                name  : options.name,
-                paths : options.paths,
-                url   : options.url + '/' + lang + '/' + homePageName,
-                posts : blog.getHomePosts(lang),
-                navs  : blog.getNav(lang)
-            }, tr))
-        };
-
         blog.page.posts[lang] = {
             order   : 1,
             title   : 'posts',
             url     : postsPageName,
             dest    : options.dest + '/' + lang + '/' + postsPageName,
-            content : blog.getPostsSummary(lang, tr.readmore).map(postTpl).join('<br>')
+            render  : function(){
+                return blog.getPostsSummary(lang, options.morePattern, tr.readmore)
+                           .map(postTpl)
+                           .join('<br>');
+            }
+        };
+        
+        blog.page.home[lang] = {
+            dest    : options.dest + '/' + lang + '/' + homePageName,
+            render : function(){
+                return indexTpl(_.defaults({
+                        name  : options.name,
+                        paths : options.paths,
+                        url   : options.url + '/' + lang + '/' + homePageName,
+                        posts : blog.getHomePosts(lang, options.morePattern, tr.readmore),
+                        navs  : blog.getNav(lang)
+                    }, tr));
+            }
         };
     });
-
-    //fs.writeFileSync('result.json', JSON.stringify(blog, null, '\t'));
 
     return blog;
 };

@@ -1,7 +1,16 @@
+/**
+ * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
+ * @license GPL3 
+ */
 var _            = require('lodash');
 var blogFactory  = require('./lib/blogFactory');
 var format       = require('util').format;
 
+/**
+ * Grunt task to generate your awesome blog.
+ * @exports tasks/staticatr
+ * @param {Object} grunt - the grunt instance
+ */
 module.exports = function staticatrTask(grunt) {
 	'use strict';
 
@@ -11,6 +20,13 @@ module.exports = function staticatrTask(grunt) {
         colors : true
     });
 
+    /**
+     * Expand patterns scoped into the src
+     * @private
+     * @param {String} src - the source path
+     * @param {Array|String} patterns - the patterns to expand (minimatch like)
+     * @returns {Array} of file paths
+     */
     var expand = function expand(src, patterns){
         var toExpand;
         if(!_.isArray(patterns)){
@@ -28,8 +44,14 @@ module.exports = function staticatrTask(grunt) {
         return grunt.file.expand({filter: 'isFile'}, toExpand);
     };
 
+    /**
+     * Register the staticatr Grunt task
+     */
     grunt.registerMultiTask('staticatr', 'Generates static web sites', function staticatr(){
-        var factory, blog; 
+        var factory, blog;
+
+        //build the options using defaults 
+        //TODO group options ? yes most of them are obscur
         var options = this.options({
             defaultLang : 'en',
             name        : 'Krampstudio',
@@ -52,15 +74,16 @@ module.exports = function staticatrTask(grunt) {
                 postImg : '../img/posts/images/' 
             },
             cleanDest   : false
-
         });
 
+        //expand fs based options
         options.src  = this.data.src.replace(/\/$/, '');
         options.dest = this.data.dest.replace(/\/$/, '');
         options.contentFiles = expand(options.src, options.content);
         options.partialFiles = grunt.file.expand(options.partials);
         options.translations = grunt.file.readJSON(options.i18n); 
 
+        //create or clean up  dest
         grunt.log.debug('Going to generate into ' + options.dest); 
         if(!grunt.file.exists(options.dest)){
             grunt.log.debug('mkdir -p ' + options.dest); 
@@ -70,9 +93,10 @@ module.exports = function staticatrTask(grunt) {
             grunt.file.delete(options.dest);
         }
         
-        //build the site model        
+        //build the blog object   
         blog = blogFactory(options);
          
+        //display some stats about 
         grunt.log.debug(
             format('Model extracted from src (%s) :\n' +
                          'langs : %j\n' + 
@@ -84,14 +108,16 @@ module.exports = function staticatrTask(grunt) {
                     _.size(blog.page)
             )
         );
+
+        //generate content : pages and posts
         _.forEach(_.merge({}, blog.page, blog.post), function(page, title){
             _.forEach(page, function (pageModel, lang){
                 grunt.log.debug('Creating page : ' + title + '  to ' + pageModel.dest);
-                grunt.file.write(pageModel.dest, pageModel.content);
+                grunt.file.write(pageModel.dest, pageModel.render());
             });
         });
     
-        //copy resources
+        //and copy resources
         expand(options.src, options.resources).forEach(function(resource){
             grunt.log.debug(resource);
             grunt.file.copy(resource, options.dest + '/' + resource.replace(options.src, '').replace(/^\//, ''));
