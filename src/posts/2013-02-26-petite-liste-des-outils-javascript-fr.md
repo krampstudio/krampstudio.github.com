@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Petite liste des outils JavaScript"
+author: "@kramp"
 date: 2013-02-26 22:30
 comments: true
 categories: JavaScript, tools

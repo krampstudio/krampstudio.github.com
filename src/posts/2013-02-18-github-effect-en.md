@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "The Github effect"
+author: "@kramp"
 date: 2013-02-18 12:33
 comments: true
 categories: git, web

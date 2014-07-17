@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "JavaScript le mot clé this"
+author: "@kramp"
 date: 2013-08-12 18:36
 comments: true
 categories: JavaScript

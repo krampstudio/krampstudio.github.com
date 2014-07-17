@@ -60,16 +60,41 @@ body > header {
             }
         }
     }
-    #content img {
-        float: left;
-        margin: 0 25px 10px 0;
-        padding: 3px;
-        border: solid 1px #eee;
-        @include radius(3px);
-        @include shadow;
- 
-        article img {
-            max-height: 150px;
+
+    #content {
+        img {
+            float: left;
+            margin: 0 25px 10px 0;
+            padding: 3px;
+            border: solid 1px #eee;
+            @include radius(3px);
+            @include shadow;
+        }
+        article {
+            &:after, &:before {
+                clear: both;
+            } 
+            img {
+                max-height: 150px;
+            }
+            header {
+                h1 {
+                    margin-bottom: 20px;
+                }
+                time {
+                    font-style : italic
+                }
+                .categories > span {
+                    background-color: #0B67A2;
+                    color: #fff;
+                    @include radius(6px);
+
+                    padding: 1px 2px; 
+                    margin: 0 3px 0 0;
+
+                    line-height: 32px;
+                }
+            }
         }
     }
     blockquote {
