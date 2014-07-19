@@ -88,6 +88,13 @@ module.exports = function(grunt) {
                 dest      : 'tmp',
                 cleanDest : true 
             }
+        },
+        
+        'staticatr-migrate' : {
+            test: {
+                src       : './src/posts/**/*.md',
+                dest      : 'tmp2'
+            }
         }
     });
 
