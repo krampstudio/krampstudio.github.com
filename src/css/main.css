@@ -552,8 +552,23 @@ body > header {
     -webkit-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
     -moz-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
     box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.75); }
-    .main #content img article img {
-      max-height: 150px; }
+  .main #content article:after, .main #content article:before {
+    clear: both; }
+  .main #content article img {
+    max-height: 150px; }
+  .main #content article header h1 {
+    margin-bottom: 20px; }
+  .main #content article header time {
+    font-style: italic; }
+  .main #content article header .categories > span {
+    background-color: #0B67A2;
+    color: #fff;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    padding: 1px 2px;
+    margin: 0 3px 0 0;
+    line-height: 32px; }
   .main blockquote {
     clear: both; }
 

@@ -51,6 +51,8 @@ exports.extractor = function extractor(file, options){
         src         : file,
         dest        : options.dest + '/' + lang + '/' + url,
         url         : url,
+        fullUrl     : options.url + '/' + lang + '/' + url,
+        blogName    : options.name,
         lang        : lang,
         fileTitle   : title,
         content     : content.html,

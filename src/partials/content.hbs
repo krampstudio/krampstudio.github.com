@@ -27,9 +27,7 @@
     {{/if}}
 
     {{#if comments}}
-    <aside>
-        discuss
-    </aside>
+    <x-disqus shortname="{{blogName}}" identifier="{{fileTitle}}" lang="{{lang}}" url="{{fullUrl}}"></x-disqus>   
     {{/if}}
 
     <script type="text/javascript">
