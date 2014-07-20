@@ -28,7 +28,7 @@ En fait le mot clé `this` n'est pas du tout ce que l'on croit. Ce n'est pas une
 On dit du type `Function` que c'est un objet de première classe car ce type permet de faire tout ce qu'un objet peut faire dans le langage. En gros l'instance d'une fonction se comporte comme un objet. Voici quelques caractéristiques qui illustre ce principe:
 
  - Chaque fonction est une instance du type `Object`. Bien que `typeof aFunction` renvoie `function`, `insanteof` nous permet de vérifier l'affiliation de la fonction au type `Object`.
-{% codeblock lang:javascript %}
+<x-code-prism language="javascript"  lin-numbers="true">
 function test() {
     //do stuffs
 };
@@ -42,17 +42,17 @@ console.log(require('util').inspect(test, true));
 //stdout:   [arguments]: null,
 //stdout:   [caller]: null,
 //stdout:   [prototype]: { [constructor]: [Circular] } }
-{% endcodeblock %}
+</x-code-prism>
  - Une fonction peut être assignée à une variable, comme un objet ou n'importe quel type. 
-{% codeblock lang:javascript %}
+<x-code-prism language="javascript"  lin-numbers="true">
 var getOs = function get_os() {
 	return 'windows';
 }
 console.log( typeof getOs ); 
 //stdout: 'function'
-{% endcodeblock %}
+</x-code-prism>
  - une fonction peut être passée en paramètre d'une fonction, permettant ainsi d'utiliser (en autre) le pattern du `callback`, très utile pour la programmation événementielle et les traitements asynchrones. 
-{% codeblock lang:javascript %}
+<x-code-prism language="javascript"  lin-numbers="true">
 function os_scanner( getOs ) {
     
     console.log( typeof arguments[0] );
@@ -67,9 +67,9 @@ function os_scanner( getOs ) {
 os_scanner(getOs);
 //stdout: 'function'
 //stdout: 'Oh Crap'
-{% endcodeblock %}
+</x-code-prism>
  -  Une fonction étant une instance, c'est une structure de données. Elle contient des propriétés intrinsèques (`name`, `arguments`, etc.), mais on peut aussi lui assigner de nouvelles propriétés.
-{% codeblock lang:javascript %}
+<x-code-prism language="javascript"  lin-numbers="true">
 get_os.arch='x86';
 
 console.log(require('util').inspect(get_os, true));
@@ -80,7 +80,7 @@ console.log(require('util').inspect(get_os, true));
 //stdout:   [caller]: null,
 //stdout:   [prototype]: { [constructor]: [Circular] },
 //stdout:   arch: 'x86' }
-{% endcodeblock %}
+</x-code-prism>
 
 Maintenant, nous savons que la fonction est un des concepts central du langage JavaScript, vous me direz, pas étonnant pour un langage fonctionnel, un peu plus pour un langage orienté objet (même sans classe, mais ça c'est une autre histoire).
 
@@ -89,7 +89,7 @@ Maintenant, nous savons que la fonction est un des concepts central du langage J
 Encore une fois, le langage se distingue de beaucoup de ses confrères sur le point du scope. La portée des variables en JavaScript se propage au niveau de la fonction et non du bloc. Bien entendu les variables globales sont accessibles partout (de tout façon personne n'utilise jamais de variables globales, n'est-ce pas?), par contre les variables *locales* sont locales à la fonction dans la laquelle elles ont été déclarées. 
 
 Quand on tente d'accéder à une variable non définie, on a une jolie erreur:
-{% codeblock lang:javascript %}
+<x-code-prism language="javascript"  lin-numbers="true">
 function get_os(){
     var arch = 'x86';
 }
@@ -102,10 +102,10 @@ get_arch();
 //stdout: ReferenceError: arch is not defined
 //stdout:    at get_arch (repl:1:34)
 //stdout:    at [...]
-{% endcodeblock %}
+</x-code-prism>
 
 Dans un langage où la portée des variables est le bloc, on pourrait s'attendre à la même chose, mais:
-{% codeblock lang:javascript %}
+<x-code-prism language="javascript"  lin-numbers="true">
 function get_arch(){
     if(false){
         var arch = 'windows';
@@ -115,12 +115,12 @@ function get_arch(){
 
 get_arch();
 //stdout: undefined 
-{% endcodeblock %}
+</x-code-prism>
 
 La variable `arch` est donc **accessible** à toute la fonction, même si elle n'a pas encore été définie (d'où le `undefined`). Ce code est équivalent à:
 
 
-{% codeblock lang:javascript %}
+<x-code-prism language="javascript"  lin-numbers="true">
 function get_arch(){
     var arch;
     if(false){
@@ -131,13 +131,13 @@ function get_arch(){
 
 get_arch();
 //stdout: undefined
-{% endcodeblock %}
+</x-code-prism>
 
 JavaScript intègre le principe du _hoisting_, c'est-à-dire que toutes les variables locales à une fonction sont accessibles dès le début de celle-ci. Une des bonnes pratiques veut que toutes les variables utilisées soient déclarées en début de fonction. 
 
 Ce type de comportement peut nous paraître limitant. Ce serait la cas si JS n'avais pas un mécanisme de _closure_. La closure est un principe tout simple mais très puissant, qui donne accès aux variables des scopes englobant dans le scope englobé. Comme la portée du scope est la fonction, alors on peut dire que si une fonction en contient une autre, alors la fonction contenue a accès aux variables de la fonction contenante. Comme souvent en informatique (et avec ma prose) un principe peut être simple mais compliqué à expliquer, alors un bon exemple devrait éclaircir ce point:
  
-{% codeblock lang:javascript %}
+<x-code-prism language="javascript"  lin-numbers="true">
 function desc_os(){
     var os = 'GNU/Linux';
     var version = '3.5.0-37-generic';
@@ -153,7 +153,7 @@ function desc_os(){
 
 console.log(desc_os());
 //stdout: GNU/Linux 3.5.0-37-generic x86_64 Ubuntu
-{% endcodeblock %}
+</x-code-prism>
 
 Dans l'exemple ci-dessus, la fonction `format` _capture_ les valeurs des variables de la fonction `desc_os` au moment de son appel.
 
@@ -170,7 +170,7 @@ Les propriétés suivantes sont accessible à partir de chaque fonction  :
  - `arguments` : un objet qui contient la liste des arguments passés (attention, ce n'est pas un `Array` mais un objet qui se comporte comme tel).
  - `caller` : contient une référence à la fonction appelante.
 
-{% codeblock lang:javascript %}
+<x-code-prism language="javascript"  lin-numbers="true">
 function showFileSystem(mountPoint){
     console.log(showFileSystem.name);
     console.log(showFileSystem.length);
@@ -187,7 +187,7 @@ discCheck();
 //stdout: 1
 //stdout: /dev/sda
 //stdout: discCheck
-{% endcodeblock %}
+</x-code-prism>
 
 Il existe d'autre propriétés qui peuvent changer entre les implémentions ou dont l'usage sort du scope de ce post (à moins d'une closure... bon, d'accord c'est nul ;).
 
@@ -199,7 +199,7 @@ Parmi les méthodes accessibles, les suivantes nous intéressent particulièreme
 
 `call` et `apply` ont la même finalité, seul la manière dont les paramètres sont passés changent. On pourrait penser que ces fonctions sont peu utiles, comme dans l'exemple suivant:
 
-{% codeblock lang:javascript %}
+<x-code-prism language="javascript"  lin-numbers="true">
 function kill(pid, signal){
     if(!signal){
         signal = '9';
@@ -220,11 +220,11 @@ kill.apply(null, [1234, 'PIPE']);
 //stdout: Running: kill -9 1234
 //stdout: Running: kill -PIPE 1234
 
-{% endcodeblock %}
+</x-code-prism>
 
 Dans ce cas, il n'y a effectivement pas un très grand intérêt, les méthodes `call` et `apply` semblent identiques. La méthode `apply` a pour particularité d'utiliser un tableau pour les paramètres ce qui facilite les exécutions dynamiques de fonction, par exemple :
 
-{% codeblock lang:javascript %}
+<x-code-prism language="javascript"  lin-numbers="true">
 var fs = require('fs');
 
 //returns an array of files name for a service
@@ -272,12 +272,12 @@ doOnLogs('redis', backup);
 
 //stdout: 2 files merged
 //stdout: 2 files backed up
-{% endcodeblock %}
+</x-code-prism>
 
 C'est bon, j'arrête de vous tenir en haleine, maintenant je vais vous parlez du premier paramètre de ces méthodes, car vous vous demandez quel est donc ce paramètre qui a la valeur `null`? Et bien ce paramètre c'est *le contexte de la fonction*, il permet de définir la valeur du mot clé `this` au sein de la fonction.
 
 
-{% codeblock lang:javascript %}
+<x-code-prism language="javascript"  lin-numbers="true">
 var cpu = {
     cores : 2,
     vendor : 'Intel',
@@ -298,13 +298,13 @@ var old_cpu = {
 
 cpu.isMulticore.call(old_cpu);
 //stdout: false
-{% endcodeblock %}
+</x-code-prism>
 
 Dans l'exemple ci-dessus, nous avons modifié le contexte de la fonction. Lors d'un appel de méthode avec l'opérateur `.` classique, le contexte de fonction est celui de l'objet, donc dans `cpu.isMultiCore()`, `this` se rapporte à l'objet `cpu`. Dans le 2nd appel, nous utilisons la méthode `call` pour changer le contexte de la fonction: `this` fera référence à `old_cpu`.
 
 Jusqu'ici tout va bien. On a tous compris (enfin j'espère) que `this` ne se rapporte pas à une instance comme dans d'autres langages mais bien au contexte. Corsons un peu les choses, avec le code suivant:
 
-{% codeblock lang:javascript %}
+<x-code-prism language="javascript"  lin-numbers="true">
 var cpu = {
     temperature : 65,
 
@@ -328,14 +328,14 @@ cpu.monitorTemperature();
 //stdout: Temperature at undefined° is ok
 //stdout: Temperature at undefined° is ok
 //stdout: Temperature at undefined° is ok
-{% endcodeblock %}
+</x-code-prism>
 
 Oh!(Ndt: traduction de  _WTF!_) C'est quoi ce vieux `undefined`? Et bien oui, si vous avez suivis, chaque fonction a un contexte et ce contexte est accessible via le mot clé `this`. De plus, comme le scope porte sur la fonction et que nous déclarons une fonction anonyme comme _callback_ de `setInterval` et bien `this` ne se rapporte plus au contexte de `monitorTemperature` mais à celui de la fonction anonyme. 
 
 Mais comment on va s'en sortir? C'est là que les _closures_ vont venir à notre secours. Nous allons garder une référence vers le contexte de la fonction :
 
 
-{% codeblock lang:javascript %}
+<x-code-prism language="javascript"  lin-numbers="true">
 var cpu = {
     temperature : 65,
 
@@ -360,13 +360,13 @@ cpu.monitorTemperature();
 //stdout: Temperature at 65° is ok
 //stdout: Temperature at 65° is ok
 //stdout: Temperature at 65° is ok
-{% endcodeblock %}
+</x-code-prism>
 
 Et voilà !
 
 Ce même exemple avec une _pseudo classe_, donne cela:
 
-{% codeblock lang:javascript %}
+<x-code-prism language="javascript"  lin-numbers="true">
 function Cpu(){
     this.cores = 2;
     this.vendor = 'Intel';
@@ -380,13 +380,13 @@ function Cpu(){
 var cpu = new Cpu();
 console.log(cpu.isMultiCore());
 //stdout: true
-{% endcodeblock %}
+</x-code-prism>
 
 Le mot clé `new` peut être compris comme une sorte d'alias à la méthode `call`. En gros `new Cpu()` revient à faire `Cpu.call({})`, c'est-à-dire à créer un nouvel objet (le `{}`) et à le passer en tant que contexte de fonction. 
 
 Une erreur fréquente est d'utiliser `this` au sein d'une fonction en vue de l'utiliser comme une pseudo classe et de l'appeler sans le mot clé `new`. Et là, c'est le drame: `this` va se référer au contexte dans lequel il a été appelé. Prenons l'exemple:
 
-{% codeblock lang:javascript %}
+<x-code-prism language="javascript"  lin-numbers="true">
 function UnixProcess(){
     this.pid = process.pid;
     console.log(this);
@@ -395,7 +395,7 @@ function UnixProcess(){
 var unixProcess = new UnixProcess();
 console.log(unixProcess);
 //stdout: { pid: 6565 }
-{% endcodeblock %}
+</x-code-prism>
 
 Si vous exécutez ce code dans la console node.js et qu'ensuite vous lancer `UnixProcess()` (sans le `new`), vous allez retrouvez toutes les variables globales, et oui... de même que si vous lancez `console.log(this)` à l'extérieur d'une fonction. 
  
@@ -403,7 +403,7 @@ Si vous exécutez ce code dans la console node.js et qu'ensuite vous lancer `Uni
 
 Voici un template d'un plugin jQuery, on se penchant dessus on voit bien l'usage du mot clé `this` qui permet d'accéder au contexte de l'élément jQuery (toujours un tableau d'où les `this.each`) ou de l'objet `Plugin`:
 
-{% codeblock lang:javascript %}
+<x-code-prism language="javascript"  lin-numbers="true">
 /*
 * $('#target').pluginName(options); calls Plugin.init(options)
 * $('#target').pluginName('aMethod'); calls public method Plugin.aMethod();
@@ -466,7 +466,7 @@ Voici un template d'un plugin jQuery, on se penchant dessus on voit bien l'usage
     };
 
 })( jQuery );
-{% endcodeblock %}
+</x-code-prism>
 
 ## Pour aller plus loin
 
