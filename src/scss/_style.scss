@@ -55,8 +55,8 @@ body > header {
             line-height: 30px;
 
             &:after {
-                content : ' >> ';
-                font-size: 12px;
+                @extend .fa;
+                @extend .fa-arrow-circle-right:before;
             }
         }
     }
@@ -96,9 +96,25 @@ body > header {
                 }
             }
         }
-    }
-    blockquote {
-        clear: both;
+
+        ul {
+            @extend .fa-ul;
+            & > li {
+                position: relative;
+                margin-bottom: 3px;
+                &:before {
+                    @extend .fa;   
+                    @extend .fa-li;   
+                    @extend .fa-check-square;
+                    color: #2C5A78;
+                    font-size: 13px;
+                    line-height: 13px;
+                }
+            }
+        } 
+        blockquote {
+            clear: both;
+        }
     }
 }
 

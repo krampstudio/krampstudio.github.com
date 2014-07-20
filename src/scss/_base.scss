@@ -32,9 +32,32 @@ a, x-load {
     }
 }
 
+
+
 blockquote {
-    font-style: italic;
-    color: #666;
-    border-left: solid 5px #ddd;
-    padding-left: 5px;
+
+    background-color: #eee;
+    padding: 5px; 
+    @include radius(3px);
+
+    &:before {
+        background-color: #fff;
+        color: #666;
+        padding: 3px;
+        margin-right: 5px;
+        @include radius(3px);
+        @include shadow(2px);
+        @extend .fa;
+        @extend .fa-quote-left;
+        float: left;
+        font-size: 14px;
+        line-height: 14px;
+    }
+    &:after {
+        clear: both;
+    }
+
+    p {
+        margin: 0;
+    }
 }
