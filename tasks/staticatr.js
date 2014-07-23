@@ -114,6 +114,7 @@ module.exports = function staticatrTask(grunt) {
             _.forEach(page, function (pageModel, lang){
                 grunt.log.debug('Creating page : ' + title + '  to ' + pageModel.dest);
                 grunt.file.write(pageModel.dest, pageModel.render());
+                grunt.log.debug('ok');
             });
         });
     

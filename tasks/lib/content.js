@@ -33,15 +33,22 @@ function extractUrl(file, title, src, extension){
 }
 
 exports.extractor = function extractor(file, options){
-    
+    var content, meta, layout; 
     var lang    = extractLang(file, options.defaultLang);
     var title   = extractTitle(file, lang);
     var url     = extractUrl(file, title, options.src, options.extension);
+ 
+   var renderer = new marked.Renderer();
+    renderer.code = function (code, lang) {
+        return "<x-code-prism language='" + (lang || '*') + "' line-numbers='true'>" + 
+                    (lang === 'markup' ? code.replace(/>/gm, '&gt;').replace(/</g, '&lt;') : code) + 
+                "</x-code-prism>"; 
+    };
 
     //marked tranform md to html and read yml metas.
-    var content = marked(fs.readFileSync(file, 'utf-8'));
-    var meta    = content.meta || {};
-    var layout  = meta.layout || 'page';
+    content = marked(fs.readFileSync(file, 'utf-8'), { renderer: renderer });
+    meta    = content.meta || {};
+    layout  = meta.layout || 'page';
 
     if(!contentTpl){
         contentTpl = hbs.compile(fs.readFileSync(options.contentTpl, 'utf-8'));
@@ -62,4 +69,4 @@ exports.extractor = function extractor(file, options){
         }
 
     }, meta);
-}
+};

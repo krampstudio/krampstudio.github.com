@@ -98,22 +98,32 @@ body > header {
         }
 
         ul {
-            @extend .fa-ul;
+            list-style-type: none;
             & > li {
                 position: relative;
                 margin-bottom: 3px;
                 &:before {
                     @extend .fa;   
-                    @extend .fa-li;   
                     @extend .fa-check-square;
                     color: #2C5A78;
                     font-size: 13px;
                     line-height: 13px;
+                    margin-right: 6px;
                 }
             }
         } 
         blockquote {
             clear: both;
+        }
+        p code {
+           font-family: monospace;
+           font-size: 1.1em;
+           background-color: #eee;
+           padding: 2px 3px;
+            @include radius(3px);
+        }
+        pre code {
+           font-size: .9em;
         }
     }
 }

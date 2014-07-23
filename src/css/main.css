@@ -368,7 +368,7 @@ td, th {
   font-weight: normal;
   font-style: normal; }
 
-.fa {
+.fa, blockquote:before, .main article .read-more:after, .main #content ul > li:before {
   display: inline-block;
   font-family: FontAwesome;
   font-style: normal;
@@ -426,9 +426,9 @@ td, th {
 .pull-left {
   float: left; }
 
-.fa.pull-left {
+.fa.pull-left, blockquote.pull-left:before, .main article .pull-left.read-more:after, .main #content ul > li.pull-left:before {
   margin-right: 0.3em; }
-.fa.pull-right {
+.fa.pull-right, blockquote.pull-right:before, .main article .pull-right.read-more:after, .main #content ul > li.pull-right:before {
   margin-left: 0.3em; }
 
 .fa-spin {
@@ -1014,7 +1014,7 @@ td, th {
 .fa-arrow-circle-left:before {
   content: "\f0a8"; }
 
-.fa-arrow-circle-right:before {
+.fa-arrow-circle-right:before, .main article .read-more:after {
   content: "\f0a9"; }
 
 .fa-arrow-circle-up:before {
@@ -1260,7 +1260,7 @@ td, th {
 .fa-circle-o:before {
   content: "\f10c"; }
 
-.fa-quote-left:before {
+.fa-quote-left:before, blockquote:before {
   content: "\f10d"; }
 
 .fa-quote-right:before {
@@ -1428,7 +1428,7 @@ td, th {
 .fa-level-down:before {
   content: "\f149"; }
 
-.fa-check-square:before {
+.fa-check-square:before, .main #content ul > li:before {
   content: "\f14a"; }
 
 .fa-pencil-square:before {
@@ -1749,10 +1749,29 @@ a, x-load {
     transition: all 400ms ease-out; }
 
 blockquote {
-  font-style: italic;
-  color: #666;
-  border-left: solid 5px #ddd;
-  padding-left: 5px; }
+  background-color: #eee;
+  padding: 5px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px; }
+  blockquote:before {
+    background-color: #fff;
+    color: #666;
+    padding: 3px;
+    margin-right: 5px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: 0px 0px 2px 0px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow: 0px 0px 2px 0px rgba(50, 50, 50, 0.75);
+    box-shadow: 0px 0px 2px 0px rgba(50, 50, 50, 0.75);
+    float: left;
+    font-size: 14px;
+    line-height: 14px; }
+  blockquote:after {
+    clear: both; }
+  blockquote p {
+    margin: 0; }
 
 /*
  * Specific styling, by element.
@@ -1827,9 +1846,6 @@ body > header {
     display: block;
     height: 30px;
     line-height: 30px; }
-    .main article .read-more:after {
-      content: ' >> ';
-      font-size: 12px; }
   .main #content img {
     float: left;
     margin: 0 25px 10px 0;
@@ -1858,8 +1874,28 @@ body > header {
     padding: 1px 2px;
     margin: 0 3px 0 0;
     line-height: 32px; }
-  .main blockquote {
+  .main #content ul {
+    list-style-type: none; }
+    .main #content ul > li {
+      position: relative;
+      margin-bottom: 3px; }
+      .main #content ul > li:before {
+        color: #2C5A78;
+        font-size: 13px;
+        line-height: 13px;
+        margin-right: 6px; }
+  .main #content blockquote {
     clear: both; }
+  .main #content p code {
+    font-family: monospace;
+    font-size: 1.1em;
+    background-color: #eee;
+    padding: 2px 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px; }
+  .main #content pre code {
+    font-size: 0.9em; }
 
 footer, footer a {
   background: #333;
