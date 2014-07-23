@@ -96,7 +96,8 @@ Dans l'ordre, on va:
 2. Le versionner avec GIT.
 3. Générer la structure de base.
 
-{% codeblock lang:bash %}
+
+``` bash
 $ mkdir removablearea
 $ cd removablearea
 $ git init
@@ -108,7 +109,7 @@ Initialized from template "jquery".
 Done, without errors.
 $ git add -A
 $ git commit -m "Create base plugin"
-{% endcodeblock %}
+```
 
 Voilà, maintenant, notre structure est générée, le projet est versionné avec GIT, et si vous avez renseigné soigneusement les questions demandées par Grunt, alors un certain nombre de sections sont déjà pré-remplies.
 
@@ -145,25 +146,28 @@ Dans un premier temps, nous allons créer la structure (au sens du typage en pro
 
 Tout d'abord, on peut remarquer que le code est englobé dans une closure. Ce pattern s'appelle _Immediately-Invoked Function Expression_ (ou _LIFE_). Cette pratique permet d'éviter d'exécuter du code dans le scope global. Dans le cas de jQuery, cet usage permet d'utiliser le symbole dollar en étant sûr qu'il vient de jQuery et non d'un autre framework, le <span class="inline-code">$</span> est mappé à l'objet <span class="inline-code">jQuery</span> :
 
-{% codeblock lang:javascript %}
+
+``` javascript
 (function( $ ) {
 	//your code
 })( jQuery );
-{% endcodeblock %}
+```
 
 Un autre point que l'on peut souligner est ce string utilisé à la ligne 2:
 
-{% codeblock lang:javascript %}
+
+``` javascript
 	"use strict";
-{% endcodeblock %}
+```
 
 La présence de ce string permet de passer le moteur Javascript en mode _strict_, qui le rend moins tolérant à certaines pratiques du langage. Vous pouvez consulter la [documentation Mozilla](https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Functions_and_function_scope/Strict_mode) pour plus de détails sur ce mode.
 
 Ensuite la partie qui permet de créer le plugin jQuery peut se résumer à cette ligne:
 
-{% codeblock lang:javascript %}
+
+``` javascript
     $.fn.removableArea = function( method ) { }
-{% endcodeblock %}
+```
 
 Littéralement, nous ajoutons à l'attribut <code class='inline'>fn</code> de l'objet <code class='inline'>jQuery</code> (ou <code class='inline'>$</code> pour les intimes), la fonction <code class='inline'>removableArea</code> qui prend en paramètre un nom de méthode. C'est grâce à cette ligne que nous pourrons appeler la fonction <code class='inline'>removableArea</code> sur un élément du DOM, comme <code class='inline'>$('.boo > #far').removableArea(options);</code>.
 
@@ -176,10 +180,11 @@ Ensuite le contenu de cette fonction va tout simplement déléguer les appels à
 - <code class='inline'>removableArea</code> est appelé sans paramètre, on lève une erreur.
 
 Grâce à ce mécanisme de paramètres, nous pouvons appeler des méthodes à partir du même plugin: 
-{% codeblock lang:javascript %}
+
+``` javascript
     var elt = $('#id').removableArea(options);
     elt.removableArea('destroy');
-{% endcodeblock %}
+```
 
 ## Refactoring
 
@@ -193,14 +198,15 @@ Maintenant, que nous avons la structure de notre plugin en place, nous allons y 
 
 Par convention, le paramétrage des plugins se fait en passant un objet contenant les options pour initialiser le plugin. Le code suivant va permettre d'initialiser le composant de notre exemple:
 
-{% codeblock lang:javascript %}
+
+``` javascript
 $.removableArea({
 	label 		: 'Supprimer',
 	img 		: '/imgs/delete.png',
 	warning 	: 'Voulez-vous supprimer cet élément?',
 	hoverClass 	: 'half-opac'
 });
-{% endcodeblock %}
+```
 
 Nous avons donc définis un certain nombre de paramètres, comme l'image du _bouton_ qui s'affichera pour supprimer la zone ou les différents labels. On permet aussi de définir la classe CSS qui s'appliquera sur ce _bouton_ au passage de la souris. 
  
@@ -212,7 +218,8 @@ Pour faire cela, nous allons utiliser un méthode de jQuery qui est très utile:
 
 Nous allons donc définir ces paramètres par défaut dans un attribut de notre objet <code class='inline'>RemovableArea</code>, puis les étendre avec les paramètres passés au plugin:
 
-{% codeblock lang:javascript %}
+
+``` javascript
 	var RemovableArea = {
         _opts : {
             label : 'Supprimer',
@@ -226,7 +233,7 @@ Nous allons donc définir ces paramètres par défaut dans un attribut de notre 
 
 		}
 	};
-{% endcodeblock %}
+```
 
 Grâce au résultat de la méthode <code class='inline'>$.extend</code> la variable <code class='inline'>opts</code> contient les options passées par l'utilisateur ou leur valeur par défaut s'ils ont été omis.
 
@@ -272,31 +279,34 @@ Testons notre plugin!
 
 Tout d'abord, nous créons dans les _fixtures_ trois blocs qui vont nous servir comme zones de suppression:
 
-{% codeblock lang:html %}
+
+``` markup
 	<div id="qunit-fixture">
 		<div>lame test markup</div>
 		<div>normal test markup</div>
 		<div>awesome test markup</div>
 	</div>
-{% endcodeblock %}
+```
 
 Ensuite, nous définissons un module dans le test. L'ordre d'invocation des méthodes est important, car toutes les méthodes de test définies après la déclaration du module feront parties de ce module. Ce module va aussi se charger d'initialiser l'attribut <code class='inline'>targets</code> que nous faisons pointer sur les zones à supprimer, et nous pourrons utiliser cet attributs dans tous les tests du module.
 
-{% codeblock lang:javascript %}
+
+``` javascript
 	module('jQuery#removableArea', {
 		setup: function() {
 			this.targets = $('#qunit-fixture').children();
 		}
 	});
-{% endcodeblock %}
+```
 
 Puis nous déclarons une méthode de test classique qui s'assure que le plugin est bien chargé par jQuery:
 
-{% codeblock lang:javascript %}
+
+``` javascript
 	test('is plugin loaded in jQuery', 1, function(){
         ok( (typeof $.fn.removableArea === 'function'), "the plugin should be available from jQuery.fn");
     });
-{% endcodeblock %}
+```
 
 Ensuite, un petit test asynchrone qui se déroule en 3 temps:
 
@@ -306,7 +316,8 @@ Ensuite, un petit test asynchrone qui se déroule en 3 temps:
 
 Ce qui donne le test suivant, qui vérifie que le plugin a bien été chargé en écoutant l'événement d'initialisation:
 
-{% codeblock lang:javascript %}
+
+``` javascript
     asyncTest("does the plugin initialize", function(){
 
         expect(this.targets.length); 	//we expect 3 assertions, one by target
@@ -317,7 +328,7 @@ Ce qui donne le test suivant, qui vérifie que le plugin a bien été chargé en
             });
         this.targets.removableArea();
     });
-{% endcodeblock %}
+```
 
 Pour lancer les tests, il suffit de charger la page HTML. Le résultat est visible depuis celle-ci, comme nous pouvons le voir sur la capture suivante: 
 
@@ -347,20 +358,22 @@ Dans le cas de notre plugin, les méta-données sont les suivantes:
 
 Maintenant nous souhaitons avoir en entête de nos sources le commentaire suivant:
 
-{% codeblock lang:javascript %}
+
+``` javascript
 /**
  * Copyright (c) 2012 Bertrand Chevrier
  * jQueryRemovableArea - v0.1.0 
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
  * @license GPL  <http://www.gnu.org/licenses/gpl-3.0.txt>
  */
-{% endcodeblock %}
+```
 
 Pour cela Grunt nous propose un mécanisme qui va nous permettre de récupérer le contenu du fichier <code class='inline'>package.json</code> et de l'utiliser au sein de notre fichier de build, via un mécanisme de template basique. De plus, Grunt a mis en place le concept de <code class='inline'>banner</code> qui pourra être concaténé avec notre fichier source. 
 
 Voici le fichier de build <code class='inline'>grunt.js</code> qui va minimifier les sources et créer l'entête:
 
-{% codeblock lang:javascript %}
+
+``` javascript
 	grunt.initConfig({
         pkg: '<json:package.json>',
         meta: {
@@ -384,7 +397,7 @@ Voici le fichier de build <code class='inline'>grunt.js</code> qui va minimifier
             }
         }
 	});
-{% endcodeblock %}
+```
 
 La commande :
 
