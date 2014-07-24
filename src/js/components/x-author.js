@@ -25,7 +25,7 @@
                     this.innerHTML = '<a href="http://twitter.com/' + content.replace('@', '') + '" target="_blank">' + content + '</a>';
 
                 } else {
-                    this.innerText = this.author;
+                    this.textContent = this.author;
                 }
             }
         } ,
