@@ -13,10 +13,11 @@ body > header {
        text-shadow: 1px 1px #555;
     }
     
-    .lg-switcher a {
+    x-lang-switcher x-lang {
         opacity: 0.6;
+        cursor: pointer;
         @include unhover;
-        &:hover, &.active{
+        &:hover, &[selected]{
             opacity: 1;
             @include hover;
         }
