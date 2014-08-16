@@ -6,14 +6,14 @@ var _      = require('lodash');
 var fs     = require('fs');
 var path   = require('path');
 var hbs    = require('handlebars');
-var blog   = require('./blog')
+var blog   = require('./blog');
 var contentExtractor = require('./content').extractor; 
 
-var d = _.partialRight(require('util').inspect, {
-    showHidden : true,
-    depth : 10,
-    colors : true
-});
+//var d = _.partialRight(require('util').inspect, {
+    //showHidden : true,
+    //depth : 10,
+    //colors : true
+//});
 
 /**
  * It builds for you (with love) a {@link Blog} from the options you give him

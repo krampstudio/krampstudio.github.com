@@ -14,11 +14,11 @@ var format       = require('util').format;
 module.exports = function staticatrTask(grunt) {
 	'use strict';
 
-    var d = _.partialRight(require('util').inspect, {
-        showHidden : true,
-        depth : 10,
-        colors : true
-    });
+    //var d = _.partialRight(require('util').inspect, {
+        //showHidden : true,
+        //depth : 10,
+        //colors : true
+    //});
 
     /**
      * Expand patterns scoped into the src
@@ -53,27 +53,27 @@ module.exports = function staticatrTask(grunt) {
         //build the options using defaults 
         //TODO group options ? yes most of them are obscur
         var options = this.options({
-            defaultLang : 'en',
-            name        : 'Krampstudio',
-            url         : 'http://krampstudio.com',
-            homePosts   : 3,
-            morePattern : /<!--\s?more\s?-->/gi,
-            extension   : 'html',
-            content     : ['**/*.md', '!js/vendor/**/*.md'],
-            resources   : ['fonts/**', 'css/**', 'scss/**', 'js/**', 'img/**', 'favicon.ico', '*.txt'],
-            engine      : 'handlebars',
-            index       : 'src/index.hbs',
-            contentTpl  : 'src/partials/content.hbs',
-            posts       : 'src/partials/post-entry.hbs',
-            partials    : 'src/partials/*.hbs',
-            i18n        : 'src/i18n.json',
-            paths       : {
+            defaultLang : 'en',                                 //default language
+            name        : 'Krampstudio',                        //blog name
+            url         : 'http://krampstudio.com',             //blog base url
+            homePosts   : 3,                                    //number of posts to display to the home page
+            morePattern : /<!--\s?more\s?-->/gi,                //pattern to look at to display only the beginning of a post
+            extension   : 'html',                               //generated files extension
+            content     : ['**/*.md', '!js/vendor/**/*.md'],    //where to find posts
+            resources   : ['fonts/**', 'css/**', 'scss/**', 'js/**', 'img/**', 'favicon.ico', '*.txt'],     //resources to include during the generation
+            engine      : 'handlebars',                         //template engine
+            index       : 'src/index.hbs',                      //main temaple
+            contentTpl  : 'src/partials/content.hbs',           //contents template
+            posts       : 'src/partials/post-entry.hbs',        //post entry template 
+            partials    : 'src/partials/*.hbs',                 //partials templates
+            i18n        : 'src/i18n.json',                      //i18n file 
+            paths       : {                                     //resources paths for inside a content
                 css     : '../css/',
                 js      : '../js/',
                 img     : '../img/',
                 postImg : '../img/posts/images/' 
             },
-            cleanDest   : false
+            cleanDest   : false                                 //if the task should clean the destination folder before generation
         });
 
         //expand fs based options

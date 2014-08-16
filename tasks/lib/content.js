@@ -1,3 +1,7 @@
+/**
+ * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
+ * @license GPL3 
+ */
 var _       = require('lodash');
 var fs      = require('fs');
 var path    = require('path');
@@ -13,7 +17,6 @@ var patterns = {
 
 
 function extractLang(file, defaultLang){
-
     var matches = file.match(patterns.lang);
     return matches ? matches[1] : defaultLang;
 }
