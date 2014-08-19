@@ -43,11 +43,12 @@ describe('contentParser', function(){
         var file = options.src + '/about-en.md';
 
         var content = contentExtractor(file, options);
+
         expect(content).to.be.a('object');
         expect(content).to.contain.keys(['layout', 'title', 'author', 'date', 'comments', 'sharing']);
         expect(content.layout).to.equal('page');
         expect(content.title).to.equal('about');
-        expect(content.comments).to.be.false();
+        expect(content.comments).to.be.false;
     });
 
     it('should render the content', function(){
@@ -63,7 +64,7 @@ describe('contentParser', function(){
 
         expect(rendered).to.be.a('string');
         expect(rendered).to.contain('<h1>about</h1>');
-        expect(rendered).to.not.contain('');
+        expect(rendered).to.be.not.empty;
 
     });
 });
