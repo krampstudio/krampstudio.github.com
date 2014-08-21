@@ -82,6 +82,7 @@ module.exports = function blogFactory(options){
                         paths : options.paths,
                         url   : options.url + '/' + lang + '/' + homePageName,
                         posts : blog.getHomePosts(lang, options.morePattern, tr.readmore),
+                        allposts : blog.getPostsByLang(lang),
                         navs  : blog.getNav(lang)
                     }, tr));
             }
