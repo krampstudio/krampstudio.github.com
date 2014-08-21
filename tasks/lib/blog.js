@@ -23,7 +23,7 @@ var blog = {
     },
     
     /**
-     * Contains the posts (layout=page)
+     * Contains the posts (layout=post)
      */
     post : {},
 

@@ -95,3 +95,42 @@ describe('blog.getPagesByLang', function(){
         expect(page.content.length).to.be.above(0);
     });
 });
+
+describe('blog.getPostsSummary', function(){
+
+    it('should be a function', function(){
+        expect(blog.getPostsSummary).to.be.a('function');
+    });
+
+    it('should return posts', function(){
+        var sums = blog.getPostsSummary('en');
+        expect(sums).to.be.an('array');
+        expect(sums.length).to.be.above(0);
+    }); 
+    
+    it('should strip content until morePattern', function(){
+        
+        var sums = blog.getPostsSummary('en', /<!--\s?more\s?-->/gi, '___MORE___');
+        var sum  = sums[1];
+             
+        expect(sum.summary.length).to.be.above(0);
+        expect(sum.content.length).to.be.above(sum.summary.length);
+        expect(sum.readmore).to.equal('___MORE___');
+    });
+});
+
+describe('blog.getHomePosts', function(){
+
+    it('should be a function', function(){
+        expect(blog.getHomePosts).to.be.a('function');
+    });
+
+    it('should return posts', function(){
+        var sums = blog.getHomePosts('en', /<!--\s?more\s?-->/gi, '___MORE___', 2);
+
+        expect(sums).to.be.an('array');
+        expect(sums.length).to.be.above(0);
+        expect(sums.length).to.equal(2);
+    }); 
+    
+});
