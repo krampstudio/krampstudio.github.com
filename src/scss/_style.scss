@@ -31,13 +31,20 @@ body > header {
     overflow: hidden;
 
     nav {
+        
         @include gradient(#FFE27C, #EDC229, #EDC229);
+        ul li:before{
+            @extend .fa;   
+            @extend .fa-caret-right;
+            color: #555;
+            opacity: 0.5;
+        }
         x-load {
             font-family: $headingFont;
             font-size: 18px;
             text-decoration: none;
             text-transform: capitalize;
-            @include intextshadow(#666, #EDC229); 
+            color: #555;
             @include unhover;
             &:hover{
                 color: #0B67A2;

@@ -368,7 +368,7 @@ td, th {
   font-weight: normal;
   font-style: normal; }
 
-.fa, blockquote:before, .main article .read-more:after, .main #content ul > li:before {
+.fa, blockquote:before, .main nav ul li:before, .main article .read-more:after, .main #content ul > li:before {
   display: inline-block;
   font-family: FontAwesome;
   font-style: normal;
@@ -426,9 +426,9 @@ td, th {
 .pull-left {
   float: left; }
 
-.fa.pull-left, blockquote.pull-left:before, .main article .pull-left.read-more:after, .main #content ul > li.pull-left:before {
+.fa.pull-left, blockquote.pull-left:before, .main nav ul li.pull-left:before, .main article .pull-left.read-more:after, .main #content ul > li.pull-left:before {
   margin-right: 0.3em; }
-.fa.pull-right, blockquote.pull-right:before, .main article .pull-right.read-more:after, .main #content ul > li.pull-right:before {
+.fa.pull-right, blockquote.pull-right:before, .main nav ul li.pull-right:before, .main article .pull-right.read-more:after, .main #content ul > li.pull-right:before {
   margin-left: 0.3em; }
 
 .fa-spin {
@@ -1116,7 +1116,7 @@ td, th {
 .fa-caret-left:before {
   content: "\f0d9"; }
 
-.fa-caret-right:before {
+.fa-caret-right:before, .main nav ul li:before {
   content: "\f0da"; }
 
 .fa-columns:before {
@@ -1680,8 +1680,8 @@ body > header {
       margin: 0; }
       .main nav ul li {
         display: inline-block;
-        height: 40px;
-        line-height: 40px;
+        height: 35px;
+        line-height: 35px;
         padding: 0 10px; }
   .main #content {
     margin-right: 200px;
@@ -1819,22 +1819,20 @@ body > header {
     background: -ms-linear-gradient(top, #FFE27C 0%, #EDC229 100%);
     background: linear-gradient(to bottom, #FFE27C 0%, #EDC229 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$start', endColorstr='$stop',GradientType=0 ); }
+    .main nav ul li:before {
+      color: #555;
+      opacity: 0.5; }
     .main nav x-load {
       font-family: 'Galindo', cursive;
       font-size: 18px;
       text-decoration: none;
       text-transform: capitalize;
-      color: #666;
-      text-shadow: 1px 4px 6px #EDC229, 0 0 0 #000, 1px 4px 6px #EDC229;
+      color: #555;
       -webkit-transition: all 300ms ease-in;
       -moz-transition: all 300ms ease-in;
       -ms-transition: all 300ms ease-in;
       -o-transition: all 300ms ease-in;
       transition: all 300ms ease-in; }
-      .main nav x-load::-moz-selection {
-        text-shadow: none; }
-      .main nav x-load::selection {
-        text-shadow: none; }
       .main nav x-load:hover {
         color: #0B67A2;
         -webkit-transition: all 400ms ease-out;

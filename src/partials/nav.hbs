@@ -1,11 +1,11 @@
-
     <nav role="navigation">
         <ul>
-            {{#each navs}}
+        {{#each navs}}
+            {{#if url}}
             <li>
-                <!--<x-load href="{{url}}" target="#content"><a href="#">{{title}}</a></x-load>-->
                 <x-load href="{{url}}" target="#content">{{title}}</x-load>
             </li>
-            {{/each}}
+            {{/if}}
+        {{/each}}
         </ul>
     </nav>
