@@ -2,12 +2,20 @@
         <aside>
            
            <section>
-                <h1>Other posts</h1>
-                
-           </section>
-
-           <section>
-                cloud cats
+               <x-post-list>
+                <ul class="filter">
+                    <li data-sort="date" data-limit="5">Recent</li>
+                    <li data-sort="date">All</li>
+                    <li data-sort="categories">Categories</li>
+                </ul>
+                {{#each allposts}}
+                    <x-post 
+                       {{#if date}}date="{{date}}" {{/if}}
+                       {{#if categories}}categories="{{categories}}" {{/if}}>
+                        <x-load href="{{url}}" target="#content">{{title}}</x-load>
+                    </x-post> 
+                {{/each}} 
+               </x-post-list> 
            </section>
 
            <section>

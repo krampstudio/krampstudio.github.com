@@ -1683,6 +1683,8 @@ body > header {
         height: 35px;
         line-height: 35px;
         padding: 0 10px; }
+        .main nav ul li x-load {
+          line-height: 40px; }
   .main #content {
     margin-right: 200px;
     padding: 10px; }
