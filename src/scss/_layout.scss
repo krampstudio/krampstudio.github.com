@@ -49,7 +49,7 @@ body > header {
         }
     }
     #content {
-        margin-right: 200px;
+        margin-right: 225px;
         padding: 10px;
         @include respond-to(micro) {
             margin-right: 0;    
@@ -60,7 +60,7 @@ body > header {
     }
     aside {
         position: absolute;
-        width: 200px;
+        width: 225px;
         top: 40px;
         right: 0;
         bottom: 0; 

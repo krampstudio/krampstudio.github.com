@@ -54,6 +54,55 @@ body > header {
     }
     aside {
         border-left: solid 1px #ccc;
+
+        section {
+            border-bottom: solid 1px #eee;
+        
+            h1 {
+                font-size: 14px;
+                margin: 0;
+            }
+        }
+
+        x-post-list{
+            ul{
+                list-style-type : none;
+                padding: 0;
+                margin: 0 0 2px 0;
+                li {
+                    padding: 3px; 
+                    margin: 0 0 0 6px;
+                    font-size: 14px;
+                    cursor: pointer;
+                
+                    &:before {
+                        @extend .fa;   
+                        @extend .fa-caret-right;
+                        color: #3A769D;
+                        margin-right: 5px;
+                    }
+                    &.open:before {
+                        @extend .fa-caret-down;
+                        margin-right: 3px;
+                    }
+                    & > ul {
+                        display: none;
+                    }
+                    &.open > ul {
+                        display: block;
+                    } 
+                }
+                li li li{
+
+                    &:before {
+                        font-size: 8px;
+                        @extend .fa-square;
+                        margin-right: 2px;
+                    }
+                }
+            }
+        }
+
     }
 
     article {
@@ -142,3 +191,6 @@ footer, footer a {
     font-size: 12px;
     text-align: center;
 }
+
+
+

@@ -78,6 +78,7 @@ module.exports = function blogFactory(options){
             dest    : options.dest + '/' + lang + '/' + homePageName,
             render : function(){
                 return indexTpl(_.defaults({
+                        lang  : lang,
                         name  : options.name,
                         paths : options.paths,
                         url   : options.url + '/' + lang + '/' + homePageName,

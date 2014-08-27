@@ -2,29 +2,69 @@
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
  * @license AGPL 
  */
-(function(xtag, _){
+(function(xtag, _, moment){
     'use strict';
  
     xtag.register('x-post-list', {
         lifecycle : {
             created : function(){
-                xtag.queryChildren(this, 'x-post').forEach(function(post){
-                                        
-                });
+                this.posts = xtag.queryChildren(this, 'x-post');
+                this.show();
             }
         },
         events : {
-            'tap:delegate(ul.filter > li)' : function(e){
+            'tap:delegate(li)' : function(e){
                 e.preventDefault();
-        
-                console.log(this, e.currentTarget);
-                        
+                this.classList.toggle('open');
             }
         },
         methods : {
-           show : function(sort, limit){
-               _.sortBy(this.posts, sort).slice(0, limit || this.posts.length);
-               
+           show : function(){
+
+             //TODO use documentFragment instead of String
+
+             var archives = {};
+                _(this.posts)
+                    .groupBy(function(post){
+                        return moment(post.date).year();
+                    }).forEach(function(yearPosts, year){
+                        archives[year] = _.groupBy(yearPosts, function(post){
+                            return moment(post.date).format('MMMM');
+                        });
+                    });
+
+             var list = '<ul>';
+             var first = true;
+             _.forEach(archives, function(yearPosts, year){
+                if(first){
+                    list += '<li class="open">';
+                } else {
+                    list += '<li>' ;
+                }
+                list +=  year;
+                list += '<ul>';
+                _.forEach(yearPosts, function(monthPosts, month){
+                    if(first){
+                        list += '<li class="open">';
+                    } else {
+                        list += '<li>' ;
+                    }
+                    list += month;
+                    list += '<ul>';
+                    _.forEach(monthPosts, function(post){
+                        list += '<li>' + post.innerHTML + '</li>';
+                    }); 
+                    list += '</ul>';
+                    list += '</li>';
+                });
+                list += '</ul>';
+                list += '</li>';
+                if(first){
+                    first = false;
+                }
+             });
+
+            this.innerHTML = list;
            } 
         }
     });
@@ -49,4 +89,4 @@
         }
     });
 
-}(xtag, _));
+}(xtag, _, moment));

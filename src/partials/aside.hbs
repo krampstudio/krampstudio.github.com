@@ -2,12 +2,8 @@
         <aside>
            
            <section>
+               <h1>Archives</h1>
                <x-post-list>
-                <ul class="filter">
-                    <li data-sort="date" data-limit="5">Recent</li>
-                    <li data-sort="date">All</li>
-                    <li data-sort="categories">Categories</li>
-                </ul>
                 {{#each allposts}}
                     <x-post 
                        {{#if date}}date="{{date}}" {{/if}}

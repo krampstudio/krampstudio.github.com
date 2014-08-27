@@ -368,7 +368,7 @@ td, th {
   font-weight: normal;
   font-style: normal; }
 
-.fa, blockquote:before, .main nav ul li:before, .main article .read-more:after, .main #content ul > li:before {
+.fa, blockquote:before, .main nav ul li:before, .main aside x-post-list ul.filter li:before, .main article .read-more:after, .main #content ul > li:before {
   display: inline-block;
   font-family: FontAwesome;
   font-style: normal;
@@ -426,9 +426,9 @@ td, th {
 .pull-left {
   float: left; }
 
-.fa.pull-left, blockquote.pull-left:before, .main nav ul li.pull-left:before, .main article .pull-left.read-more:after, .main #content ul > li.pull-left:before {
+.fa.pull-left, blockquote.pull-left:before, .main nav ul li.pull-left:before, .main aside x-post-list ul.filter li.pull-left:before, .main article .pull-left.read-more:after, .main #content ul > li.pull-left:before {
   margin-right: 0.3em; }
-.fa.pull-right, blockquote.pull-right:before, .main nav ul li.pull-right:before, .main article .pull-right.read-more:after, .main #content ul > li.pull-right:before {
+.fa.pull-right, blockquote.pull-right:before, .main nav ul li.pull-right:before, .main aside x-post-list ul.filter li.pull-right:before, .main article .pull-right.read-more:after, .main #content ul > li.pull-right:before {
   margin-left: 0.3em; }
 
 .fa-spin {
@@ -1107,7 +1107,7 @@ td, th {
 .fa-money:before {
   content: "\f0d6"; }
 
-.fa-caret-down:before {
+.fa-caret-down:before, .main aside x-post-list ul.filter li.open:before {
   content: "\f0d7"; }
 
 .fa-caret-up:before {
@@ -1116,7 +1116,7 @@ td, th {
 .fa-caret-left:before {
   content: "\f0d9"; }
 
-.fa-caret-right:before, .main nav ul li:before {
+.fa-caret-right:before, .main nav ul li:before, .main aside x-post-list ul.filter li:before {
   content: "\f0da"; }
 
 .fa-columns:before {
@@ -1696,7 +1696,7 @@ body > header {
         margin-right: 0; } }
   .main aside {
     position: absolute;
-    width: 200px;
+    width: 225px;
     top: 40px;
     right: 0;
     bottom: 0;
@@ -1844,6 +1844,21 @@ body > header {
         transition: all 400ms ease-out; }
   .main aside {
     border-left: solid 1px #ccc; }
+    .main aside x-post-list ul.filter {
+      list-style-type: none;
+      width: 225px;
+      padding: 0;
+      margin: 0; }
+      .main aside x-post-list ul.filter li {
+        padding: 5px;
+        margin: 0; }
+        .main aside x-post-list ul.filter li:before {
+          color: #3A769D;
+          margin-right: 5px; }
+        .main aside x-post-list ul.filter li.open:before {
+          margin-right: 3px; }
+    .main aside x-post-list x-post {
+      display: block; }
   .main article .read-more {
     display: block;
     height: 30px;
