@@ -8,6 +8,11 @@
     "x-tag-core": "0.9.x",
     "history": "~1.8.0",
     "x-tag-code-prism": "git@github.com:krampstudio/code-prism.git#master",
-    "moment": "~2.7.0"
+    "moment": "~2.8.2"
+  },
+  "exportsOverride": {
+    "moment" : {
+        "/" : "min/*.js"
+    }
   }
 }

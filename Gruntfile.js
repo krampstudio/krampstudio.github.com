@@ -47,6 +47,7 @@ module.exports = function(grunt) {
             install :  {
                 options: {
                     targetDir: 'src/js/vendor',
+                    layout: 'byComponent',
                     copy: true,
                     cleanup: true
                 }
