@@ -368,7 +368,7 @@ td, th {
   font-weight: normal;
   font-style: normal; }
 
-.fa, blockquote:before, .main nav ul li:before, .main aside x-post-list ul.filter li:before, .main article .read-more:after, .main #content ul > li:before {
+.fa, blockquote:before, .main nav ul li:before, .main aside x-post-list ul li:before, .main article .read-more:after, .main #content ul > li:before {
   display: inline-block;
   font-family: FontAwesome;
   font-style: normal;
@@ -426,9 +426,9 @@ td, th {
 .pull-left {
   float: left; }
 
-.fa.pull-left, blockquote.pull-left:before, .main nav ul li.pull-left:before, .main aside x-post-list ul.filter li.pull-left:before, .main article .pull-left.read-more:after, .main #content ul > li.pull-left:before {
+.fa.pull-left, blockquote.pull-left:before, .main nav ul li.pull-left:before, .main aside x-post-list ul li.pull-left:before, .main article .pull-left.read-more:after, .main #content ul > li.pull-left:before {
   margin-right: 0.3em; }
-.fa.pull-right, blockquote.pull-right:before, .main nav ul li.pull-right:before, .main aside x-post-list ul.filter li.pull-right:before, .main article .pull-right.read-more:after, .main #content ul > li.pull-right:before {
+.fa.pull-right, blockquote.pull-right:before, .main nav ul li.pull-right:before, .main aside x-post-list ul li.pull-right:before, .main article .pull-right.read-more:after, .main #content ul > li.pull-right:before {
   margin-left: 0.3em; }
 
 .fa-spin {
@@ -1065,7 +1065,7 @@ td, th {
 .fa-save:before, .fa-floppy-o:before {
   content: "\f0c7"; }
 
-.fa-square:before {
+.fa-square:before, .main aside x-post-list ul li li li:before {
   content: "\f0c8"; }
 
 .fa-bars:before {
@@ -1107,7 +1107,7 @@ td, th {
 .fa-money:before {
   content: "\f0d6"; }
 
-.fa-caret-down:before, .main aside x-post-list ul.filter li.open:before {
+.fa-caret-down:before, .main aside x-post-list ul li.open:before {
   content: "\f0d7"; }
 
 .fa-caret-up:before {
@@ -1116,7 +1116,7 @@ td, th {
 .fa-caret-left:before {
   content: "\f0d9"; }
 
-.fa-caret-right:before, .main nav ul li:before, .main aside x-post-list ul.filter li:before {
+.fa-caret-right:before, .main nav ul li:before, .main aside x-post-list ul li:before {
   content: "\f0da"; }
 
 .fa-columns:before {
@@ -1686,7 +1686,7 @@ body > header {
         .main nav ul li x-load {
           line-height: 40px; }
   .main #content {
-    margin-right: 200px;
+    margin-right: 225px;
     padding: 10px; }
     @media only screen and (max-width: 480px) {
       .main #content {
@@ -1844,21 +1844,32 @@ body > header {
         transition: all 400ms ease-out; }
   .main aside {
     border-left: solid 1px #ccc; }
-    .main aside x-post-list ul.filter {
-      list-style-type: none;
-      width: 225px;
-      padding: 0;
-      margin: 0; }
-      .main aside x-post-list ul.filter li {
-        padding: 5px;
+    .main aside section {
+      border-bottom: solid 1px #eee; }
+      .main aside section h1 {
+        font-size: 14px;
         margin: 0; }
-        .main aside x-post-list ul.filter li:before {
+    .main aside x-post-list ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0 0 2px 0; }
+      .main aside x-post-list ul li {
+        padding: 3px;
+        margin: 0 0 0 6px;
+        font-size: 14px;
+        cursor: pointer; }
+        .main aside x-post-list ul li:before {
           color: #3A769D;
           margin-right: 5px; }
-        .main aside x-post-list ul.filter li.open:before {
+        .main aside x-post-list ul li.open:before {
           margin-right: 3px; }
-    .main aside x-post-list x-post {
-      display: block; }
+        .main aside x-post-list ul li > ul {
+          display: none; }
+        .main aside x-post-list ul li.open > ul {
+          display: block; }
+      .main aside x-post-list ul li li li:before {
+        font-size: 8px;
+        margin-right: 2px; }
   .main article .read-more {
     display: block;
     height: 30px;

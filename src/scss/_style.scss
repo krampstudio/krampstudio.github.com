@@ -74,11 +74,16 @@ body > header {
                     margin: 0 0 0 6px;
                     font-size: 14px;
                     cursor: pointer;
+                    color: #444;
+
+                    &:hover {
+                        color: #666;
+                    }
                 
                     &:before {
                         @extend .fa;   
                         @extend .fa-caret-right;
-                        color: #3A769D;
+                        color: #444;
                         margin-right: 5px;
                     }
                     &.open:before {
@@ -86,10 +91,17 @@ body > header {
                         margin-right: 3px;
                     }
                     & > ul {
-                        display: none;
+                        max-height: 0;
+                        overflow: hidden;
+                        transition-property: max-height;
+                        transition-duration: .5s;
+                        transition-timing-function: linear;
                     }
                     &.open > ul {
-                        display: block;
+                        max-height: 600px;
+                        transition-property: max-height;
+                        transition-duration: 1s;
+                        transition-timing-function: linear;
                     } 
                 }
                 li li li{
