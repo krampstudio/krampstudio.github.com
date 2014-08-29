@@ -57,13 +57,48 @@ body > header {
 
         section {
             border-bottom: solid 1px #eee;
-        
+            margin-bottom: 5px;
+            padding-bottom: 5px;
+            font-size: 13px;
+
             h1 {
                 font-size: 14px;
-                margin: 0;
+                margin: 3px 0;
             }
         }
-
+        .about-me {
+            ul.links {
+                list-style-type : none;
+                padding: 0;
+                margin: 5px 0 0 0;
+                overflow: hidden;
+                li {
+                    float: left;
+                    width: 28px;
+                    height: 28px;
+                    line-height: 28px;
+                    text-align: center; 
+                    /*background-color: #2C5A78;*/
+                    background-color: #3A769D;
+                    margin-right: 1px;
+                    border-radius: 2px;
+                    cursor: pointer;
+                    a {
+                        font-size: 18px;
+                        color: #fff;
+                    }
+                    &:hover a {
+                        font-size: 22px;
+                        transition-property: font-size;
+                        transition-duration: .1s;
+                        transition-timing-function: linear;
+                    }
+                }
+                &:after {
+                    clear: both;
+                }
+            }
+        }
         x-post-list{
             ul{
                 list-style-type : none;

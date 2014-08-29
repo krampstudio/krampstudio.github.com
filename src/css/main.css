@@ -1857,16 +1857,26 @@ body > header {
         padding: 3px;
         margin: 0 0 0 6px;
         font-size: 14px;
-        cursor: pointer; }
+        cursor: pointer;
+        color: #444; }
+        .main aside x-post-list ul li:hover {
+          color: #666; }
         .main aside x-post-list ul li:before {
-          color: #3A769D;
+          color: #444;
           margin-right: 5px; }
         .main aside x-post-list ul li.open:before {
           margin-right: 3px; }
         .main aside x-post-list ul li > ul {
-          display: none; }
+          max-height: 0;
+          overflow: hidden;
+          transition-property: max-height;
+          transition-duration: 0.5s;
+          transition-timing-function: linear; }
         .main aside x-post-list ul li.open > ul {
-          display: block; }
+          max-height: 600px;
+          transition-property: max-height;
+          transition-duration: 1s;
+          transition-timing-function: linear; }
       .main aside x-post-list ul li li li:before {
         font-size: 8px;
         margin-right: 2px; }
