@@ -28,27 +28,45 @@ body > header {
     background-color: #fff;
     @include shadow;
     @include radius(6px);
-    /*overflow: hidden;*/
-
     nav {
-        
-        @include gradient(#FFE27C, #EDC229, #EDC229);
-        ul li:before{
-            @extend .fa;   
-            @extend .fa-caret-right;
-            color: #555;
-            opacity: 0.5;
-        }
-        x-load {
-            font-family: $headingFont;
-            font-size: 18px;
-            text-decoration: none;
-            text-transform: capitalize;
-            color: #555;
+        background-color: #424244;
+        border-top-left-radius: 6px;
+        border-top-right-radius: 6px;
+        @include shadow;
+        li {
+            border-right: solid 1px #555;
+            text-align: center;
+            border-bottom: solid 4px #424244;
             @include unhover;
-            &:hover{
-                color: #0B67A2;
+            &:hover, &.active{
                 @include hover;
+                &:nth-child(1){
+                    border-bottom: solid 4px #73d216;
+                }
+                &:nth-child(2){
+                    border-bottom: solid 4px #edd400;
+                }
+                &:nth-child(3){
+                    border-bottom: solid 4px #ad7fa8;
+                }
+                &:nth-child(4){
+                    border-bottom: solid 4px #3465a4;
+                }
+                &:nth-child(5){
+                    border-bottom: solid 4px #f57900;
+                }
+                &:nth-child(6){
+                    border-bottom: solid 4px #c17d11;
+                }
+            }
+            x-load {
+                font-family: $headingFont;
+                font-size: 18px;
+                text-decoration: none;
+                text-transform: capitalize;
+                color: #efefef;
+                /*color: #555;*/
+
             }
         }
     }
