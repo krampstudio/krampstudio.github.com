@@ -35,12 +35,7 @@ module.exports = function(grunt) {
                 files : {
                     'src/css/main.css' : 'src/scss/main.scss'
                 }
-            },
-            preview: {
-                files : {
-                    'tmp/css/main.css' : 'src/scss/main.scss'
-                }
-            },
+            }
         },
 
         bower : {
@@ -70,10 +65,10 @@ module.exports = function(grunt) {
             },
             sasspreview : {
                 files: ['src/scss/**/*.scss'],
-                tasks: ['sass:preview']
+                tasks: ['sass:compile']
             },
             blogpreview : {
-                files: ['src/**/*.js', 'src/**/*.hbs', 'src/**/*.md'],
+                files: ['src/**/*.js', 'src/**/*.css', 'src/**/*.map',  'src/**/*.hbs', 'src/**/*.md'],
                 tasks: ['staticatr:preview']
             }
         },
