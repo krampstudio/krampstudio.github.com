@@ -1657,7 +1657,7 @@ body > header {
   position: relative;
   height: 200px; }
   body > header h1, body > header h2 {
-    margin: 0;
+    margin: 0 5% 0 0;
     padding-left: 3%; }
   body > header x-lang-switcher {
     position: absolute;
@@ -1680,6 +1680,9 @@ body > header {
       margin: 0;
       height: 45px;
       overflow: hidden; }
+      @media only screen and (max-width: 480px) {
+        .main x-nav ul {
+          height: auto; } }
       .main x-nav ul li {
         display: block;
         float: left;
@@ -1687,28 +1690,26 @@ body > header {
         line-height: 45px;
         padding: 0;
         width: 150px; }
+        @media only screen and (max-width: 480px) {
+          .main x-nav ul li {
+            float: none;
+            width: 100%; } }
         .main x-nav ul li x-load {
           line-height: 45px; }
   .main #content {
     margin-right: 225px;
     padding: 10px; }
-    @media only screen and (max-width: 480px) {
-      .main #content {
-        margin-right: 0; } }
-    @media only screen and (min-width: 481px) and (max-width: 768px) {
+    @media only screen and (max-width: 760px) {
       .main #content {
         margin-right: 0; } }
   .main > aside {
     position: absolute;
     width: 225px;
-    top: 40px;
+    top: 45px;
     right: 0;
     bottom: 0;
     padding: 5px; }
-    @media only screen and (max-width: 480px) {
-      .main > aside {
-        display: none; } }
-    @media only screen and (min-width: 481px) and (max-width: 768px) {
+    @media only screen and (max-width: 760px) {
       .main > aside {
         display: none; } }
 
@@ -1733,10 +1734,16 @@ h1, h2, h3, h4, h5, h6 {
 h1 {
   font-size: 45px;
   font-weight: bold; }
+  @media only screen and (max-width: 480px) {
+    h1 {
+      font-size: 28px; } }
 
 h2 {
   font-size: 20px;
   font-weight: bold; }
+  @media only screen and (max-width: 480px) {
+    h2 {
+      font-size: 18px; } }
 
 a, x-load {
   text-decoration: none;
@@ -1833,6 +1840,12 @@ body > header {
       -ms-transition: all 300ms ease-in;
       -o-transition: all 300ms ease-in;
       transition: all 300ms ease-in; }
+      @media only screen and (max-width: 480px) {
+        .main x-nav li {
+          border-right-width: 0;
+          border-top: solid 1px #555; }
+          .main x-nav li:first-child {
+            border-top-width: 0; } }
       .main x-nav li:hover, .main x-nav li.active {
         -webkit-transition: all 400ms ease-out;
         -moz-transition: all 400ms ease-out;
@@ -1868,12 +1881,12 @@ body > header {
       .main aside section h1 {
         font-size: 14px;
         margin: 3px 0; }
-    .main aside .about-me ul.links {
+    .main aside ul.links {
       list-style-type: none;
       padding: 0;
       margin: 5px 0 0 0;
       overflow: hidden; }
-      .main aside .about-me ul.links li {
+      .main aside ul.links li {
         float: left;
         width: 28px;
         height: 28px;
@@ -1884,15 +1897,15 @@ body > header {
         margin-right: 1px;
         border-radius: 2px;
         cursor: pointer; }
-        .main aside .about-me ul.links li a {
+        .main aside ul.links li a {
           font-size: 18px;
           color: #fff; }
-        .main aside .about-me ul.links li:hover a {
+        .main aside ul.links li:hover a {
           font-size: 22px;
           transition-property: font-size;
           transition-duration: 0.1s;
           transition-timing-function: linear; }
-      .main aside .about-me ul.links:after {
+      .main aside ul.links:after {
         clear: both; }
     .main aside x-post-list ul {
       list-style-type: none;
@@ -1948,32 +1961,38 @@ body > header {
     position: relative; }
     .main #content article header h1 {
       margin: 20px 0 0 100px; }
+      @media only screen and (max-width: 760px) {
+        .main #content article header h1 {
+          margin: 0; } }
     .main #content article header x-time {
       display: block;
-      position: absolute;
-      background-color: #1B6DA2;
-      width: 80px;
-      height: 50px;
-      left: -25px;
-      top: 0;
       line-height: 25px;
       text-align: center;
+      background-color: #1B6DA2;
       color: #fff;
       -webkit-box-shadow: 0px 0px 10px 0px rgba(50, 50, 50, 0.75);
       -moz-box-shadow: 0px 0px 10px 0px rgba(50, 50, 50, 0.75);
       box-shadow: 0px 0px 10px 0px rgba(50, 50, 50, 0.75); }
-      .main #content article header x-time:after {
-        content: "";
-        width: 0px;
-        height: 0px;
-        position: absolute;
-        border-style: solid;
-        border-color: transparent transparent transparent #1B6DA2;
-        border-width: 25px 25px;
-        right: -49px;
-        border-radius: 0px;
-        top: 0;
-        box-shadow: inset 0px 0px 5px 0px rgba(50, 50, 50, 0.75); }
+      @media only screen and (min-width: 761px) {
+        .main #content article header x-time {
+          position: absolute;
+          width: 80px;
+          height: 50px;
+          left: -25px;
+          top: 0; } }
+      @media only screen and (min-width: 761px) {
+        .main #content article header x-time:after {
+          content: "";
+          width: 0px;
+          height: 0px;
+          position: absolute;
+          border-style: solid;
+          border-color: transparent transparent transparent #1B6DA2;
+          border-width: 25px 25px;
+          right: -49px;
+          border-radius: 0px;
+          top: 0;
+          box-shadow: inset 0px 0px 5px 0px rgba(50, 50, 50, 0.75); } }
     .main #content article header .categories > span {
       background-color: #0B67A2;
       color: #fff;

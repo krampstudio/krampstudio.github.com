@@ -50,6 +50,16 @@
     &::selection { text-shadow: none; }
 }
 
+@mixin microscreen {
+    @media only screen and (max-width: 480px) { @content; }
+}
+@mixin smallscreen {
+    @media only screen and (max-width: 760px) { @content; }
+}
+@mixin mediumscreen {
+    @media only screen and (min-width: 761px) { @content; }
+}
+
 @mixin respond-to($media : medium)  {
   $break-micro :  480px;
   $break-mini  :  768px;

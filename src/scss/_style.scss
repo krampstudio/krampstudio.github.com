@@ -39,6 +39,13 @@ body > header {
             text-align: center;
             border-bottom: solid 4px #424244;
             cursor: pointer;
+            @include respond-to(micro) {
+                border-right-width: 0;  
+                border-top: solid 1px #555;
+                &:first-child{
+                    border-top-width: 0;  
+                }
+            }
             @include unhover;
             &:hover, &.active{
                 @include hover;
@@ -86,37 +93,35 @@ body > header {
                 margin: 3px 0;
             }
         }
-        .about-me {
-            ul.links {
-                list-style-type : none;
-                padding: 0;
-                margin: 5px 0 0 0;
-                overflow: hidden;
-                li {
-                    float: left;
-                    width: 28px;
-                    height: 28px;
-                    line-height: 28px;
-                    text-align: center; 
-                    /*background-color: #2C5A78;*/
-                    background-color: #3A769D;
-                    margin-right: 1px;
-                    border-radius: 2px;
-                    cursor: pointer;
-                    a {
-                        font-size: 18px;
-                        color: #fff;
-                    }
-                    &:hover a {
-                        font-size: 22px;
-                        transition-property: font-size;
-                        transition-duration: .1s;
-                        transition-timing-function: linear;
-                    }
+        ul.links {
+            list-style-type : none;
+            padding: 0;
+            margin: 5px 0 0 0;
+            overflow: hidden;
+            li {
+                float: left;
+                width: 28px;
+                height: 28px;
+                line-height: 28px;
+                text-align: center; 
+                /*background-color: #2C5A78;*/
+                background-color: #3A769D;
+                margin-right: 1px;
+                border-radius: 2px;
+                cursor: pointer;
+                a {
+                    font-size: 18px;
+                    color: #fff;
                 }
-                &:after {
-                    clear: both;
+                &:hover a {
+                    font-size: 22px;
+                    transition-property: font-size;
+                    transition-duration: .1s;
+                    transition-timing-function: linear;
                 }
+            }
+            &:after {
+                clear: both;
             }
         }
         x-post-list{
@@ -207,33 +212,40 @@ body > header {
         
                 h1 {
                     margin: 20px 0 0 100px;
+                    @include smallscreen{
+                        margin: 0;
+                    } 
                 }
 
                 x-time {
                     display: block;
-                    position: absolute;
-                    background-color: #1B6DA2;
-                    width: 80px;
-                    height: 50px;
-                    left: -25px;
-                    top: 0;
+                    @include mediumscreen{ 
+                        position: absolute;
+                        width: 80px;
+                        height: 50px;
+                        left: -25px;
+                        top: 0;
+                    }
                     line-height: 25px;
                     text-align: center;
+                    background-color: #1B6DA2;
                     color: #fff;
                     @include shadow(10px);
 
-                    &:after {
-                        content: "";
-                        width: 0px;
-                        height: 0px;
-                        position: absolute;
-                        border-style: solid;
-                        border-color: transparent transparent transparent #1B6DA2;
-                        border-width: 25px 25px;
-                        right: -49px;
-                        border-radius: 0px;
-                        top: 0;
-                        box-shadow: inset 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+                    @include mediumscreen{ 
+                        &:after {
+                            content: "";
+                            width: 0px;
+                            height: 0px;
+                            position: absolute;
+                            border-style: solid;
+                            border-color: transparent transparent transparent #1B6DA2;
+                            border-width: 25px 25px;
+                            right: -49px;
+                            border-radius: 0px;
+                            top: 0;
+                            box-shadow: inset 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+                        }
                     }
                 }
 
@@ -291,6 +303,3 @@ footer, footer a {
     font-size: 12px;
     text-align: center;
 }
-
-
-

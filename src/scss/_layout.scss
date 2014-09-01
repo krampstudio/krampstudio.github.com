@@ -11,7 +11,7 @@ body > header {
     height: 200px;
 
     h1, h2 {
-        margin: 0;
+        margin: 0 5% 0 0;
         padding-left: 3%;
     }
     
@@ -39,6 +39,9 @@ body > header {
             margin: 0;
             height: 45px;
             overflow: hidden;
+            @include microscreen {
+                height: auto;    
+            }
             li {        
                 display: block;
                 float: left;
@@ -46,6 +49,10 @@ body > header {
                 line-height: 45px;
                 padding: 0;
                 width: 150px;
+                @include microscreen {
+                    float: none;
+                    width: 100%;
+                }
                 x-load {
                     line-height: 45px;
                 }
@@ -55,29 +62,22 @@ body > header {
     #content {
         margin-right: 225px;
         padding: 10px;
-        @include respond-to(micro) {
-            margin-right: 0;    
-        }
-        @include respond-to(mini) {
+        @include smallscreen {
             margin-right: 0;    
         }
     }
     & > aside {
         position: absolute;
         width: 225px;
-        top: 40px;
+        top: 45px;
         right: 0;
         bottom: 0; 
         padding: 5px;
-        @include respond-to(micro) {
-            display: none;    
-        }
-        @include respond-to(mini) {
+        @include smallscreen {
             display: none;    
         }
     }
 }
-
 
 
 
