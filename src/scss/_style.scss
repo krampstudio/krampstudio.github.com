@@ -28,7 +28,8 @@ body > header {
     background-color: #fff;
     @include shadow;
     @include radius(6px);
-    nav {
+    x-nav {
+        display: block;
         background-color: #424244;
         border-top-left-radius: 6px;
         border-top-right-radius: 6px;
@@ -37,6 +38,7 @@ body > header {
             border-right: solid 1px #555;
             text-align: center;
             border-bottom: solid 4px #424244;
+            cursor: pointer;
             @include unhover;
             &:hover, &.active{
                 @include hover;

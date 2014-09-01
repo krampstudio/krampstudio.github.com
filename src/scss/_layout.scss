@@ -28,7 +28,7 @@ body > header {
     margin: 0 auto;
     width: 94%;
 
-    nav {
+    x-nav {
         position: relative;
         padding: 0;
         margin: 0;
@@ -62,7 +62,7 @@ body > header {
             margin-right: 0;    
         }
     }
-    aside {
+    & > aside {
         position: absolute;
         width: 225px;
         top: 40px;
