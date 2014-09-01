@@ -28,7 +28,7 @@ body > header {
     background-color: #fff;
     @include shadow;
     @include radius(6px);
-    overflow: hidden;
+    /*overflow: hidden;*/
 
     nav {
         
@@ -182,12 +182,41 @@ body > header {
                 max-height: 150px;
             }
             header {
+
+                position: relative;
+        
                 h1 {
-                    margin-bottom: 20px;
+                    margin: 20px 0 0 100px;
                 }
-                time {
-                    font-style : italic
+
+                x-time {
+                    display: block;
+                    position: absolute;
+                    background-color: #1B6DA2;
+                    width: 80px;
+                    height: 50px;
+                    left: -25px;
+                    top: 0;
+                    line-height: 25px;
+                    text-align: center;
+                    color: #fff;
+                    @include shadow(10px);
+
+                    &:after {
+                        content: "";
+                        width: 0px;
+                        height: 0px;
+                        position: absolute;
+                        border-style: solid;
+                        border-color: transparent transparent transparent #1B6DA2;
+                        border-width: 25px 25px;
+                        right: -49px;
+                        border-radius: 0px;
+                        top: 0;
+                        box-shadow: inset 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
+                    }
                 }
+
                 .categories > span {
                     background-color: #0B67A2;
                     color: #fff;
@@ -197,6 +226,10 @@ body > header {
                     margin: 0 3px 0 0;
 
                     line-height: 32px;
+                }
+
+                &:after {
+                    clear: both;
                 }
             }
         }

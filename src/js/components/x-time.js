@@ -16,13 +16,16 @@
         lifecycle : {
             created : function(){
                 if(this.datetime){
-                    this.textContent = moment(this.datetime).format('LLLL');
+                    this.textContent = moment(this.datetime).format(this.format || 'LLLL');
                 }
             }
         } ,
         accessors : {
             datetime : {
                 attribute : true 
+            },
+            format : {
+                attribute : true
             }
         }
     });

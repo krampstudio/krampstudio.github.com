@@ -1811,7 +1811,7 @@ body > header {
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
   border-radius: 6px;
-  overflow: hidden; }
+  /*overflow: hidden;*/ }
   .main nav {
     background: #EDC229;
     background: -moz-linear-gradient(top, #FFE27C 0%, #EDC229 100%);
@@ -1845,10 +1845,39 @@ body > header {
   .main aside {
     border-left: solid 1px #ccc; }
     .main aside section {
-      border-bottom: solid 1px #eee; }
+      border-bottom: solid 1px #eee;
+      margin-bottom: 5px;
+      padding-bottom: 5px;
+      font-size: 13px; }
       .main aside section h1 {
         font-size: 14px;
-        margin: 0; }
+        margin: 3px 0; }
+    .main aside .about-me ul.links {
+      list-style-type: none;
+      padding: 0;
+      margin: 5px 0 0 0;
+      overflow: hidden; }
+      .main aside .about-me ul.links li {
+        float: left;
+        width: 28px;
+        height: 28px;
+        line-height: 28px;
+        text-align: center;
+        /*background-color: #2C5A78;*/
+        background-color: #3A769D;
+        margin-right: 1px;
+        border-radius: 2px;
+        cursor: pointer; }
+        .main aside .about-me ul.links li a {
+          font-size: 18px;
+          color: #fff; }
+        .main aside .about-me ul.links li:hover a {
+          font-size: 22px;
+          transition-property: font-size;
+          transition-duration: 0.1s;
+          transition-timing-function: linear; }
+      .main aside .about-me ul.links:after {
+        clear: both; }
     .main aside x-post-list ul {
       list-style-type: none;
       padding: 0;
@@ -1899,19 +1928,47 @@ body > header {
     clear: both; }
   .main #content article img {
     max-height: 150px; }
-  .main #content article header h1 {
-    margin-bottom: 20px; }
-  .main #content article header time {
-    font-style: italic; }
-  .main #content article header .categories > span {
-    background-color: #0B67A2;
-    color: #fff;
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border-radius: 6px;
-    padding: 1px 2px;
-    margin: 0 3px 0 0;
-    line-height: 32px; }
+  .main #content article header {
+    position: relative; }
+    .main #content article header h1 {
+      margin: 20px 0 0 100px; }
+    .main #content article header x-time {
+      display: block;
+      position: absolute;
+      background-color: #1B6DA2;
+      width: 80px;
+      height: 50px;
+      left: -25px;
+      top: 0;
+      line-height: 25px;
+      text-align: center;
+      color: #fff;
+      -webkit-box-shadow: 0px 0px 10px 0px rgba(50, 50, 50, 0.75);
+      -moz-box-shadow: 0px 0px 10px 0px rgba(50, 50, 50, 0.75);
+      box-shadow: 0px 0px 10px 0px rgba(50, 50, 50, 0.75); }
+      .main #content article header x-time:after {
+        content: "";
+        width: 0px;
+        height: 0px;
+        position: absolute;
+        border-style: solid;
+        border-color: transparent transparent transparent #1B6DA2;
+        border-width: 25px 25px;
+        right: -49px;
+        border-radius: 0px;
+        top: 0;
+        box-shadow: inset 0px 0px 5px 0px rgba(50, 50, 50, 0.75); }
+    .main #content article header .categories > span {
+      background-color: #0B67A2;
+      color: #fff;
+      -webkit-border-radius: 6px;
+      -moz-border-radius: 6px;
+      border-radius: 6px;
+      padding: 1px 2px;
+      margin: 0 3px 0 0;
+      line-height: 32px; }
+    .main #content article header:after {
+      clear: both; }
   .main #content ul {
     list-style-type: none; }
     .main #content ul > li {
