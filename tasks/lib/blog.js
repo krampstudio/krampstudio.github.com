@@ -23,9 +23,14 @@ var blog = {
     },
     
     /**
-     * Contains the posts (layout=post)
+     * Contains technical contents
      */
     post : {},
+
+    tech : {
+        sitemap : {},
+        robots   : {}
+    },
 
     /**
      * Get the available langs by inspecting the pages/posts
@@ -71,6 +76,26 @@ var blog = {
     },
 
     /**
+     * Get all contents for a given lang
+     * @param {String} lang
+     * @param {String} [sort = date] - the content's attribute used to sort
+     * @returns {Array} of contents, ie. (this.*[lang].*)
+     */
+    getContentsByLang : function getContentsByLang(lang, sort){
+        return _(this.getAllContent())
+                .pluck(lang).compact()
+                .sortBy(sort || 'date').value();
+    },
+
+    /**
+     * Get all contents
+     * @returns {Array} of contents, ie. (this.*)
+     */
+    getAllContent : function getAllContent(){
+        return _.merge({}, this.page, this.post);
+    },
+
+    /**
      * Prepare the posts to be summarized
      * @param {String} lang
      * @param {Regexp} morePattern - the pattern to detect in the post where to cut and add readmore
@@ -109,7 +134,7 @@ var blog = {
      * @returns {Array} of pages, ie. (this.page[lang].*)
      */
     getNav : function getNav(lang){
-        return this.getPagesByLang(lang);
+        return _.reject(this.getPagesByLang(lang), {title : 'home'});
     }
 };
 

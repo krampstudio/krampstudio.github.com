@@ -110,14 +110,29 @@ module.exports = function staticatrTask(grunt) {
         );
 
         //generate content : pages and posts
-        _.forEach(_.merge({}, blog.page, blog.post), function(page, title){
-            _.forEach(page, function (pageModel, lang){
-                grunt.log.debug('Creating page : ' + title + '  to ' + pageModel.dest);
-                grunt.file.write(pageModel.dest, pageModel.render());
-                grunt.log.debug('ok');
+        _.forEach(blog.getAllContent(), function(content, title){
+            _.forEach(content, function (contentModel, lang){
+                grunt.log.debug('Creating content : ' + title + '  to ' + contentModel.dest);
+                grunt.file.write(contentModel.dest, contentModel.render());
             });
         });
-    
+  
+        //generate tech files, ie. sitemaps, robots, etc. 
+        var sitemaps = []; 
+        _.forEach(blog.tech, function(content, title){
+            _.forEach(content, function (contentModel, lang){
+                grunt.log.debug('Creating tech content : ' + contentModel.dest);
+                grunt.file.write(contentModel.dest, contentModel.render());
+
+                if(title === 'sitemap'){
+                    sitemaps.push(contentModel.url);
+                }
+            });
+        });
+        if(sitemaps.length){
+            grunt.file.write(options.dest + '/sitemap.xml', require('./lib/sitemap').createIndex(sitemaps));
+        }
+
         //and copy resources
         expand(options.src, options.resources).forEach(function(resource){
             grunt.log.debug(resource);

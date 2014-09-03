@@ -33,6 +33,7 @@
     "lodash": "^2.4.1",
     "meta-marked": "^0.3.1",
     "mocha": "^1.20.1",
-    "time-grunt": "^0.3.1"
+    "time-grunt": "^0.3.1",
+    "xmlbuilder": "^2.4.3"
   }
 }

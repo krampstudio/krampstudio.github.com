@@ -8,6 +8,7 @@ var path   = require('path');
 var hbs    = require('handlebars');
 var blog   = require('./blog');
 var contentExtractor = require('./content').extractor; 
+var siteMapBuilder   = require('./sitemap');
 
 //var d = _.partialRight(require('util').inspect, {
     //showHidden : true,
@@ -86,6 +87,14 @@ module.exports = function blogFactory(options){
                         allposts : blog.getPostsByLang(lang),
                         navs  : blog.getNav(lang)
                     }, tr));
+            }
+        };
+
+        blog.tech.sitemap[lang] = {
+            dest : options.dest + '/' + lang + '/sitemap.xml' ,
+            url  : options.url  + '/' + lang + '/sitemap.xml' ,
+            render : function(){
+                return siteMapBuilder.createFromContents(options.url + '/' + lang + '/' + homePageName,  blog.getContentsByLang(lang));
             }
         };
     });
