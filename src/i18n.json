@@ -1,10 +1,13 @@
 {
     "en" : {
         "desc" : "About dev, web and free software",
-        "readmore" : "Read more"
+        "readmore" : "Read more",
+        "follow" : "Follow the author",
+        "archives" : "Archives"
     },
     "fr" : {
         "desc" : "Du dev, du web et du logiciel libre",
-        "readmore" : "Lire la suite"
+        "readmore" : "Lire la suite",
+        "follow" : "Suivez l'auteur"
     }
 }

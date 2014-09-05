@@ -6,7 +6,7 @@
         <div class="post-meta">    
 
         {{#if date}}<x-time datetime="{{date}}" format="ll"></x-time>{{/if}}
-        {{#if author}} by <x-author>{{author}}</x-author>{{/if}} 
+        {{#if author}}<x-author>{{author}}</x-author>{{/if}} 
         {{#if categories}}
             <div class="categories">
                 {{#each categories}}
