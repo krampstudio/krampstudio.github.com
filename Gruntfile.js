@@ -3,6 +3,11 @@ var fs = require('fs');
 module.exports = function(grunt) {
     'use strict';
 
+    var paths = {
+        preview : 'tmp',
+        build   : 'dist'
+    };
+
     //load npm tasks
     require('load-grunt-tasks')(grunt);
 
@@ -15,7 +20,7 @@ module.exports = function(grunt) {
             preview : {
                 options: {
                     port: 4000,
-                    base: 'tmp'
+                    base: paths.preview
                 }
             }
         },
@@ -76,20 +81,50 @@ module.exports = function(grunt) {
         staticatr: {
             build: {
                 src       : 'src',
-                dest      : 'dist',
+                dest      : paths.build,
                 cleanDest : true 
             },
             preview: {
                 src       : 'src',
-                dest      : 'tmp',
+                dest      : paths.preview,
                 cleanDest : true 
             }
+        },
+
+        compress : {
+            package : {
+                options : {
+                    archive : '<%=pkg.name%>-<%=pkg.version%>.tar.gz',
+                    mode : 'tgz'
+                },
+                expand: true,
+                cwd : paths.build,
+                src: ['**/*'], 
+                dest: '.'
+            }
+        },
+        
+        'gh-pages' : {
+            options : {
+                base : paths.build,
+                message: 'Deploy <%=pkg.name%> <%=pkg.version%>'
+            },
+            src : ['**']
         },
         
         'staticatr-migrate' : {
             test: {
                 src       : './src/posts/**/*.md',
-                dest      : 'tmp2'
+                dest      : 'migrated'
+            }
+        },
+
+
+        notify: {
+            'blogpreview': {
+                options: {
+                    message: 'Blog reloaded'
+                }
             }
         }
     });
@@ -98,8 +133,22 @@ module.exports = function(grunt) {
     grunt.loadTasks('tasks');
 
     // Tasks flow.
+
+    //set up, should be done once (or each time you add bower deps). npm runs it during install
     grunt.registerTask('install', ['bower:install', 'sass:compile']);
-    grunt.registerTask('build', ['sass:compile', 'staticatr:build']);
-    grunt.registerTask('preview', ['sass:compile', 'staticatr:preview', 'connect:preview', 'open:preview', 'watch']);
+
+    //tasks related unit tests
     grunt.registerTask('test', ['mochaTest:test']);
+
+    //preview the blog
+    grunt.registerTask('preview', ['sass:compile', 'staticatr:preview', 'connect:preview', 'open:preview', 'watch']);
+
+    //build the blog 
+    grunt.registerTask('build', ['sass:compile', 'staticatr:build']);
+
+    //create an archive of the blog
+    grunt.registerTask('package', ['build', 'compress:package']);
+
+    //deploy the blog
+    grunt.registerTask('deploy', ['build', 'gh-pages']);
 };

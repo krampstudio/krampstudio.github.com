@@ -3,5 +3,6 @@ bower_components
 src/js/vendor
 tmp
 dist
+*.tar.gz
 *.swp
 old
