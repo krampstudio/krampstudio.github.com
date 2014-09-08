@@ -266,6 +266,15 @@ body > header {
             }
         }
 
+        .disclamer {
+            background-color: #eee;
+            border: solid 1px #aaa;
+            padding: 5px;
+            font-size: 12px;
+            float: right;
+            max-width: 250px;
+         }
+
         ul {
             list-style-type: none;
             & > li {

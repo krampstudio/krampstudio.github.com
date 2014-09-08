@@ -2004,6 +2004,13 @@ body > header {
       line-height: 32px; }
     .main #content article header:after {
       clear: both; }
+  .main #content .disclamer {
+    background-color: #eee;
+    border: solid 1px #aaa;
+    padding: 5px;
+    font-size: 12px;
+    float: right;
+    max-width: 250px; }
   .main #content ul {
     list-style-type: none; }
     .main #content ul > li {
