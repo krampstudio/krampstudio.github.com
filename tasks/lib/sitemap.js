@@ -20,8 +20,8 @@ var siteMapBuilder = {
         return urlSet.end({pretty : true });
     },
 
-    createIndex : function(siteMapUrls){
-        var genDate      = new Date().toISOString(); 
+    createIndex : function(siteMapUrls, date){
+        var genDate      = (date || new Date()).toISOString(); 
         var sitemapIndex = xmlbuilder.create('sitemapindex')
                        .att('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
         siteMapUrls.forEach(function(url){
@@ -34,24 +34,3 @@ var siteMapBuilder = {
 };
 
 module.exports = siteMapBuilder;
-//index
-//<?xml version="1.0" encoding="UTF-8"?>
-   //<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-   //<sitemap>
-      //<loc>http://www.example.com/sitemap1.xml.gz</loc>
-      //<lastmod>2004-10-01T18:23:17+00:00</lastmod>
-   //</sitemap>
-   //<sitemap>
-      //<loc>http://www.example.com/sitemap2.xml.gz</loc>
-      //<lastmod>2005-01-01</lastmod>
-   //</sitemap>
-   //</sitemapindex>
-
-////sitemap
-//<?xml version="1.0" encoding="UTF-8"?>
-//<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"> 
-  //<url>
-    //<loc>http://www.example.com/foo.html</loc> 
-  //</url>
-//</urlset>
-
