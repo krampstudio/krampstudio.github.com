@@ -1,8 +1,11 @@
 node_modules
 bower_components
 src/js/vendor
+src/js/components.min.js
+src/js/components.min.js.map
+src/js/lib.min.js
+src/js/lib.min.js.map
 tmp
 dist
 *.tar.gz
 *.swp
-old
