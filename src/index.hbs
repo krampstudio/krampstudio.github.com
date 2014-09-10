@@ -10,12 +10,8 @@
         <link rel="stylesheet" href="{{paths.css}}main.css">
         <link rel="stylesheet" href="{{paths.js}}vendor/x-tag-code-prism/code-prism.css">
 
-        <script src="{{paths.js}}vendor/x-tag-core/web-components-polyfills.js"></script>
-        <script src="{{paths.js}}vendor/modernizr/modernizr.js"></script>
-        <script src="{{paths.js}}vendor/history/scripts/bundled/html4+html5/native.history.js"></script>
-        <script src="{{paths.js}}vendor/x-tag-core/core.js"></script>
-        <script src="{{paths.js}}vendor/lodash/lodash.compat.js"></script>
-        <script src="{{paths.js}}vendor/moment/moment-with-locales.min.js"></script>
+        <script src="{{paths.js}}lib.min.js"></script>
+        <!-- endbuild -->
         <script>moment.locale("{{lang}}");</script>
     </head>
     <body>
@@ -50,16 +46,7 @@
 
         {{>footer}}
 
-        <script src="{{paths.js}}components/x-load.js"></script>
-        <script src="{{paths.js}}components/x-nav.js"></script>
-        <script src="{{paths.js}}components/x-post-list.js"></script>
-        <script src="{{paths.js}}components/x-lang-switcher.js"></script>
-        <script src="{{paths.js}}components/x-analytics.js"></script>
-        <script src="{{paths.js}}components/x-disqus.js"></script>
-        <script src="{{paths.js}}components/x-author.js"></script>
-        <script src="{{paths.js}}components/x-time.js"></script>
-        <script src="{{paths.js}}components/x-twitter-share.js"></script>
-        <script src="{{paths.js}}vendor/x-tag-code-prism/code-prism.js"></script>
+        <script src="{{paths.js}}components.min.js"></script>
         
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <x-analytics code="UA-XXXXX-X" />

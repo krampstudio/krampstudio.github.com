@@ -34,7 +34,8 @@ module.exports = function(grunt) {
 
         sass : {
             options: {
-                sourceComments : 'map'
+                sourceComments  : 'map',
+                outputStyle     : 'compressed'
             },
             compile: {
                 files : {
@@ -54,6 +55,25 @@ module.exports = function(grunt) {
             }
         },
         
+        uglify: {
+            js: {
+                options : {
+                    sourceMap : true
+                },
+                files: {
+                    'src/js/lib.min.js' : [
+                        'src/js/vendor/x-tag-core/web-components-polyfills.js',
+                        'src/js/vvendor/modernizr/modernizr.js',
+                        'src/js/vendor/history/scripts/bundled/html4+html5/native.history.js',
+                        'src/js/vendor/x-tag-core/core.js',
+                        'src/js/vendor/lodash/lodash.compat.js',
+                        'src/js/vendor/moment/moment-with-locales.js'
+                    ],
+                    'src/js/components.min.js': ['src/js/components/*.js']
+                }
+            }
+        },
+
         mochaTest: {
           test: {
             options: {
