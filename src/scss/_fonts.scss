@@ -1,0 +1,60 @@
+
+//google fonts
+//@import url(http://fonts.googleapis.com/css?family=Galindo|PT+Serif:400,400italic,700,700italic);
+
+//Google web fonts
+//@import url(http://fonts.googleapis.com/css?family=Luckiest+Guy|PT_Serif:400,700);
+@font-face {
+  font-family: 'Galindo';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Galindo'), 
+        url('../fonts/Galindo/Galindo-Regular.eot') format('eot'),
+        url('../fonts/Galindo/Galindo-Regular.woff') format('woff'),
+        url('../fonts/Galindo/Galindo-Regular.ttf') format('truetype'),
+        url('../fonts/Galindo/Galindo-Regular.svg') format('svg');
+}
+
+@font-face {
+  font-family: 'PT_Serif';
+  font-style: normal;
+  font-weight: bold;
+  src: local('PT Serif'), local('PT_Serif'), local('PTSerif'),
+        url('../fonts/PT_Serif/PT_Serif-Bold.eot') format('eot'),
+        url('../fonts/PT_Serif/PT_Serif-Bold.woff') format('woff'),
+        url('../fonts/PT_Serif/PT_Serif-Bold.ttf') format('truetype'),
+        url('../fonts/PT_Serif/PT_Serif-Bold.svg') format('svg');
+}
+
+@font-face {
+  font-family: 'PT_Serif';
+  font-style: normal;
+  font-weight: normal;
+  src: local('PT_Serif'), 
+        url('../fonts/PT_Serif/PT_Serif-Regular.eot') format('eot'),
+        url('../fonts/PT_Serif/PT_Serif-Regular.woff') format('woff'),
+        url('../fonts/PT_Serif/PT_Serif-Regular.ttf') format('truetype'),
+        url('../fonts/PT_Serif/PT_Serif-Regular.svg') format('svg');
+}
+
+@font-face {
+  font-family: 'PT_Serif';
+  font-style: italic;
+  font-weight: bold;
+  src: local('PT Serif'), local('PT_Serif'), local('PTSerif'),
+        url('../fonts/PT_Serif/PT_Serif-BoldItalic.eot') format('eot'),
+        url('../fonts/PT_Serif/PT_Serif-BoldItalic.woff') format('woff'),
+        url('../fonts/PT_Serif/PT_Serif-BoldItalic.ttf') format('truetype'),
+        url('../fonts/PT_Serif/PT_Serif-BoldItalic.svg') format('svg');
+}
+
+@font-face {
+  font-family: 'PT_Serif';
+  font-style: italic;
+  font-weight: normal;
+  src: local('PT_Serif'), 
+        url('../fonts/PT_Serif/PT_Serif-Italic.eot') format('eot'),
+        url('../fonts/PT_Serif/PT_Serif-Italic.woff') format('woff'),
+        url('../fonts/PT_Serif/PT_Serif-Italic.ttf') format('truetype'),
+        url('../fonts/PT_Serif/PT_Serif-Italic.svg') format('svg');
+}

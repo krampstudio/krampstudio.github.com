@@ -1,0 +1,15 @@
+/*
+ * Agregates styles.
+ */
+@import "fonts";
+@import "functions";
+@import "normalize";
+
+//import and configure font awesome
+$fa-font-path : "../js/vendor/font-awesome/fonts/";
+@import "../js/vendor/font-awesome/scss/font-awesome.scss";
+
+@import "theme";
+@import "layout";
+@import "base";
+@import "style";
