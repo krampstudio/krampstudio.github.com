@@ -1,7 +1,7 @@
 ---
 layout: page
 author: "@kramp"
-title: "about"
+title: "About"
 date: 2013-02-06 21:51
 order: 12
 comments: false

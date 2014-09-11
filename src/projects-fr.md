@@ -1,5 +1,6 @@
 ---
 layout: page
+author: "@kramp"
 title: "Projets"
 date: 2013-07-04 07:49
 order : 11
@@ -17,7 +18,7 @@ Il exsite une implémentation complète de la plateforme: [monavocat-enligne.fr]
 
 ## jQuery UI L2L
 
-Un plugin jQuery UI qui inclut un widget de type _list-to-list_, c'est-à-dire qui permet de manipuler des connexions entre plusieurs listes d'éléments.
+Un plugin [jQuery UI](http://jqueryui.com) qui inclut un widget de type _list-to-list_, c'est-à-dire qui permet de manipuler des connexions entre plusieurs listes d'éléments.
 
  - [Site de démonstration](http://krampstudio.com/jquerui-l2l/)
  - [Github](https://github.com/krampstudio/jquerui-l2l/)
@@ -25,7 +26,7 @@ Un plugin jQuery UI qui inclut un widget de type _list-to-list_, c'est-à-dire q
 
 ## Grunt Jsdoc
 
-Un plugin Grunt, l'outils de build de Node.js, qui permet de générer la documentation de type [JsDoc3](http://usejsdoc.org) d'un projet JavaScript.
+Un plugin [Grunt](http://gruntjs.com), l'outils de build de Node.js, qui permet de générer la documentation de type [JsDoc3](http://usejsdoc.org) d'un projet JavaScript.
 
  - [Github](https://github.com/krampstudio/grunt-jsdoc-plugin/)
  - [Grunt Plugin Repository](http://gruntjs.com/plugins/jsdoc)
@@ -35,11 +36,20 @@ Un plugin Grunt, l'outils de build de Node.js, qui permet de générer la docume
 
 ## Grunt Bower PostInst
 
-Un plugin Grunt, qui permet de lancer des commandes de post installation sur des composants [Bower](http://bower.io). Cela permet de compléter l'automatisation de l'installation  des dépendances clientes via Grunt.
+Un plugin [Grunt](http://gruntjs.com), qui permet de lancer des commandes de post installation sur des composants [Bower](http://bower.io). Cela permet de compléter l'automatisation de l'installation  des dépendances clientes via Grunt.
 
  - [Github](https://github.com/krampstudio/grunt-bower-postinst/)
  - [Grunt Plugin Repository](http://gruntjs.com/plugins/bower-postinst)
  - [NPM Repository](https://npmjs.org/package/grunt-bower-postinst)
 
 ![NPM Badge](https://nodei.co/npm/grunt-bower-postinst.png?downloads=true&stars=true)
+
+## Chai-xml
+
+Un plugin pour [Chai](http://chaijs.com), la librairie d'assertions TDD/BDD, qui permet de tester et de comparer des structures XML.
+
+ - [Github](https://github.com/krampstudio/chai-xml/)
+ - [NPM Repository](https://npmjs.org/package/chai-xml)
+
+![NPM Badge](https://nodei.co/npm/chai-xml.png?downloads=true&stars=true)
 
