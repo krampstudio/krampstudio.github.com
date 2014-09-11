@@ -66,7 +66,7 @@ module.exports = function(grunt) {
                         paths.jslibs + '/x-tag-core/web-components-polyfills.js',
                         paths.jslibs + '/modernizr/modernizr.js',
                         paths.jslibs + '/history/scripts/bundled/html4+html5/native.history.js',
-                        paths.jslibs + '/vendor/x-tag-core/core.js',
+                        paths.jslibs + '/x-tag-core/core.js',
                         paths.jslibs + '/lodash/lodash.compat.js',
                         paths.jslibs + '/moment/moment-with-locales.js'
                     ]
