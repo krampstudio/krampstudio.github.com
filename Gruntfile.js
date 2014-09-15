@@ -102,7 +102,7 @@ module.exports = function(grunt) {
                 tasks: ['uglify:component']
             },
             blogpreview: {
-                files: ['src/*.min.js', 'src/**/*.css', 'src/**/*.map', 'src/**/*.hbs', 'src/**/*.md'],
+                files: ['src/**/*.min.js', 'src/**/*.css', 'src/**/*.map', 'src/**/*.hbs', 'src/**/*.md'],
                 tasks: ['staticatr:preview']
             }
         },
