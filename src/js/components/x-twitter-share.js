@@ -38,13 +38,13 @@
         lifecycle : {
 
             created : function(){
-                if(this.twitter){
-                    this.innerHTML = twitterTmpl({
-                        url     : this.url,
-                        content : this.content
-                    });
-                    insertRemoteScript('twitter-wjs', 'http://platform.twitter.com/widgets.js');
-                }
+                this.innerHTML = twitterTmpl({
+                    url     : this.url,
+                    content : this.content
+                });
+                insertRemoteScript('twitter-wjs', 'http://platform.twitter.com/widgets.js').then(function(){
+                    window.twttr.widgets.load();
+                });  
             }
         }, 
         accessors : {
