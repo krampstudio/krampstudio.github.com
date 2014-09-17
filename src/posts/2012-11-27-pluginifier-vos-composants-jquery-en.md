@@ -4,33 +4,36 @@ title: "Pluginifier vos composants jQuery"
 author: "@kramp"
 date: 2012-11-27 23:02
 comments: true
+sharing: true
 categories: [javascript,jquery,build,test]
 ---
 
-C'est en développant l'interface d'un de mes projets persos, que je me suis dit: _"Ces composants graphiques que tu fait là, pourquoi ne pas en faire de vrais plugins jQuery, et tout et tout!"_. C'est alors que tout s'enchaîne: création d'un dépôt sur Github, recherche des outils, j'ai fait un, puis deux, je présente ça devant mes collègues au travail, et pour finir un petit post en _&quot;bonnet de forme&quot;_...
+While I was developping the user interface of a pet project, this though came to my mind : _"Thoses components you're doing, why don't you create pure jQuery plugin, you know?"_. Then starts the story: I've created a Github repository, looked for tools, built one plugin, then another, doing a conference at work and now a blog post.
 
 <!-- more -->
 
-Le principe est simple: j'utilise HTML, CSS et la librairie jQuery ainsi que son acolyte jQuery-UI pour développer les interfaces graphiques de mes webapps. Au fur et à mesure des développements, je suis passé de _tout faire dans le même script_ (tout imbriqué) à commencer à utiliser les plugins jQuery dans l'application, puis à en faire des projets autonomes.
+The big picture: I'm used to use HTML, CSS et the jQuery library as well as his best companion jQuery-UI to develop the user interfaces of my webapps. Since I started, I've evolved from creating everything in the same script, then use jQuery plugins to making self contained libraries.
 
-Dans ce post, je vais essayer de _pluginifier_ pas à pas, un petit composant utilisé pour supprimer graphiquement un élément de l'interface.
+In this post, I'll try to _pluginify_ step by step, a small component used to delete an element of the graphical interface.
 
 ## Environnement
 
-En premier lieu, les requis:
+First, you'll need:
 
-* Un système d'exploitation avec un Shell de type Bash (Dash, Ksh, Zsh devraient faire l'affaire) pour les autres, il faudra trouver une alternative de type Cygwin ou équivalent.
-* Disposer des droits root/admin sur ce système.
-* Git installé (optionnel) mais ca vous permettra d'aller chercher les exemples sur GitHub.
-* Un éditeur de texte.
+* An operating system with a Bash like shell (bash, ksh or zsh are fine), for the others you'll need to find an alternative like Cygwin or similar.
+* Have the root/admin permission on the system.
+* Git installed (optional, but it'll help you to get the source code on Github).
+* A texte editor.
 
-Pour réaliser ce post, j'ai utilisé Ubuntu 12.04, Precise Pangolin.
+For the need of this post, I've used Ubuntu 12.04, Precise Pangolin.
 
 ### Node.js & NPM
 
-> Mais c'est quoi le rapport entre jQuery et Node.js? Là je ne comprend plus rien!
+> But wait, what is the link between jQuery and Node.js? Not sure to follow you.
 
-En fait, on a besoin de [node.js](http://nodejs.org), pour installer notre système de build. Il y a pas mal de librairies JavaScript en CLI qui utilisent node.js. De plus le système de paquet de node, [npm](http://npmjs.org)  étant plutôt pas mal, va faciliter l'installation des ces librairies. Par ailleurs, quand on développe en Javascript, même pour du développement client, c'est une bonne chose d'avoir node.js installé, car on peut profiter de tout un tas d'outils sympa.
+We need [node.js](http://nodejs.org), to install our build system. There is a lot of JavaScript libraries in CLI that rely on node.js. And, the packaging system that comes with node.js, [npm](http://npmjs.org) is really nice and will help to install those libraries. 
+----HERE------
+Par ailleurs, quand on développe en Javascript, même pour du développement client, c'est une bonne chose d'avoir node.js installé, car on peut profiter de tout un tas d'outils sympa.
 
 Pour installer node.js et npm sous Debian/Ubuntu:
 

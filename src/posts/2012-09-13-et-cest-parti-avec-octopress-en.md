@@ -4,6 +4,7 @@ title: "Et c'est parti avec octopress"
 author: "@kramp"
 date: 2012-09-13 22:13
 comments: true
+sharing: true
 categories: [Octopress, Github]
 ---
 

@@ -11,7 +11,7 @@ footer: true
 
 <div class="disclamer">
 `[post translated - needs review]` 
-You may notice I'm not english native. Help me to fix my english by contributing to this [post](https://github.com/krampstudio/krampstudio.github.com/blob/new/src/about-en.md).
+You may notice I'm not english native. Help me to fix my english by contributing to this [post](https://github.com/krampstudio/krampstudio.github.com/blob/new/src/project-en.md).
 </div>
 
 Here are a list of some of projects I've made. Most of them are open-source and can be improved. They are _pets projects_ developped outside the professional context, on my free time.
