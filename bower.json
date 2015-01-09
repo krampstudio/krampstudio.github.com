@@ -6,13 +6,14 @@
     "font-awesome": "~4.0.x",
     "lodash": "~2.4.x",
     "x-tag-core": "0.9.x",
-    "history": "~1.8.0",
+    "history": "~1.8.x",
     "x-tag-code-prism": "git@github.com:krampstudio/code-prism.git#master",
-    "moment": "~2.8.2"
+    "moment": "~2.8.2",
+    "aja" : "~0.2.0"
   },
   "exportsOverride": {
-    "moment" : {
-        "/" : "min/*.js"
+    "moment": {
+      "/": "min/*.js"
     }
   }
 }
