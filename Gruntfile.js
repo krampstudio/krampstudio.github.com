@@ -29,7 +29,7 @@ module.exports = function(grunt) {
         open: {
             preview: {
                 path: 'http://localhost:4000/en/index.html',
-                app: 'firefox -p dev -no-remote'
+                app: 'fxdev -no-remote'
             }
         },
 
@@ -161,11 +161,11 @@ module.exports = function(grunt) {
     // Load local tasks.
     grunt.loadTasks('tasks');
 
-    
+
     /*
      * Tasks flow.
      */
-    
+
     //compile assets
     grunt.registerTask('assets', ['sass:compile', 'uglify:lib', 'uglify:component']);
 
@@ -178,7 +178,7 @@ module.exports = function(grunt) {
     //preview the blog
     grunt.registerTask('preview', ['assets', 'staticatr:preview', 'connect:preview', 'open:preview', 'watch']);
 
-    //build the blog 
+    //build the blog
     grunt.registerTask('build', ['assets', 'staticatr:build']);
 
     //create an archive of the blog
