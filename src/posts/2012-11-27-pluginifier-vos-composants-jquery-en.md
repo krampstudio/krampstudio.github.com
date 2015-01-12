@@ -31,7 +31,7 @@ For the need of this post, I've used Ubuntu 12.04, Precise Pangolin.
 
 > But wait, what is the link between jQuery and Node.js? Not sure to follow you.
 
-We need [node.js](http://nodejs.org), to install our build system. There is a lot of JavaScript libraries in CLI that rely on node.js. And, the packaging system that comes with node.js, [npm](http://npmjs.org) is really nice and will help to install those libraries. 
+We need [node.js](http://nodejs.org), to install our build system. There is a lot of JavaScript libraries in CLI that rely on node.js. And, the packaging system that comes with node.js, [npm](http://npmjs.org) is really nice and will help to install those libraries.
 ----HERE------
 Par ailleurs, quand on développe en Javascript, même pour du développement client, c'est une bonne chose d'avoir node.js installé, car on peut profiter de tout un tas d'outils sympa.
 
@@ -69,9 +69,9 @@ ou en le téléchargeant depuis le [site web](http://phantomjs.org/download.html
 
 Voici un exemple de code intégré à un script d'une application:
 
-{% gist 3854836 dynamic-removable-list.js %}
+<x-gist gist-id="3854836" file="dynamic-removable-list.js"></x-gist>
 
-Cet exemple est utilisé pour créer une liste HTML en fonction du résultat d'une requête Ajax. Chaque item de la liste doit pouvoir être supprimé par la suite. C'est ce point qui nous intéresse, car nous voulons pouvoir appliquer ce composant de suppression à d'autres parties de notre interface graphique. 
+Cet exemple est utilisé pour créer une liste HTML en fonction du résultat d'une requête Ajax. Chaque item de la liste doit pouvoir être supprimé par la suite. C'est ce point qui nous intéresse, car nous voulons pouvoir appliquer ce composant de suppression à d'autres parties de notre interface graphique.
 
 Nous allons procéder en suivant ces étapes:
 
@@ -91,7 +91,7 @@ Alors, voici ma _bête noire_ de la programmation: trouver des noms aux variable
 
 ## Générer la structure du projet
 
-L'avantage d'utiliser un outil tel que Grunt c'est qu'il fait une part de notre travail, donc quand on est fainéant, on ne peut plus s'en passer. 
+L'avantage d'utiliser un outil tel que Grunt c'est qu'il fait une part de notre travail, donc quand on est fainéant, on ne peut plus s'en passer.
 Grunt dispose d'une tâche <code class='inline'>init</code> qui permet de générer une structure de projet type en partant d'un template. Et ça tombe bien, il y en a un pour jQuery.
 
 Dans l'ordre, on va:
@@ -130,7 +130,7 @@ Normalement, vous devriez avoir l'arborescence suivante:
 ├── LICENSE-GPL					//licenses
 ├── LICENSE-MIT
 ├── package.json				//meta données du projet
-├── README.md					
+├── README.md
 ├── removablearea.jquery.json	//meta données du plugin
 ├── src							//sources du plugin
 │   └── removablearea.js
@@ -146,7 +146,6 @@ Nous allons modifier un peu cette structure, en y ajoutant un répertoire <span 
 Dans un premier temps, nous allons créer la structure (au sens du typage en programmation) de notre plugin jQuery, en se basant sur les bonnes pratiques détaillée dans la [documentation jQuery](http://docs.jquery.com/Plugins/Authoring "jQuery Plugin AUthoring") à ce propos. Nous allons donc utiliser la structure suivante, comme base de notre fichier <span class="inline-code">src/removablearea.js</span>:
 
 <x-gist gist-id="3886198" file="removablearea.js"></x-gist>
-{% gist 3886198 removablearea.js %}
 
 Tout d'abord, on peut remarquer que le code est englobé dans une closure. Ce pattern s'appelle _Immediately-Invoked Function Expression_ (ou _LIFE_). Cette pratique permet d'éviter d'exécuter du code dans le scope global. Dans le cas de jQuery, cet usage permet d'utiliser le symbole dollar en étant sûr qu'il vient de jQuery et non d'un autre framework, le <span class="inline-code">$</span> est mappé à l'objet <span class="inline-code">jQuery</span> :
 
@@ -177,13 +176,13 @@ Littéralement, nous ajoutons à l'attribut <code class='inline'>fn</code> de l'
 
 Ensuite le contenu de cette fonction va tout simplement déléguer les appels à l'objet <code class='inline'>RemovableArea</code> définit au préalable, en fonction du contexte d'appel:
 
-- <code class='inline'>removableArea</code> est appelé avec un objet en paramètre (les options): 
+- <code class='inline'>removableArea</code> est appelé avec un objet en paramètre (les options):
   - On délègue à <code class='inline'>RemovableArea.init(options)</code>.
 - <code class='inline'>removableArea</code> est appelé avec un string en paramètre:
   - Ce string correspond à une méthode de <code class='inline'>RemovableArea</code>, alors on délègue, sauf si ce nom commence par un _underscore_ (genre de méthode privée).
 - <code class='inline'>removableArea</code> est appelé sans paramètre, on lève une erreur.
 
-Grâce à ce mécanisme de paramètres, nous pouvons appeler des méthodes à partir du même plugin: 
+Grâce à ce mécanisme de paramètres, nous pouvons appeler des méthodes à partir du même plugin:
 
 ``` javascript
     var elt = $('#id').removableArea(options);
@@ -212,8 +211,8 @@ $.removableArea({
 });
 ```
 
-Nous avons donc définis un certain nombre de paramètres, comme l'image du _bouton_ qui s'affichera pour supprimer la zone ou les différents labels. On permet aussi de définir la classe CSS qui s'appliquera sur ce _bouton_ au passage de la souris. 
- 
+Nous avons donc définis un certain nombre de paramètres, comme l'image du _bouton_ qui s'affichera pour supprimer la zone ou les différents labels. On permet aussi de définir la classe CSS qui s'appliquera sur ce _bouton_ au passage de la souris.
+
 ### Les paramètres par défaut
 
 Une fois le liste des options définies, il faut leur donner des valeurs par défaut. Cela permet d'éviter de redonner toutes les options à chaque utilisation, et permet surtout de mettre en place un comportement par défaut. L'idée est que le plugin fonctionne tout de suite, mais de laisser la possibilité de le modifier plus tard.
@@ -243,11 +242,12 @@ Grâce au résultat de la méthode <code class='inline'>$.extend</code> la varia
 
 ###Le code du plugin
 
-Maintenant, que nous avons une structure à notre plugin, la gestion des paramètres et options, il va falloir répartir le code entre la méthode d'initialisation et d'autres méthodes que nous rajoutons en fonction du fonctionnement souhaité. L'approche que je met souvent en place est de tout faire dans un premier temps dans la méthode d'initialisation, puis je refactor au fur et à mesure (le problème est qu'il m'arrive de n'avoir jamais le temps de refactorer...). 
+Maintenant, que nous avons une structure à notre plugin, la gestion des paramètres et options, il va falloir répartir le code entre la méthode d'initialisation et d'autres méthodes que nous rajoutons en fonction du fonctionnement souhaité. L'approche que je met souvent en place est de tout faire dans un premier temps dans la méthode d'initialisation, puis je refactor au fur et à mesure (le problème est qu'il m'arrive de n'avoir jamais le temps de refactorer...).
 
-Pour notre exemple, nous allons créer les éléments du DOM dans la méthode d'initialisation et une méthode <code class='inline'>destroy</code> pour supprime tout ce que le plugin a créé. 
+Pour notre exemple, nous allons créer les éléments du DOM dans la méthode d'initialisation et une méthode <code class='inline'>destroy</code> pour supprime tout ce que le plugin a créé.
 
 {% gist 4114309 removablearea.js %}
+<x-gist gist-id="4114309" file="removablearea.js"></x-gist>
 
 Voilà donc notre plugin créé! On peut aussi noter l'ajout de deux événements : le premier étant déclenché à l'initialisation du plugin et le second lors de la suppression. Le nom des événements est suffixé par _removablearea_, qui est une manière de les grouper dans des [namespaces](http://docs.jquery.com/Namespaced_Events).
 
@@ -260,7 +260,7 @@ Pour notre plugin, je créé cette page dans le répertoire <code class='inline'
 
 > Tester c'est douter :-S
 
-On voit trop rarement des tests mis en place pour le code Javascript, mais pourtant tous les outils dont nous avons besoin sont disponibles (il y a en a même pas mal!). Donc comme pour n'importe quel autre langage, nous allons créer des tests unitaires automatisés pour notre plugin. 
+On voit trop rarement des tests mis en place pour le code Javascript, mais pourtant tous les outils dont nous avons besoin sont disponibles (il y a en a même pas mal!). Donc comme pour n'importe quel autre langage, nous allons créer des tests unitaires automatisés pour notre plugin.
 
 ![qunit](../img/posts/images/qunitjs.png "qunit")
 
@@ -334,7 +334,7 @@ Ce qui donne le test suivant, qui vérifie que le plugin a bien été chargé en
     });
 ```
 
-Pour lancer les tests, il suffit de charger la page HTML. Le résultat est visible depuis celle-ci, comme nous pouvons le voir sur la capture suivante: 
+Pour lancer les tests, il suffit de charger la page HTML. Le résultat est visible depuis celle-ci, comme nous pouvons le voir sur la capture suivante:
 
 ![shot1](../img/posts/images/sc.test-result.png "Capture de la page de résultats tests ")
 
@@ -343,7 +343,7 @@ Pour lancer les tests, il suffit de charger la page HTML. Le résultat est visib
 > Un makefile pour du Javascript ?
 >> C'est un peu l'idée oui!
 
-Dans le but d'améliorer la qualité de nos développements et de gagner du temps, nous allons déléguer les tâches suivantes à un outils de build, [Grunt](http://www.gruntjs.org) dont nous avons déjà parlé précédemment: 
+Dans le but d'améliorer la qualité de nos développements et de gagner du temps, nous allons déléguer les tâches suivantes à un outils de build, [Grunt](http://www.gruntjs.org) dont nous avons déjà parlé précédemment:
 
 * Minimification des sources.
 * Ajout de la bannière de licence.
@@ -354,11 +354,11 @@ Pour faire tout cela, c'est simple nous utilisons les plugins fournis de base av
 
 ### Génération des sources finales
 
-Nous allons distribuer notre plugin sous forme minimifié, mais avec tout de même une bannière rappelant les informations essentielles: le copyright, l'auteur et la licence. Ces informations vont être extraites et formatées à partir du fichier de méta-données : <code class='inline'>package.json</code>. Ce fichier est bien sûr formaté en JSON et suit la convention de description de paquet [NPM](http://www.npmjs.org) (les paquets node.js). Vous pouvez allez voir la [spécification](https://npmjs.org/doc/json.html) pour plus de détails. 
+Nous allons distribuer notre plugin sous forme minimifié, mais avec tout de même une bannière rappelant les informations essentielles: le copyright, l'auteur et la licence. Ces informations vont être extraites et formatées à partir du fichier de méta-données : <code class='inline'>package.json</code>. Ce fichier est bien sûr formaté en JSON et suit la convention de description de paquet [NPM](http://www.npmjs.org) (les paquets node.js). Vous pouvez allez voir la [spécification](https://npmjs.org/doc/json.html) pour plus de détails.
 
 Dans le cas de notre plugin, les méta-données sont les suivantes:
 
-{% gist 4145261 package.json %} 
+<x-gist gist-id="4145261" file="package.json"></x-gist>
 
 Maintenant nous souhaitons avoir en entête de nos sources le commentaire suivant:
 
@@ -366,13 +366,13 @@ Maintenant nous souhaitons avoir en entête de nos sources le commentaire suivan
 ``` javascript
 /**
  * Copyright (c) 2012 Bertrand Chevrier
- * jQueryRemovableArea - v0.1.0 
+ * jQueryRemovableArea - v0.1.0
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
  * @license GPL  <http://www.gnu.org/licenses/gpl-3.0.txt>
  */
 ```
 
-Pour cela Grunt nous propose un mécanisme qui va nous permettre de récupérer le contenu du fichier <code class='inline'>package.json</code> et de l'utiliser au sein de notre fichier de build, via un mécanisme de template basique. De plus, Grunt a mis en place le concept de <code class='inline'>banner</code> qui pourra être concaténé avec notre fichier source. 
+Pour cela Grunt nous propose un mécanisme qui va nous permettre de récupérer le contenu du fichier <code class='inline'>package.json</code> et de l'utiliser au sein de notre fichier de build, via un mécanisme de template basique. De plus, Grunt a mis en place le concept de <code class='inline'>banner</code> qui pourra être concaténé avec notre fichier source.
 
 Voici le fichier de build <code class='inline'>grunt.js</code> qui va minimifier les sources et créer l'entête:
 
@@ -413,20 +413,20 @@ va produire notre fichier final <code class='inline'>jquery.removablearea.min.js
 
 ### Tests et vérification
 
-Nous pouvons automatiser l'exécution des tests Qunit avec Grunt et PhantomJs. PhantomJs permet d'exécuter le test dans un navigateur en ligne de commande: il créé un navigateur de type WebKit en _headless_. 
+Nous pouvons automatiser l'exécution des tests Qunit avec Grunt et PhantomJs. PhantomJs permet d'exécuter le test dans un navigateur en ligne de commande: il créé un navigateur de type WebKit en _headless_.
 
-Pour la vérification du code source, nous utilisons [JSHint](http://www.jshint.com) qui est plus flexible que [JSLint](http://www.jslint.com). 
+Pour la vérification du code source, nous utilisons [JSHint](http://www.jshint.com) qui est plus flexible que [JSLint](http://www.jslint.com).
 
-Puisque nous utilisons les plugins fournis par défaut avec Grunt, la configuration se résume à l'ajout d'un pattern pointant sur les fichiers de tests Qunit et la définition des règles JSHint. 
+Puisque nous utilisons les plugins fournis par défaut avec Grunt, la configuration se résume à l'ajout d'un pattern pointant sur les fichiers de tests Qunit et la définition des règles JSHint.
 
 Le fichier de build final ressemble à cela:
 
-{% gist 4145424 grunt.js %}
+<x-gist gist-id="4145424" file="grunt.js"></x-gist>
 
 Et voici le genre de sortie que devrait retourner Grunt si tout se passe bien durant le build:
 
 ``` bash
-$> grunt 
+$> grunt
 Running "lint:files" (lint) task
 Lint free.
 
@@ -445,17 +445,17 @@ File "jquery.removablearea.min.js" created.
 Done, without errors.
 ```
 
-## Partager 
+## Partager
 
 > On va rentrer dans la postérité
 
-Bien que le [site](http://plugins.jquery.com/) répertoriant les plugins JQuery soit *en cours de développement*, il nous donne déjà la procédure à suivre pour y inscrire notre plugin. Dès que le site sera fini, notre plugin devrait théoriquement parti de la liste, un très bon moyen pour le faire connaître et de le partager. 
+Bien que le [site](http://plugins.jquery.com/) répertoriant les plugins JQuery soit *en cours de développement*, il nous donne déjà la procédure à suivre pour y inscrire notre plugin. Dès que le site sera fini, notre plugin devrait théoriquement parti de la liste, un très bon moyen pour le faire connaître et de le partager.
 
-### Les méta-données 
+### Les méta-données
 
 Tout comme pour le build, nous devons créer un fichier qui va contenir les informations relatives à notre plugin. Ce fichier servira à fournir les informations nécessaires pour indexer le plugin. Ce fichier est très proche du fichier <code class='inline'>package.json</code> (car ils se sont inspirés de la spec NPM), mais trop différent pour n'utiliser qu'un seul fichier... En suivant le [format spécifié](https://github.com/jquery/plugins.jquery.com/blob/master/docs/manifest.md), voici à quoi ressemble ce fichier pour notre plugin:
 
-{% gist 4156975 removablearea.jquery.json %}
+<x-gist gist-id="4156975" file="removablearea.jquery.json"></x-gist>
 
 Bon, c'est un peu redondant avec le fichier <code class='inline'>package.json</code> et il est surement possible de le générer avec depuis celui-ci, d'ailleurs si quelqu'un le fait déjà n'hésitez pas à laisser un commentaire!
 
@@ -469,6 +469,6 @@ Pour préparer l'indexation sur le site [plugins.jquery.com](http://plugins.jque
 
 > Un petit plugin jQuery aux petits oignons.
 
-Le code source de l'exemple est bien entendu disponible sur mon Github [krampstudio/jQueryRemovableArea](https://github.com/krampstudio/jQueryRemovableArea). 
+Le code source de l'exemple est bien entendu disponible sur mon Github [krampstudio/jQueryRemovableArea](https://github.com/krampstudio/jQueryRemovableArea).
 
 *Enjoy javascript coding*
