@@ -1,39 +1,54 @@
 /**
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
- * @license AGPL 
+ * @license AGPL
  */
-(function(xtag){
+(function(xtag, aja){
     'use strict';
 
-   
+
     /**
-     * Register the <x-analyyics> component. 
-     * @class xLoad
-     * @example <x-analytics code="UA-XXX" />
+     * Register the <x-analyyics> component.
+     *
+     * @class xAnalytics
+     * @example <x-analytics code="UA-XXX" domain="foo.org" />
      */
-    xtag.register('x-analytics', 
-    /** @lends xLoad */
+    xtag.register('x-analytics',
+    /** @lends xAnalytics */
     {
         lifecycle : {
             created : function(){
-                //google analytics mess
-                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-                })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-    
-                ga('create', this.code, this.domain || 'auto');
-                ga('send', 'pageview');
+                var self = this;
+
+                var runAnalytics = function runAnalytics(){
+                    window.ga('create', self.code, self.domain || 'auto');
+                    window.ga('send', 'pageview');
+                };
+
+                window.GoogleAnalyticsObject = 'ga';
+                if(typeof window.ga === 'undefined'){
+                    window.ga = {
+                        l : new Date()*1
+                    };
+                    aja()
+                        .url('http://www.google-analytics.com/analytics.js')
+                        .type('script')
+                        .on('success', function(){
+                            runAnalytics();
+                        })
+                        .go();
+                } else {
+                    runAnalytics();
+                }
             }
-        }, 
+        },
         accessors : {
             code : {
-                attribute : true 
+                attribute : true
             },
             domain : {
-                attribute : true 
+                attribute : true
             }
         }
     });
 
-}(xtag));
+}(xtag, window.aja));

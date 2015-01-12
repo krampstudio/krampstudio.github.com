@@ -1,10 +1,10 @@
 /**
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
- * @license AGPL 
+ * @license AGPL
  */
 (function(xtag, _, moment){
     'use strict';
- 
+
     xtag.register('x-post-list', {
         lifecycle : {
             created : function(){
@@ -53,7 +53,7 @@
                     list += '<ul>';
                     _.forEach(monthPosts, function(post){
                         list += '<li>' + post.innerHTML + '</li>';
-                    }); 
+                    });
                     list += '</ul>';
                     list += '</li>';
                 });
@@ -65,7 +65,7 @@
              });
 
             this.innerHTML = list;
-           } 
+           }
         }
     });
 

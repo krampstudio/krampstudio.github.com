@@ -1,16 +1,16 @@
 /**
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
- * @license AGPL 
+ * @license AGPL
  */
 (function(xtag){
     'use strict';
- 
+
     /**
-     * Register the <x-author> component. 
+     * Register the <x-author> component.
      * @class xAuthor
-     * @example <x-author code="UA-XXX" />
+     * @example <x-author />
      */
-    xtag.register('x-author', 
+    xtag.register('x-author',
     /** @lends xAuthor */
     {
         lifecycle : {
@@ -31,7 +31,7 @@
         } ,
         accessors : {
             url : {
-                attribute : true 
+                attribute : true
             }
         }
     });

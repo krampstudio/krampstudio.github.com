@@ -1,16 +1,16 @@
 /**
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
- * @license AGPL 
+ * @license AGPL
  */
 (function(xtag){
     'use strict';
- 
+
     /**
-     * Register the <x-time> component. 
+     * Register the <x-time> component.
      * @class xTime
      * @example <x-time datetime="2014-07-27 11:38" />
      */
-    xtag.register('x-lang-switcher', 
+    xtag.register('x-lang-switcher',
     /** @lends xTime */
     {
         lifecycle : {
@@ -21,7 +21,7 @@
                     matches = document.location.pathname.match(/^\/([a-z]{2})\//);
                     if(matches.length >= 2){
                         this.current = matches[1];
-            
+
                         //then set the x-lang element with the found lang as selected
                         xtag.queryChildren(this, 'x-lang[value="' + this.current + '"]').forEach(function(elt){
                             elt.setAttribute('selected', true);
@@ -33,7 +33,6 @@
         events : {
             'tap:delegate(x-lang)' : function(e){
                 e.preventDefault();
-                console.log('/' + e.currentTarget.current + '/', '/' + this.value + '/');
                 document.location = document.location.toString().replace('/' + e.currentTarget.current + '/', '/' + this.value + '/');
             }
         },
@@ -54,15 +53,15 @@
                 this.langs = this.langs || [];
                 this.langs.push(lang);
             }
-        } 
+        }
     });
 
     /**
-     * Register the <x-time> component. 
+     * Register the <x-time> component.
      * @class xTime
      * @example <x-time datetime="2014-07-27 11:38" />
      */
-    xtag.register('x-lang', 
+    xtag.register('x-lang',
     /** @lends xTime */
     {
         lifecycle : {
@@ -72,7 +71,7 @@
                 if(switcher.nodeName.toLowerCase() === 'x-lang-switcher'){
                     switcher.addLang(lang);
                     if(this.hasAttribute('selected')){
-                        switcher.current = lang; 
+                        switcher.current = lang;
                     }
                 }
             }

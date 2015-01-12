@@ -1,8 +1,8 @@
 /**
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
- * @license AGPL 
+ * @license AGPL
  */
-(function(xtag, window, Promise, _){
+(function(xtag, window, _, aja){
     'use strict';
 
 
@@ -11,7 +11,7 @@
         //var disqus_identifier = 'http://krampstudio.github.com/blog/2012/09/13/et-cest-parti-avec-octopress/';
         //var disqus_url = 'http://krampstudio.github.com/blog/2012/09/13/et-cest-parti-avec-octopress/';
         //var disqus_script = 'embed.js';
-      
+
     //(function () {
       //var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
       //dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
@@ -26,26 +26,26 @@
      * @param {String} url - the script URL
      * @returns {Promise?} to chain sucess/error
      */
-    function insertRemoteScript(id, url){
-        return new Promise(function(done, err){
-            var dsq = document.createElement('script'); 
-            dsq.type = 'text/javascript'; 
-            dsq.async = true;
-            dsq.id = id;
-            dsq.src = url;
-            dsq.onload = done;
-            dsq.onerror = err;
-            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        });
-    }
-   
+    //function insertRemoteScript(id, url){
+        //return new Promise(function(done, err){
+            //var dsq = document.createElement('script');
+            //dsq.type = 'text/javascript';
+            //dsq.async = true;
+            //dsq.id = id;
+            //dsq.src = url;
+            //dsq.onload = done;
+            //dsq.onerror = err;
+            //(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        //});
+    //}
+
     /**
-     * Register the <x-disqus> component. 
-     * @class xLoad
+     * Register the <x-disqus> component.
+     * @class xDisqus
      * @example <x-disqus shortname="login" container="containerId" identifier="page_id" url="page_url" developer="false" />
      */
-    xtag.register('x-disqus', 
-    /** @lends xLoad */
+    xtag.register('x-disqus',
+    /** @lends xDisqus */
     {
         lifecycle : {
 
@@ -67,12 +67,15 @@
                 elt.id  = 'disqus_thread';
                 this.appendChild(elt);
 
-                _.assign(window, globals);                
+                _.assign(window, globals);
 
-                if(!document.getElementById(scriptId)){
-                    insertRemoteScript(scriptId, 'http://' + this.shortname + '.disqus.com/embed.js');
+                if(typeof window.DISQUS === 'undefined'){
+                    aja()
+                        .url('http://' + this.shortname + '.disqus.com/embed.js')
+                        .type('script')
+                        .go();
                 } else {
-                    DISQUS.reset({
+                    window.DISQUS.reset({
                         reload: true,
                         config: function () {
                             this.page.identifier    = self.identifier;
@@ -84,16 +87,16 @@
                     });
                 }
             }
-        }, 
+        },
         accessors : {
             shortname : {
-                attribute : true 
+                attribute : true
             },
             identifier : {
-                attribute : true 
+                attribute : true
             },
             url : {
-                attribute : true 
+                attribute : true
             },
             developer : {
                 attribute : true
@@ -101,4 +104,4 @@
         }
     });
 
-}(xtag, window, window.Promise, _));
+}(xtag, window, window._, window.aja));
