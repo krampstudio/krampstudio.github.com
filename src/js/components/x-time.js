@@ -1,16 +1,16 @@
 /**
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
- * @license AGPL 
+ * @license AGPL
  */
 (function(xtag, moment){
     'use strict';
- 
+
     /**
-     * Register the <x-time> component. 
+     * Register the <x-time> component.
      * @class xTime
      * @example <x-time datetime="2014-07-27 11:38" />
      */
-    xtag.register('x-time', 
+    xtag.register('x-time',
     /** @lends xTime */
     {
         lifecycle : {
@@ -22,7 +22,7 @@
         } ,
         accessors : {
             datetime : {
-                attribute : true 
+                attribute : true
             },
             format : {
                 attribute : true
@@ -30,4 +30,4 @@
         }
     });
 
-}(xtag, moment));
+}(xtag, window.moment));
