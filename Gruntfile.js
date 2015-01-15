@@ -67,6 +67,7 @@ module.exports = function(grunt) {
                         paths.jslibs + '/modernizr/modernizr.js',
                         paths.jslibs + '/history/scripts/bundled/html4+html5/native.history.js',
                         paths.jslibs + '/x-tag-core/core.js',
+                        paths.jslibs + '/x-tag-code-prism/code-prism.js',
                         paths.jslibs + '/lodash/lodash.compat.js',
                         paths.jslibs + '/moment/moment-with-locales.js',
                         paths.jslibs + '/aja/aja.js'
