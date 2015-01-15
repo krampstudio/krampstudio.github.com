@@ -10,7 +10,7 @@ footer: true
 ---
 
 <div class="disclamer">
-`[post translated - needs review]` 
+`[post translated - needs review]`
 You may notice I'm not english native. Help me to fix my english by contributing to this [post](https://github.com/krampstudio/krampstudio.github.com/blob/new/src/project-en.md).
 </div>
 
@@ -56,4 +56,14 @@ A [Chai](http://chaijs.com) plugin, the TDD/BDD assertion library. This plugin h
  - [NPM Repository](https://npmjs.org/package/chai-xml)
 
 ![NPM Badge](https://nodei.co/npm/chai-xml.png?downloads=true&stars=true)
+
+## Aja.js
+
+Aja.js stands for Asynchronous JavaScript And JSON(P) : Ajax without XML. It's a JavaScript library that helps you to make requests in the browser like a REST client.
+
+ - [Website](https://Krampstudio.github.io/aja.js/)
+ - [Github](https://github.com/krampstudio/aja.js/)
+ - [NPM Repository](https://npmjs.org/package/aja)
+
+![NPM Badge](https://nodei.co/npm/aja.png?downloads=true&stars=true)
 

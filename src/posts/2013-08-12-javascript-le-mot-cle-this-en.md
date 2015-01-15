@@ -1,10 +1,11 @@
 ---
 layout: post
-title: "JavaScript le mot clé this"
+title: "JavaScript the keyword this"
 author: "@kramp"
 date: 2013-08-12 18:36
 comments: true
-categories: JavaScript
+sharing: true
+categories: [javascript]
 ---
 
 ![JS Logo](../img/posts/images/js-badge.png "js.this")
@@ -14,17 +15,17 @@ Je vais donc essayer de retracer ce cheminement, en expliquant quelques principe
 
 En fait le mot clé `this` n'est pas du tout ce que l'on croit. Ce n'est pas une référence vers une instance d'un objet, mais le contexte de la fonction. Pour comprendre cela, il y a quelques concepts du langage qu'il faut explorer :
 
- - le type `Function` est un objet de première classe ([First-class function](http://en.wikipedia.org/wiki/First-class_function)), 
- - le portée des variables locales est hissée au niveau de la fonction, 
- - le mot clé `new` n'est seulement qu'un alias 
+ - le type `Function` est un objet de première classe ([First-class function](http://en.wikipedia.org/wiki/First-class_function)),
+ - le portée des variables locales est hissée au niveau de la fonction,
+ - le mot clé `new` n'est seulement qu'un alias
 
 <!-- more -->
 
-*Tous les exemples présentés ont été testés avec [node.js](http://nodejs.org/) version 0.10.15. Vous pouvez les reproduire et aller plus en vous amusant avec [REPL](http://nodejs.org/api/repl.html) (la console node).* 
+*Tous les exemples présentés ont été testés avec [node.js](http://nodejs.org/) version 0.10.15. Vous pouvez les reproduire et aller plus en vous amusant avec [REPL](http://nodejs.org/api/repl.html) (la console node).*
 
 ## La fonction, citoyenne de 1ère classe
 <a name='function-first-class-object'></a>
- 
+
 On dit du type `Function` que c'est un objet de première classe car ce type permet de faire tout ce qu'un objet peut faire dans le langage. En gros l'instance d'une fonction se comporte comme un objet. Voici quelques caractéristiques qui illustre ce principe:
 
  - Chaque fonction est une instance du type `Object`. Bien que `typeof aFunction` renvoie `function`, `insanteof` nous permet de vérifier l'affiliation de la fonction au type `Object`.
@@ -44,22 +45,22 @@ console.log(require('util').inspect(test, true));
 //stdout:   [caller]: null,
 //stdout:   [prototype]: { [constructor]: [Circular] } }
 ```
- - Une fonction peut être assignée à une variable, comme un objet ou n'importe quel type. 
+ - Une fonction peut être assignée à une variable, comme un objet ou n'importe quel type.
 
 ``` javascript
 var getOs = function get_os() {
 	return 'windows';
 }
-console.log( typeof getOs ); 
+console.log( typeof getOs );
 //stdout: 'function'
 ```
- - une fonction peut être passée en paramètre d'une fonction, permettant ainsi d'utiliser (en autre) le pattern du `callback`, très utile pour la programmation événementielle et les traitements asynchrones. 
+ - une fonction peut être passée en paramètre d'une fonction, permettant ainsi d'utiliser (en autre) le pattern du `callback`, très utile pour la programmation événementielle et les traitements asynchrones.
 
 ``` javascript
 function os_scanner( getOs ) {
-    
+
     console.log( typeof arguments[0] );
-	
+
     if( getOs() == 'windows' ){
         console.log( 'Oh crap' );
     } else {
@@ -89,8 +90,8 @@ console.log(require('util').inspect(get_os, true));
 Maintenant, nous savons que la fonction est un des concepts central du langage JavaScript, vous me direz, pas étonnant pour un langage fonctionnel, un peu plus pour un langage orienté objet (même sans classe, mais ça c'est une autre histoire).
 
 ## Scope
- 
-Encore une fois, le langage se distingue de beaucoup de ses confrères sur le point du scope. La portée des variables en JavaScript se propage au niveau de la fonction et non du bloc. Bien entendu les variables globales sont accessibles partout (de tout façon personne n'utilise jamais de variables globales, n'est-ce pas?), par contre les variables *locales* sont locales à la fonction dans la laquelle elles ont été déclarées. 
+
+Encore une fois, le langage se distingue de beaucoup de ses confrères sur le point du scope. La portée des variables en JavaScript se propage au niveau de la fonction et non du bloc. Bien entendu les variables globales sont accessibles partout (de tout façon personne n'utilise jamais de variables globales, n'est-ce pas?), par contre les variables *locales* sont locales à la fonction dans la laquelle elles ont été déclarées.
 
 Quand on tente d'accéder à une variable non définie, on a une jolie erreur:
 
@@ -120,7 +121,7 @@ function get_arch(){
 }
 
 get_arch();
-//stdout: undefined 
+//stdout: undefined
 ```
 
 La variable `arch` est donc **accessible** à toute la fonction, même si elle n'a pas encore été définie (d'où le `undefined`). Ce code est équivalent à:
@@ -140,10 +141,10 @@ get_arch();
 //stdout: undefined
 ```
 
-JavaScript intègre le principe du _hoisting_, c'est-à-dire que toutes les variables locales à une fonction sont accessibles dès le début de celle-ci. Une des bonnes pratiques veut que toutes les variables utilisées soient déclarées en début de fonction. 
+JavaScript intègre le principe du _hoisting_, c'est-à-dire que toutes les variables locales à une fonction sont accessibles dès le début de celle-ci. Une des bonnes pratiques veut que toutes les variables utilisées soient déclarées en début de fonction.
 
 Ce type de comportement peut nous paraître limitant. Ce serait la cas si JS n'avais pas un mécanisme de _closure_. La closure est un principe tout simple mais très puissant, qui donne accès aux variables des scopes englobant dans le scope englobé. Comme la portée du scope est la fonction, alors on peut dire que si une fonction en contient une autre, alors la fonction contenue a accès aux variables de la fonction contenante. Comme souvent en informatique (et avec ma prose) un principe peut être simple mais compliqué à expliquer, alors un bon exemple devrait éclaircir ce point:
- 
+
 
 ``` javascript
 function desc_os(){
@@ -169,9 +170,9 @@ Dans l'exemple ci-dessus, la fonction `format` _capture_ les valeurs des variabl
 
 ![This](../img/posts/images/this.png "Source theburnsider dot com slash stop this")
 
-Comme nous l'avons vus dans la [première section](#function-first-class-object) chaque fonction est aussi un objet. De plus, chaque fonction _hérite_ de plusieurs membres de manière systématiques. 
+Comme nous l'avons vus dans la [première section](#function-first-class-object) chaque fonction est aussi un objet. De plus, chaque fonction _hérite_ de plusieurs membres de manière systématiques.
 
-Les propriétés suivantes sont accessible à partir de chaque fonction  : 
+Les propriétés suivantes sont accessible à partir de chaque fonction  :
 
  - `name` : le nom de la fonction.
  - `length` : le nombre d'arguments déclarés.
@@ -203,8 +204,8 @@ Il existe d'autre propriétés qui peuvent changer entre les implémentions ou d
 Parmi les méthodes accessibles, les suivantes nous intéressent particulièrement:
 
  - `call` : permet d'exécuter la fonction
- - `apply` : permet aussi d'exécuter la fonction 
- - `bind` : créé une nouvelle fonction associée à un nouveau contexte 
+ - `apply` : permet aussi d'exécuter la fonction
+ - `bind` : créé une nouvelle fonction associée à un nouveau contexte
 
 `call` et `apply` ont la même finalité, seul la manière dont les paramètres sont passés changent. On pourrait penser que ces fonctions sont peu utiles, comme dans l'exemple suivant:
 
@@ -254,7 +255,7 @@ function merge(files){
     for(var i in files){
         merged += fs.readSync(files[i]);
     }
-    console.log(files.length +' files merged'); 
+    console.log(files.length +' files merged');
 }
 
 //backup each of the files
@@ -262,7 +263,7 @@ function backup(files){
     for(var i in files){
         fs.createReadStream(files[i]).pipe(fs.createWriteStream(files[i] + '.backup'));
     }
-    console.log(files.length +' files backed up'); 
+    console.log(files.length +' files backed up');
 }
 
 //do actions on logs of a service
@@ -325,7 +326,7 @@ var cpu = {
         var monitor = setInterval(function(){
             var temp = this.temperatue;
             if(temp > 180){
-                console.log("Fire, fire, please help"); 
+                console.log("Fire, fire, please help");
             } else {
                 console.log("Temperature at "+ temp + "° is ok");
             }
@@ -343,7 +344,7 @@ cpu.monitorTemperature();
 //stdout: Temperature at undefined° is ok
 ```
 
-Oh!(Ndt: traduction de  _WTF!_) C'est quoi ce vieux `undefined`? Et bien oui, si vous avez suivis, chaque fonction a un contexte et ce contexte est accessible via le mot clé `this`. De plus, comme le scope porte sur la fonction et que nous déclarons une fonction anonyme comme _callback_ de `setInterval` et bien `this` ne se rapporte plus au contexte de `monitorTemperature` mais à celui de la fonction anonyme. 
+Oh!(Ndt: traduction de  _WTF!_) C'est quoi ce vieux `undefined`? Et bien oui, si vous avez suivis, chaque fonction a un contexte et ce contexte est accessible via le mot clé `this`. De plus, comme le scope porte sur la fonction et que nous déclarons une fonction anonyme comme _callback_ de `setInterval` et bien `this` ne se rapporte plus au contexte de `monitorTemperature` mais à celui de la fonction anonyme.
 
 Mais comment on va s'en sortir? C'est là que les _closures_ vont venir à notre secours. Nous allons garder une référence vers le contexte de la fonction :
 
@@ -358,7 +359,7 @@ var cpu = {
         var monitor = setInterval(function(){
             var temp = self.temperatue;
             if(temp > 180){
-                console.log("Fire, fire, please help"); 
+                console.log("Fire, fire, please help");
             } else {
                 console.log("Temperature at "+ temp + "° is ok");
             }
@@ -397,7 +398,7 @@ console.log(cpu.isMultiCore());
 //stdout: true
 ```
 
-Le mot clé `new` peut être compris comme une sorte d'alias à la méthode `call`. En gros `new Cpu()` revient à faire `Cpu.call({})`, c'est-à-dire à créer un nouvel objet (le `{}`) et à le passer en tant que contexte de fonction. 
+Le mot clé `new` peut être compris comme une sorte d'alias à la méthode `call`. En gros `new Cpu()` revient à faire `Cpu.call({})`, c'est-à-dire à créer un nouvel objet (le `{}`) et à le passer en tant que contexte de fonction.
 
 Une erreur fréquente est d'utiliser `this` au sein d'une fonction en vue de l'utiliser comme une pseudo classe et de l'appeler sans le mot clé `new`. Et là, c'est le drame: `this` va se référer au contexte dans lequel il a été appelé. Prenons l'exemple:
 
@@ -413,8 +414,8 @@ console.log(unixProcess);
 //stdout: { pid: 6565 }
 ```
 
-Si vous exécutez ce code dans la console node.js et qu'ensuite vous lancer `UnixProcess()` (sans le `new`), vous allez retrouvez toutes les variables globales, et oui... de même que si vous lancez `console.log(this)` à l'extérieur d'une fonction. 
- 
+Si vous exécutez ce code dans la console node.js et qu'ensuite vous lancer `UnixProcess()` (sans le `new`), vous allez retrouvez toutes les variables globales, et oui... de même que si vous lancez `console.log(this)` à l'extérieur d'une fonction.
+
 ## Dans la vrai vie
 
 Voici un template d'un plugin jQuery, on se penchant dessus on voit bien l'usage du mot clé `this` qui permet d'accéder au contexte de l'élément jQuery (toujours un tableau d'où les `this.each`) ou de l'objet `Plugin`:
@@ -427,10 +428,10 @@ Voici un template d'un plugin jQuery, on se penchant dessus on voit bien l'usage
 */
 (function( $ ){
     "use strict";
-    
+
     //default options
     var defaults = {
-        
+
     };
 
     var Plugin = {
@@ -446,17 +447,17 @@ Voici un template d'un plugin jQuery, on se penchant dessus on voit bien l'usage
             });
         },
 
-        //a plublic method 
+        //a plublic method
         aMethod : function(){
             this.each(function() {
                 var $elt = $(this);
-        
+
             });
         },
 
         //a private method
         _anotherMethod : function(){
-            
+
         },
 
         //destroy code
@@ -487,11 +488,11 @@ Voici un template d'un plugin jQuery, on se penchant dessus on voit bien l'usage
 
 ## Pour aller plus loin
 
-Je vous conseil de lire ces deux ouvrages écrits par les gourous du JavaScript : 
+Je vous conseil de lire ces deux ouvrages écrits par les gourous du JavaScript :
 
  - [JavaScript The Good Parts](http://www.amazon.fr/JavaScript-The-Good-Parts-ebook/dp/B0026OR2ZY/ref=sr_1_1?ie=UTF8&qid=1378985428&sr=8-1&keywords=javascript+the+good+parts) de Douglas Crockford
  - [Secrets of the JavaScript Ninja](http://www.amazon.fr/Secrets-JavaScript-Ninja-John-Resig/dp/193398869X/ref=sr_1_1?ie=UTF8&qid=1378985699&sr=8-1&keywords=secret+of+the+javascript+ninjas) de John Resig
- 
+
 
 
 

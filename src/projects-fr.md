@@ -53,3 +53,13 @@ Un plugin pour [Chai](http://chaijs.com), la librairie d'assertions TDD/BDD, qui
 
 ![NPM Badge](https://nodei.co/npm/chai-xml.png?downloads=true&stars=true)
 
+## Aja.js
+
+Aja.js est l'acronyme de Asynchronous JavaScript And JSON(P) : Ajax without XML. C'est une librairie qui permet de faire des requêtes dans le navigateur, à la manière d'un client REST.
+
+ - [Website](https://Krampstudio.github.io/aja.js/)
+ - [Github](https://github.com/krampstudio/aja.js/)
+ - [NPM Repository](https://npmjs.org/package/aja)
+
+![NPM Badge](https://nodei.co/npm/aja.png?downloads=true&stars=true)
+

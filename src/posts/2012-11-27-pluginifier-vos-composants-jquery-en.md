@@ -1,12 +1,17 @@
 ---
 layout: post
-title: "Pluginifier vos composants jQuery"
+title: "Pluginify your jQuery components"
 author: "@kramp"
 date: 2012-11-27 23:02
 comments: true
 sharing: true
 categories: [javascript,jquery,build,test]
 ---
+
+<div class="disclamer">
+`[translation in progress]`
+You may notice I'm not english native. Help me to fix my english by contributing to this [post](https://github.com/krampstudio/krampstudio.github.com/blob/new/src/about-en.md).
+</div>
 
 While I was developping the user interface of a pet project, this though came to my mind : _"Thoses components you're doing, why don't you create pure jQuery plugin, you know?"_. Then starts the story: I've created a Github repository, looked for tools, built one plugin, then another, doing a conference at work and now a blog post.
 
@@ -32,6 +37,7 @@ For the need of this post, I've used Ubuntu 12.04, Precise Pangolin.
 > But wait, what is the link between jQuery and Node.js? Not sure to follow you.
 
 We need [node.js](http://nodejs.org), to install our build system. There is a lot of JavaScript libraries in CLI that rely on node.js. And, the packaging system that comes with node.js, [npm](http://npmjs.org) is really nice and will help to install those libraries.
+
 ----HERE------
 Par ailleurs, quand on développe en Javascript, même pour du développement client, c'est une bonne chose d'avoir node.js installé, car on peut profiter de tout un tas d'outils sympa.
 
