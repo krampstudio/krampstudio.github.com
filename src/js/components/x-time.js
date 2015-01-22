@@ -30,4 +30,4 @@
         }
     });
 
-}(xtag, window.moment));
+}(window.xtag, window.moment));

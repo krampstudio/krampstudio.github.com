@@ -89,4 +89,4 @@
         }
     });
 
-}(xtag, _, moment));
+}(window.xtag, window._, window.moment));
