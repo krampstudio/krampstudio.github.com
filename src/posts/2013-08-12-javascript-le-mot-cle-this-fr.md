@@ -30,7 +30,7 @@ On dit du type `Function` que c'est un objet de première classe car ce type per
 
  - Chaque fonction est une instance du type `Object`. Bien que `typeof aFunction` renvoie `function`, `insanteof` nous permet de vérifier l'affiliation de la fonction au type `Object`.
 
-<x-code-prism language="javascript" line-numbers="true">
+``` javascript
 function test() {
     //do stuffs
 };
@@ -44,7 +44,7 @@ console.log(require('util').inspect(test, true));
 //stdout:   [arguments]: null,
 //stdout:   [caller]: null,
 //stdout:   [prototype]: { [constructor]: [Circular] } }
-</x-code-prism>
+```
 
  - Une fonction peut être assignée à une variable, comme un objet ou n'importe quel type.
 
