@@ -22,17 +22,17 @@
            show : function(){
 
              //TODO use documentFragment instead of String
-
              var archives = {};
                 _(this.posts)
                     .groupBy(function(post){
-                        return moment(post.date).year();
+                        return moment(post.getAttribute('date')).year();
                     }).forEach(function(yearPosts, year){
                         archives[year] = _.groupBy(yearPosts, function(post){
-                            return moment(post.date).format('MMMM');
+                            return moment(post.getAttribute('date')).format('MMMM');
                         });
                     });
 
+            //TODO use a template instead
              var list = '<ul>';
              var first = true;
              _.forEach(archives, function(yearPosts, year){
@@ -72,7 +72,6 @@
     xtag.register('x-post', {
         lifecycle : {
             created : function(){
-
                 this.style.display = 'none';
             }
         },
