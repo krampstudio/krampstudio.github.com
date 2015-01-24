@@ -1,6 +1,6 @@
 /**
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
- * @license GPL3 
+ * @license GPL3
  */
 var _            = require('lodash');
 var blogFactory  = require('./lib/blogFactory');
@@ -50,7 +50,7 @@ module.exports = function staticatrTask(grunt) {
     grunt.registerMultiTask('staticatr', 'Generates static web sites', function staticatr(){
         var factory, blog;
 
-        //build the options using defaults 
+        //build the options using defaults
         //TODO group options ? yes most of them are obscur
         var options = this.options({
             defaultLang : 'en',                                 //default language
@@ -64,14 +64,14 @@ module.exports = function staticatrTask(grunt) {
             engine      : 'handlebars',                         //template engine
             index       : 'src/index.hbs',                      //main temaple
             contentTpl  : 'src/partials/content.hbs',           //contents template
-            posts       : 'src/partials/post-entry.hbs',        //post entry template 
+            posts       : 'src/partials/post-entry.hbs',        //post entry template
             partials    : 'src/partials/*.hbs',                 //partials templates
-            i18n        : 'src/i18n.json',                      //i18n file 
+            i18n        : 'src/i18n.json',                      //i18n file
             paths       : {                                     //resources paths for inside a content
                 css     : '../css/',
                 js      : '../js/',
                 img     : '../img/',
-                postImg : '../img/posts/images/' 
+                postImg : '../img/posts/images/'
             },
             cleanDest   : false                                 //if the task should clean the destination folder before generation
         });
@@ -81,30 +81,30 @@ module.exports = function staticatrTask(grunt) {
         options.dest = this.data.dest.replace(/\/$/, '');
         options.contentFiles = expand(options.src, options.content);
         options.partialFiles = grunt.file.expand(options.partials);
-        options.translations = grunt.file.readJSON(options.i18n); 
+        options.translations = grunt.file.readJSON(options.i18n);
 
         //create or clean up  dest
-        grunt.log.debug('Going to generate into ' + options.dest); 
+        grunt.log.debug('Going to generate into ' + options.dest);
         if(!grunt.file.exists(options.dest)){
-            grunt.log.debug('mkdir -p ' + options.dest); 
+            grunt.log.debug('mkdir -p ' + options.dest);
             grunt.file.mkdir(options.dest);
         } else if (options.cleanDest === true){
-            grunt.log.debug('Clean up ' + options.dest); 
+            grunt.log.debug('Clean up ' + options.dest);
             grunt.file.delete(options.dest);
         }
-        
-        //build the blog object   
+
+        //build the blog object
         blog = blogFactory(options);
-         
-        //display some stats about 
-        grunt.log.debug(
+
+        //display some stats about
+        grunt.log.write(
             format('Model extracted from src (%s) :\n' +
-                         'langs : %j\n' + 
-                         'posts : %d\n' + 
-                         'pages : %d\n', 
-                    options.src, 
-                    blog.getAvailableLangs(), 
-                    _.size(blog.post), 
+                         'langs : %j\n' +
+                         'posts : %d\n' +
+                         'pages : %d\n',
+                    options.src,
+                    blog.getAvailableLangs(),
+                    _.size(blog.post),
                     _.size(blog.page)
             )
         );
@@ -116,9 +116,9 @@ module.exports = function staticatrTask(grunt) {
                 grunt.file.write(contentModel.dest, contentModel.render());
             });
         });
-  
-        //generate tech files, ie. sitemaps, robots, etc. 
-        var sitemaps = []; 
+
+        //generate tech files, ie. sitemaps, robots, etc.
+        var sitemaps = [];
         _.forEach(blog.tech, function(content, title){
             _.forEach(content, function (contentModel, lang){
                 grunt.log.debug('Creating tech content : ' + contentModel.dest);
@@ -129,6 +129,8 @@ module.exports = function staticatrTask(grunt) {
                 }
             });
         });
+
+        //create the site map index for all sub sitemaps created
         if(sitemaps.length){
             grunt.file.write(options.dest + '/sitemap.xml', require('./lib/sitemap').createIndex(sitemaps));
         }
