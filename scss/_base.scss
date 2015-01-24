@@ -45,7 +45,7 @@ a, x-load {
 blockquote {
 
     background-color: #eee;
-    padding: 5px; 
+    padding: 5px;
     @include radius(3px);
 
     &:before {
