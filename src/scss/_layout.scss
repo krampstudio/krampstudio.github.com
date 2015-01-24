@@ -14,7 +14,7 @@ body > header {
         margin: 0 5% 0 0;
         padding-left: 3%;
     }
-    
+
     x-lang-switcher{
         position: absolute;
         top: 10px;
@@ -40,9 +40,9 @@ body > header {
             height: 45px;
             overflow: hidden;
             @include microscreen {
-                height: auto;    
+                height: auto;
             }
-            li {        
+            li {
                 display: block;
                 float: left;
                 height: 45px;
@@ -56,14 +56,14 @@ body > header {
                 x-load {
                     line-height: 45px;
                 }
-            }   
+            }
         }
     }
     #content {
         margin-right: 225px;
         padding: 10px;
         @include smallscreen {
-            margin-right: 0;    
+            margin-right: 0;
         }
     }
     & > aside {
@@ -71,15 +71,13 @@ body > header {
         width: 225px;
         top: 45px;
         right: 0;
-        bottom: 0; 
+        bottom: 0;
         padding: 5px;
         @include smallscreen {
-            display: none;    
+            display: none;
         }
     }
 }
-
-
 
 footer {
     position: absolute;

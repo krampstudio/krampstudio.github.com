@@ -12,7 +12,7 @@ body > header {
        color: #BCCFDC;
        text-shadow: 1px 1px #555;
     }
-    
+
     x-lang-switcher x-lang {
         opacity: 0.6;
         cursor: pointer;
@@ -40,10 +40,10 @@ body > header {
             border-bottom: solid 4px #424244;
             cursor: pointer;
             @include respond-to(micro) {
-                border-right-width: 0;  
+                border-right-width: 0;
                 border-top: solid 1px #555;
                 &:first-child{
-                    border-top-width: 0;  
+                    border-top-width: 0;
                 }
             }
             @include unhover;
@@ -103,7 +103,7 @@ body > header {
                 width: 28px;
                 height: 28px;
                 line-height: 28px;
-                text-align: center; 
+                text-align: center;
                 /*background-color: #2C5A78;*/
                 background-color: #3A769D;
                 margin-right: 1px;
@@ -130,7 +130,7 @@ body > header {
                 padding: 0;
                 margin: 0 0 2px 0;
                 li {
-                    padding: 3px; 
+                    padding: 3px;
                     margin: 0 0 0 6px;
                     font-size: 14px;
                     cursor: pointer;
@@ -139,9 +139,9 @@ body > header {
                     &:hover {
                         color: #666;
                     }
-                
+
                     &:before {
-                        @extend .fa;   
+                        @extend .fa;
                         @extend .fa-caret-right;
                         color: #444;
                         margin-right: 5px;
@@ -162,7 +162,7 @@ body > header {
                         transition-property: max-height;
                         transition-duration: 1s;
                         transition-timing-function: linear;
-                    } 
+                    }
                 }
                 li li li{
 
@@ -202,24 +202,24 @@ body > header {
         article {
             &:after, &:before {
                 clear: both;
-            } 
+            }
             img {
                 max-height: 150px;
             }
             header {
 
                 position: relative;
-        
+
                 h1 {
                     margin: 20px 0 0 100px;
                     @include smallscreen{
                         margin: 0;
-                    } 
+                    }
                 }
 
                 x-time {
                     display: block;
-                    @include mediumscreen{ 
+                    @include mediumscreen{
                         position: absolute;
                         width: 80px;
                         height: 50px;
@@ -232,7 +232,7 @@ body > header {
                     color: #fff;
                     @include shadow(10px);
 
-                    @include mediumscreen{ 
+                    @include mediumscreen{
                         &:after {
                             content: "";
                             width: 0px;
@@ -249,15 +249,18 @@ body > header {
                     }
                 }
 
-                .categories > span {
-                    background-color: #0B67A2;
-                    color: #fff;
-                    @include radius(6px);
+                .categories{
+                    text-align: right;
+                    & > span {
+                        background-color: #0B67A2;
+                        color: #fff;
+                        @include radius(6px);
 
-                    padding: 1px 2px; 
-                    margin: 0 3px 0 0;
+                        padding: 3px 6px;
+                        margin: 0 3px 0 0;
 
-                    line-height: 32px;
+                        line-height: 32px;
+                    }
                 }
 
                 &:after {
@@ -281,7 +284,7 @@ body > header {
                 position: relative;
                 margin-bottom: 3px;
                 &:before {
-                    @extend .fa;   
+                    @extend .fa;
                     @extend .fa-check-square;
                     color: #2C5A78;
                     font-size: 13px;
@@ -289,7 +292,7 @@ body > header {
                     margin-right: 6px;
                 }
             }
-        } 
+        }
         blockquote {
             clear: both;
         }
