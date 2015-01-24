@@ -60,7 +60,7 @@ module.exports = function staticatrTask(grunt) {
             morePattern : /<!--\s?more\s?-->/gi,                //pattern to look at to display only the beginning of a post
             extension   : 'html',                               //generated files extension
             content     : ['**/*.md', '!js/vendor/**/*.md'],    //where to find posts
-            resources   : ['fonts/**', 'css/**', 'scss/**', 'js/**', 'img/**', 'favicon.ico', '*.txt'],     //resources to include during the generation
+            resources   : ['fonts/**', 'css/**', 'scss/**', 'js/**', 'img/**', 'favicon.ico', '*.txt', 'CNAME'],     //resources to include during the generation
             engine      : 'handlebars',                         //template engine
             index       : 'src/index.hbs',                      //main temaple
             contentTpl  : 'src/partials/content.hbs',           //contents template

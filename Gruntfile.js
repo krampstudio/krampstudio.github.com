@@ -17,6 +17,15 @@ module.exports = function(grunt) {
 
         pkg: grunt.file.readJSON('package.json'),
 
+        clean : {
+            build: {
+                src: [paths.build]
+            },
+            preview: {
+                src: [paths.preview]
+            }
+        },
+
         connect: {
             preview: {
                 options: {
@@ -178,10 +187,10 @@ module.exports = function(grunt) {
     grunt.registerTask('test', ['mochaTest:test']);
 
     //preview the blog
-    grunt.registerTask('preview', ['assets', 'staticatr:preview', 'connect:preview', 'open:preview', 'watch']);
+    grunt.registerTask('preview', ['clean:preview', 'assets', 'staticatr:preview', 'connect:preview', 'open:preview', 'watch']);
 
     //build the blog
-    grunt.registerTask('build', ['assets', 'staticatr:build']);
+    grunt.registerTask('build', ['clean:build', 'assets', 'staticatr:build']);
 
     //create an archive of the blog
     grunt.registerTask('package', ['build', 'compress:package']);

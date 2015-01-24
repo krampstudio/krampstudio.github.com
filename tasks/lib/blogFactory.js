@@ -1,13 +1,13 @@
 /**
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
- * @license GPL3 
+ * @license GPL3
  */
 var _      = require('lodash');
 var fs     = require('fs');
 var path   = require('path');
 var hbs    = require('handlebars');
 var blog   = require('./blog');
-var contentExtractor = require('./content').extractor; 
+var contentExtractor = require('./content').extractor;
 var siteMapBuilder   = require('./sitemap');
 
 //var d = _.partialRight(require('util').inspect, {
@@ -18,7 +18,7 @@ var siteMapBuilder   = require('./sitemap');
 
 /**
  * It builds for you (with love) a {@link Blog} from the options you give him
- * 
+ *
  * @exports tasks/lib/blogFactory
  * @param {Object} options
  * TODO document options we need!
@@ -26,17 +26,17 @@ var siteMapBuilder   = require('./sitemap');
  */
 module.exports = function blogFactory(options){
 
-    var homePageName    = options.extension ? 'index.' + options.extension : 'index'; 
+    var homePageName    = options.extension ? 'index.' + options.extension : 'index';
     var indexTpl        = hbs.compile(fs.readFileSync(options.index, 'utf-8'));
 
-    var postsPageName   = options.extension ? 'posts.' + options.extension : 'index'; 
+    var postsPageName   = options.extension ? 'posts.' + options.extension : 'index';
     var postTpl         = hbs.compile(fs.readFileSync(options.posts, 'utf-8'));
 
     //register partials
     options.partialFiles.forEach(function(file){
         var name = path.basename(file)
                        .replace(/\.([^.]*)$/, '');
-        hbs.registerPartial(name, hbs.compile(fs.readFileSync(file, 'utf-8'))); 
+        hbs.registerPartial(name, hbs.compile(fs.readFileSync(file, 'utf-8')));
     });
 
     //load content from files
@@ -60,7 +60,7 @@ module.exports = function blogFactory(options){
 
     //load pages generated from meta : home and the post page
     blog.getAvailableLangs().forEach(function(lang){
- 
+
         var tr = _.defaults(options.translations[lang] || {}, options.translations[options.defaultLang]);
 
         blog.page.posts[lang] = {
@@ -74,7 +74,7 @@ module.exports = function blogFactory(options){
                            .join('<br>');
             }
         };
-        
+
         blog.page.home[lang] = {
             dest    : options.dest + '/' + lang + '/' + homePageName,
             render : function(){
