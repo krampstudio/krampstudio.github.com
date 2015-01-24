@@ -1,0 +1,340 @@
+<article>
+
+    <header>
+        <h1>Pluginify your jQuery components</h1>
+
+        <div class="post-meta">    
+
+        <x-time datetime="2012-11-27 23:02" format="ll"></x-time>
+        <x-author>@kramp</x-author> 
+        <x-twitter-share url="http://krampstudio.com/en/posts/2012-11-27-pluginifier-vos-composants-jquery.html" content="Pluginify your jQuery components" author="@kramp"></x-twitter-share>
+            <div class="categories">
+                <span>javascript</span>
+                <span>jquery</span>
+                <span>build</span>
+                <span>test</span>
+            </div>
+        </div>
+
+    </header>
+
+    <div class="disclamer">
+<code>[translation in progress]</code>
+You may notice I&#39;m not english native. Help me to fix my english by contributing to this <a href="https://github.com/krampstudio/krampstudio.github.com/blob/new/src/about-en.md">post</a>.
+</div>
+
+<p>While I was developping the user interface of a pet project, this though came to my mind : <em>&quot;Thoses components you&#39;re doing, why don&#39;t you create pure jQuery plugin, you know?&quot;</em>. Then starts the story: I&#39;ve created a Github repository, looked for tools, built one plugin, then another, doing a conference at work and now a blog post.</p>
+<!-- more -->
+
+<p>The big picture: I&#39;m used to use HTML, CSS et the jQuery library as well as his best companion jQuery-UI to develop the user interfaces of my webapps. Since I started, I&#39;ve evolved from creating everything in the same script, then use jQuery plugins to making self contained libraries.</p>
+<p>In this post, I&#39;ll try to <em>pluginify</em> step by step, a small component used to delete an element of the graphical interface.</p>
+<h2 id="environnement">Environnement</h2>
+<p>First, you&#39;ll need:</p>
+<ul>
+<li>An operating system with a Bash like shell (bash, ksh or zsh are fine), for the others you&#39;ll need to find an alternative like Cygwin or similar.</li>
+<li>Have the root/admin permission on the system.</li>
+<li>Git installed (optional, but it&#39;ll help you to get the source code on Github).</li>
+<li>A texte editor.</li>
+</ul>
+<p>For the need of this post, I&#39;ve used Ubuntu 12.04, Precise Pangolin.</p>
+<h3 id="node-js-npm">Node.js &amp; NPM</h3>
+<blockquote>
+<p>But wait, what is the link between jQuery and Node.js? Not sure to follow you.</p>
+</blockquote>
+<p>We need <a href="http://nodejs.org">node.js</a>, to install our build system. There is a lot of JavaScript libraries in CLI that rely on node.js. And, the packaging system that comes with node.js, <a href="http://npmjs.org">npm</a> is really nice and will help to install those libraries.</p>
+<p>----HERE------
+Par ailleurs, quand on développe en Javascript, même pour du développement client, c&#39;est une bonne chose d&#39;avoir node.js installé, car on peut profiter de tout un tas d&#39;outils sympa.</p>
+<p>Pour installer node.js et npm sous Debian/Ubuntu:</p>
+<x-code-prism language='bash' line-numbers='true'>$> sudo aptitude install nodejs npm</x-code-prism><p>Pour les autres, vous pouvez vous reporter au site de <a href="http://nodejs.org/download/">node.js</a></p>
+<h3 id="grunt">Grunt</h3>
+<p><img src="../img/posts/images/grunt.png" alt="grunt" title="Grunt"></p>
+<p>Une fois la commande npm disponible, il va falloir installer <a href="http://gruntjs.com">Grunt</a>, l&#39;outils que nous utiliserons pour automatiser les tâches de build de notre plugin. Nous allons donc l&#39;installer avec npm, en mode <em>global</em> (donc accessible pour tous les utilisateurs), d&#39;où le commutateur <code class='inline'>g</code>. C&#39;est pourquoi il faut l&#39;installer avec les droits root.</p>
+<x-code-prism language='bash' line-numbers='true'>$> sudo npm install -g grunt</x-code-prism><h3 id="phantom-js">Phantom.js</h3>
+<p><img src="../img/posts/images/phantomjs.png" alt="phantomjs" title="phantomjs"></p>
+<p>Le dernier outils a installer sur votre système est <a href="http://phantomjs.org">Phantom.js</a>, qui va nous servir pour simuler un browser durant nos tests. Il est aussi disponible depuis le gestionnaire de paquet sur les distributions récentes:</p>
+<x-code-prism language='bash' line-numbers='true'>$> sudo aptitude install phantomjs</x-code-prism><p>ou en le téléchargeant depuis le <a href="http://phantomjs.org/download.html">site web</a>, dans ce cas, ne pas oublier de le rajouter dans le <code class='inline'>PATH</code>.</p>
+<h2 id="les-choses-s-rieuses">Les choses sérieuses</h2>
+<p>Voici un exemple de code intégré à un script d&#39;une application:</p>
+<p><x-gist gist-id="3854836" file="dynamic-removable-list.js"></x-gist></p>
+<p>Cet exemple est utilisé pour créer une liste HTML en fonction du résultat d&#39;une requête Ajax. Chaque item de la liste doit pouvoir être supprimé par la suite. C&#39;est ce point qui nous intéresse, car nous voulons pouvoir appliquer ce composant de suppression à d&#39;autres parties de notre interface graphique.</p>
+<p>Nous allons procéder en suivant ces étapes:</p>
+<ol>
+<li>Trouver un nom au plugin.</li>
+<li>Générer une structure, un archétype pour notre plugin.</li>
+<li>Refactorer notre code au sein d&#39;un plugin.</li>
+<li>Créer une page d&#39;exemple dédié.</li>
+<li>Créer un ensemble de tests unitaires.</li>
+<li>Définir notre séquence de build.</li>
+<li>L&#39;indexer le site des plugin jQuery.</li>
+</ol>
+<h2 id="trouver-un-nom-qui-d-chire">Trouver un nom qui déchire</h2>
+<p>Alors, voici ma <em>bête noire</em> de la programmation: trouver des noms aux variables, classes, projets! Je n&#39;ai pas ce côté inventif qui va permettre de trouver le nom d&#39;animal super cool, donc je reste très terre à terre. Notre plugin s&#39;appellera <em>RemoveableArea</em>! super... :-(. Si quelqu&#39;un à une meilleure idée, je suis preneur.</p>
+<blockquote>
+<p>Ca c&#39;est fait.</p>
+</blockquote>
+<h2 id="g-n-rer-la-structure-du-projet">Générer la structure du projet</h2>
+<p>L&#39;avantage d&#39;utiliser un outil tel que Grunt c&#39;est qu&#39;il fait une part de notre travail, donc quand on est fainéant, on ne peut plus s&#39;en passer.
+Grunt dispose d&#39;une tâche <code class='inline'>init</code> qui permet de générer une structure de projet type en partant d&#39;un template. Et ça tombe bien, il y en a un pour jQuery.</p>
+<p>Dans l&#39;ordre, on va:</p>
+<ol>
+<li>Créer un répertoire pour notre plugin.</li>
+<li>Le versionner avec GIT.</li>
+<li>Générer la structure de base.</li>
+</ol>
+<x-code-prism language='bash' line-numbers='true'>$ mkdir removablearea
+$ cd removablearea
+$ git init
+Initialized empty Git repository in /home/bertrand/dev/workspace/removablearea/.git/
+$ grunt init:jquery
+#answer the questions about the plugin
+#...
+Initialized from template "jquery".
+Done, without errors.
+$ git add -A
+$ git commit -m "Create base plugin"</x-code-prism><p>Voilà, maintenant, notre structure est générée, le projet est versionné avec GIT, et si vous avez renseigné soigneusement les questions demandées par Grunt, alors un certain nombre de sections sont déjà pré-remplies.</p>
+<p>Normalement, vous devriez avoir l&#39;arborescence suivante:</p>
+<pre>
+.
+├── grunt.js                    //fichier de build
+├── libs                        //librairies externes
+│   ├── jquery
+│   │   └── jquery.js
+│   ├── jquery-loader.js
+│   └── qunit
+│       ├── qunit.css
+│       └── qunit.js
+├── LICENSE-GPL                    //licenses
+├── LICENSE-MIT
+├── package.json                //meta données du projet
+├── README.md
+├── removablearea.jquery.json    //meta données du plugin
+├── src                            //sources du plugin
+│   └── removablearea.js
+└── test                        //tests unitaires
+    ├── removablearea.html
+    └── removablearea_test.js
+</pre>
+
+<p>Nous allons modifier un peu cette structure, en y ajoutant un répertoire <span class="inline-code">sample</span> dans lequel nous allons créer des exemples d&#39;utilisation de notre plugin.</p>
+<h2 id="pluginification">Pluginification</h2>
+<p>Dans un premier temps, nous allons créer la structure (au sens du typage en programmation) de notre plugin jQuery, en se basant sur les bonnes pratiques détaillée dans la <a href="http://docs.jquery.com/Plugins/Authoring" title="jQuery Plugin AUthoring">documentation jQuery</a> à ce propos. Nous allons donc utiliser la structure suivante, comme base de notre fichier <span class="inline-code">src/removablearea.js</span>:</p>
+<p><x-gist gist-id="3886198" file="removablearea.js"></x-gist></p>
+<p>Tout d&#39;abord, on peut remarquer que le code est englobé dans une closure. Ce pattern s&#39;appelle <em>Immediately-Invoked Function Expression</em> (ou <em>LIFE</em>). Cette pratique permet d&#39;éviter d&#39;exécuter du code dans le scope global. Dans le cas de jQuery, cet usage permet d&#39;utiliser le symbole dollar en étant sûr qu&#39;il vient de jQuery et non d&#39;un autre framework, le <span class="inline-code">$</span> est mappé à l&#39;objet <span class="inline-code">jQuery</span> :</p>
+<x-code-prism language='javascript' line-numbers='true'>(function( $ ) {
+    //your code
+})( jQuery );</x-code-prism><p>Un autre point que l&#39;on peut souligner est ce string utilisé à la ligne 2:</p>
+<x-code-prism language='javascript' line-numbers='true'>    "use strict";</x-code-prism><p>La présence de ce string permet de passer le moteur Javascript en mode <em>strict</em>, qui le rend moins tolérant à certaines pratiques du langage. Vous pouvez consulter la <a href="https://developer.mozilla.org/en-US/docs/JavaScript/Reference/Functions_and_function_scope/Strict_mode">documentation Mozilla</a> pour plus de détails sur ce mode.</p>
+<p>Ensuite la partie qui permet de créer le plugin jQuery peut se résumer à cette ligne:</p>
+<x-code-prism language='javascript' line-numbers='true'>    $.fn.removableArea = function( method ) { }</x-code-prism><p>Littéralement, nous ajoutons à l&#39;attribut <code class='inline'>fn</code> de l&#39;objet <code class='inline'>jQuery</code> (ou <code class='inline'>$</code> pour les intimes), la fonction <code class='inline'>removableArea</code> qui prend en paramètre un nom de méthode. C&#39;est grâce à cette ligne que nous pourrons appeler la fonction <code class='inline'>removableArea</code> sur un élément du DOM, comme <code class='inline'>$(&#39;.boo &gt; #far&#39;).removableArea(options);</code>.</p>
+<p>Ensuite le contenu de cette fonction va tout simplement déléguer les appels à l&#39;objet <code class='inline'>RemovableArea</code> définit au préalable, en fonction du contexte d&#39;appel:</p>
+<ul>
+<li><code class='inline'>removableArea</code> est appelé avec un objet en paramètre (les options):<ul>
+<li>On délègue à <code class='inline'>RemovableArea.init(options)</code>.</li>
+</ul>
+</li>
+<li><code class='inline'>removableArea</code> est appelé avec un string en paramètre:<ul>
+<li>Ce string correspond à une méthode de <code class='inline'>RemovableArea</code>, alors on délègue, sauf si ce nom commence par un <em>underscore</em> (genre de méthode privée).</li>
+</ul>
+</li>
+<li><code class='inline'>removableArea</code> est appelé sans paramètre, on lève une erreur.</li>
+</ul>
+<p>Grâce à ce mécanisme de paramètres, nous pouvons appeler des méthodes à partir du même plugin:</p>
+<x-code-prism language='javascript' line-numbers='true'>    var elt = $('#id').removableArea(options);
+    elt.removableArea('destroy');</x-code-prism><h2 id="refactoring">Refactoring</h2>
+<p>Maintenant, que nous avons la structure de notre plugin en place, nous allons y intégrer notre code. Pour cela, il faut se poser les questions suivantes:</p>
+<ul>
+<li>Quelles sont les options demander à l&#39;utilisateur et quelles seront les valeurs par défaut ?</li>
+<li>Comment répartir notre code entre la méthode par défaut (<code class='inline'>RemovableArea.init(options)</code>) et d&#39;autres méthodes ?</li>
+<li>Quels événements déclencher pour aider à l&#39;implémentation du plugin ?</li>
+</ul>
+<h3 id="les-options">Les options</h3>
+<p>Par convention, le paramétrage des plugins se fait en passant un objet contenant les options pour initialiser le plugin. Le code suivant va permettre d&#39;initialiser le composant de notre exemple:</p>
+<x-code-prism language='javascript' line-numbers='true'>$.removableArea({
+    label         : 'Supprimer',
+    img         : '/imgs/delete.png',
+    warning     : 'Voulez-vous supprimer cet élément?',
+    hoverClass     : 'half-opac'
+});</x-code-prism><p>Nous avons donc définis un certain nombre de paramètres, comme l&#39;image du <em>bouton</em> qui s&#39;affichera pour supprimer la zone ou les différents labels. On permet aussi de définir la classe CSS qui s&#39;appliquera sur ce <em>bouton</em> au passage de la souris.</p>
+<h3 id="les-param-tres-par-d-faut">Les paramètres par défaut</h3>
+<p>Une fois le liste des options définies, il faut leur donner des valeurs par défaut. Cela permet d&#39;éviter de redonner toutes les options à chaque utilisation, et permet surtout de mettre en place un comportement par défaut. L&#39;idée est que le plugin fonctionne tout de suite, mais de laisser la possibilité de le modifier plus tard.</p>
+<p>Pour faire cela, nous allons utiliser un méthode de jQuery qui est très utile: <code class='inline'>$.extend</code> qui permet de <em>merger</em> les options passées en paramètres et les options par défaut.</p>
+<p>Nous allons donc définir ces paramètres par défaut dans un attribut de notre objet <code class='inline'>RemovableArea</code>, puis les étendre avec les paramètres passés au plugin:</p>
+<x-code-prism language='javascript' line-numbers='true'>    var RemovableArea = {
+        _opts : {
+            label : 'Supprimer',
+            img : '/imgs/delete.png',
+            warning : 'Voulez-vous supprimer cet élément?',
+            hoverClass : 'half-opac'
+        },
+        _init: function(options){
+            var opts = $.extend(true, {}, RemovableArea._opts, options);
+            //...
+
+        }
+    };</x-code-prism><p>Grâce au résultat de la méthode <code class='inline'>$.extend</code> la variable <code class='inline'>opts</code> contient les options passées par l&#39;utilisateur ou leur valeur par défaut s&#39;ils ont été omis.</p>
+<h3 id="le-code-du-plugin">Le code du plugin</h3>
+<p>Maintenant, que nous avons une structure à notre plugin, la gestion des paramètres et options, il va falloir répartir le code entre la méthode d&#39;initialisation et d&#39;autres méthodes que nous rajoutons en fonction du fonctionnement souhaité. L&#39;approche que je met souvent en place est de tout faire dans un premier temps dans la méthode d&#39;initialisation, puis je refactor au fur et à mesure (le problème est qu&#39;il m&#39;arrive de n&#39;avoir jamais le temps de refactorer...).</p>
+<p>Pour notre exemple, nous allons créer les éléments du DOM dans la méthode d&#39;initialisation et une méthode <code class='inline'>destroy</code> pour supprime tout ce que le plugin a créé.</p>
+<p>{% gist 4114309 removablearea.js %}</p>
+<p><x-gist gist-id="4114309" file="removablearea.js"></x-gist></p>
+<p>Voilà donc notre plugin créé! On peut aussi noter l&#39;ajout de deux événements : le premier étant déclenché à l&#39;initialisation du plugin et le second lors de la suppression. Le nom des événements est suffixé par <em>removablearea</em>, qui est une manière de les grouper dans des <a href="http://docs.jquery.com/Namespaced_Events">namespaces</a>.</p>
+<h2 id="mise-en-oeuvre-cr-er-une-page-d-exemple">Mise en oeuvre : créer une page d&#39;exemple</h2>
+<p>Bon rien de bien compliqué ici, je créé juste une page HTML basique qui charge jQuery et notre plugin. Le principe est d&#39;avoir un cas d&#39;utilisation classique du plugin.
+Pour notre plugin, je créé cette page dans le répertoire <code class='inline'>sample</code> et je la publie avec <a href="http://pages.github.com/">Github-Pages</a> (ce qui est bien pratique). Jetez donc un oeil à cet <a href="http://krampstudio.com/jQueryRemovableArea/index.html">exemple</a> et aux sources <code class='inline'>Ctrl-U</code>.</p>
+<h2 id="tester-du-javascript">Tester du Javascript</h2>
+<blockquote>
+<p>Tester c&#39;est douter :-S</p>
+</blockquote>
+<p>On voit trop rarement des tests mis en place pour le code Javascript, mais pourtant tous les outils dont nous avons besoin sont disponibles (il y a en a même pas mal!). Donc comme pour n&#39;importe quel autre langage, nous allons créer des tests unitaires automatisés pour notre plugin.</p>
+<p><img src="../img/posts/images/qunitjs.png" alt="qunit" title="qunit"></p>
+<p>Parmi les nombreux frameworks existant, mon dévolu c&#39;est posé sur <a href="http://www.qunitjs.org">Qunit</a> car c&#39;est le framework de tests de jQuery d&#39;une part (donc il s&#39;intègre naturellement avec un plugin jQuery) et d&#39;autre part parce qu&#39;il offre toutes les fonctionnalités dont nous avons besoin: tests asynchrones, <em>fixtures</em>, groupes, etc.</p>
+<p>Le test se compose de deux fichiers:</p>
+<ul>
+<li>Un fichier HTML, qui contient:<ul>
+<li>Une structure de base à ne pas modifier</li>
+<li>Un bloc <em>fixtures</em> dont l&#39;identifiant est <code class='inline'>qunit-fixture</code>. C&#39;est dans ce bloc uniquement que nous pouvons inclure nos éléments liés à notre test. Le contenu de ce bloc n&#39;est pas visible et sera rechargé après l&#39;exécution de chaque méthode de test.</li>
+</ul>
+</li>
+<li>Un fichier Javascript qui va contenir notre test.</li>
+</ul>
+<p>Du point de vue de l&#39;API de test, Qunit nous propose:</p>
+<ul>
+<li>D&#39;organiser les tests en modules. Les tests peuvent partager des attributs lorsqu&#39;ils sont groupés en module.</li>
+<li>Un ensemble de fonctions comparables à des assertions, comme <code class='inline'>ok( boolean )</code>, <code class='inline'>equal(expected, compared)</code>, etc.</li>
+<li>Des méthodes pour tester des méthodes asynchrones.</li>
+</ul>
+<p>Testons notre plugin!</p>
+<p>Tout d&#39;abord, nous créons dans les <em>fixtures</em> trois blocs qui vont nous servir comme zones de suppression:</p>
+<x-code-prism language='markup' line-numbers='true'>    &lt;div id="qunit-fixture"&gt;
+        &lt;div&gt;lame test markup&lt;/div&gt;
+        &lt;div&gt;normal test markup&lt;/div&gt;
+        &lt;div&gt;awesome test markup&lt;/div&gt;
+    &lt;/div&gt;</x-code-prism><p>Ensuite, nous définissons un module dans le test. L&#39;ordre d&#39;invocation des méthodes est important, car toutes les méthodes de test définies après la déclaration du module feront parties de ce module. Ce module va aussi se charger d&#39;initialiser l&#39;attribut <code class='inline'>targets</code> que nous faisons pointer sur les zones à supprimer, et nous pourrons utiliser cet attributs dans tous les tests du module.</p>
+<x-code-prism language='javascript' line-numbers='true'>    module('jQuery#removableArea', {
+        setup: function() {
+            this.targets = $('#qunit-fixture').children();
+        }
+    });</x-code-prism><p>Puis nous déclarons une méthode de test classique qui s&#39;assure que le plugin est bien chargé par jQuery:</p>
+<x-code-prism language='javascript' line-numbers='true'>    test('is plugin loaded in jQuery', 1, function(){
+        ok( (typeof $.fn.removableArea === 'function'), "the plugin should be available from jQuery.fn");
+    });</x-code-prism><p>Ensuite, un petit test asynchrone qui se déroule en 3 temps:</p>
+<ol>
+<li>Déclaration d&#39;un <code class='inline'>asyncTest</code>.</li>
+<li>Définir le nombre d&#39;assertion attendues via la fonction <code class='inline'>expected</code>.</li>
+<li>Appeler la fonction <code class='inline'>start</code> une fois que le code asynchrone a été exécuté.</li>
+</ol>
+<p>Ce qui donne le test suivant, qui vérifie que le plugin a bien été chargé en écoutant l&#39;événement d&#39;initialisation:</p>
+<x-code-prism language='javascript' line-numbers='true'>    asyncTest("does the plugin initialize", function(){
+
+        expect(this.targets.length);     //we expect 3 assertions, one by target
+
+        this.targets.bind('init.removablearea', function(){
+                strictEqual(1, $('.removable-ctrl', this).length);
+                start();
+            });
+        this.targets.removableArea();
+    });</x-code-prism><p>Pour lancer les tests, il suffit de charger la page HTML. Le résultat est visible depuis celle-ci, comme nous pouvons le voir sur la capture suivante:</p>
+<p><img src="../img/posts/images/sc.test-result.png" alt="shot1" title="Capture de la page de résultats tests "></p>
+<h2 id="automatisation">Automatisation</h2>
+<blockquote>
+<p>Un makefile pour du Javascript ?</p>
+<blockquote>
+<p>C&#39;est un peu l&#39;idée oui!</p>
+</blockquote>
+</blockquote>
+<p>Dans le but d&#39;améliorer la qualité de nos développements et de gagner du temps, nous allons déléguer les tâches suivantes à un outils de build, <a href="http://www.gruntjs.org">Grunt</a> dont nous avons déjà parlé précédemment:</p>
+<ul>
+<li>Minimification des sources.</li>
+<li>Ajout de la bannière de licence.</li>
+<li>Exécution des tests.</li>
+<li>Vérification du code.</li>
+</ul>
+<p>Pour faire tout cela, c&#39;est simple nous utilisons les plugins fournis de base avec Grunt.</p>
+<h3 id="g-n-ration-des-sources-finales">Génération des sources finales</h3>
+<p>Nous allons distribuer notre plugin sous forme minimifié, mais avec tout de même une bannière rappelant les informations essentielles: le copyright, l&#39;auteur et la licence. Ces informations vont être extraites et formatées à partir du fichier de méta-données : <code class='inline'>package.json</code>. Ce fichier est bien sûr formaté en JSON et suit la convention de description de paquet <a href="http://www.npmjs.org">NPM</a> (les paquets node.js). Vous pouvez allez voir la <a href="https://npmjs.org/doc/json.html">spécification</a> pour plus de détails.</p>
+<p>Dans le cas de notre plugin, les méta-données sont les suivantes:</p>
+<p><x-gist gist-id="4145261" file="package.json"></x-gist></p>
+<p>Maintenant nous souhaitons avoir en entête de nos sources le commentaire suivant:</p>
+<x-code-prism language='javascript' line-numbers='true'>/**
+ * Copyright (c) 2012 Bertrand Chevrier
+ * jQueryRemovableArea - v0.1.0
+ * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
+ * @license GPL  <http://www.gnu.org/licenses/gpl-3.0.txt>
+ */</x-code-prism><p>Pour cela Grunt nous propose un mécanisme qui va nous permettre de récupérer le contenu du fichier <code class='inline'>package.json</code> et de l&#39;utiliser au sein de notre fichier de build, via un mécanisme de template basique. De plus, Grunt a mis en place le concept de <code class='inline'>banner</code> qui pourra être concaténé avec notre fichier source.</p>
+<p>Voici le fichier de build <code class='inline'>grunt.js</code> qui va minimifier les sources et créer l&#39;entête:</p>
+<x-code-prism language='javascript' line-numbers='true'>    grunt.initConfig({
+        pkg: '<json:package.json>',
+        meta: {
+            banner: '/**\n'+
+                    ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>\n' +
+                    ' * <%= pkg.name %> - v<%= pkg.version %> \n' +
+                    ' * @author <%= pkg.author.name %> <<%= pkg.author.email %>>\n' +
+                    ' * @license <%= pkg.licenses[0].type %>  <<%= pkg.licenses[0].url %>>\n'+
+                    ' */'
+        },
+        min : {
+            dist : {
+                src: 'src/removablearea.js',
+                dest: 'jquery.removablearea.min.js'
+            }
+        },
+        concat : {
+            dist : {
+                src : [ '<banner>', 'jquery.removablearea.min.js'],
+                dest: 'jquery.removablearea.min.js'
+            }
+        }
+    });</x-code-prism><p>La commande :</p>
+<x-code-prism language='bash' line-numbers='true'>$> grunt min concat</x-code-prism><p>va produire notre fichier final <code class='inline'>jquery.removablearea.min.js</code>.</p>
+<h3 id="tests-et-v-rification">Tests et vérification</h3>
+<p>Nous pouvons automatiser l&#39;exécution des tests Qunit avec Grunt et PhantomJs. PhantomJs permet d&#39;exécuter le test dans un navigateur en ligne de commande: il créé un navigateur de type WebKit en <em>headless</em>.</p>
+<p>Pour la vérification du code source, nous utilisons <a href="http://www.jshint.com">JSHint</a> qui est plus flexible que <a href="http://www.jslint.com">JSLint</a>.</p>
+<p>Puisque nous utilisons les plugins fournis par défaut avec Grunt, la configuration se résume à l&#39;ajout d&#39;un pattern pointant sur les fichiers de tests Qunit et la définition des règles JSHint.</p>
+<p>Le fichier de build final ressemble à cela:</p>
+<p><x-gist gist-id="4145424" file="grunt.js"></x-gist></p>
+<p>Et voici le genre de sortie que devrait retourner Grunt si tout se passe bien durant le build:</p>
+<x-code-prism language='bash' line-numbers='true'>$> grunt
+Running "lint:files" (lint) task
+Lint free.
+
+Running "qunit:all" (qunit) task
+Testing removablearea.html....OK
+>> 6 assertions passed (61ms)
+
+Running "min:dist" (min) task
+File "jquery.removablearea.min.js" created.
+Uncompressed size: 2001 bytes.
+Compressed size: 660 bytes gzipped (1269 bytes minified).
+
+Running "concat:dist" (concat) task
+File "jquery.removablearea.min.js" created.
+
+Done, without errors.</x-code-prism><h2 id="partager">Partager</h2>
+<blockquote>
+<p>On va rentrer dans la postérité</p>
+</blockquote>
+<p>Bien que le <a href="http://plugins.jquery.com/">site</a> répertoriant les plugins JQuery soit <em>en cours de développement</em>, il nous donne déjà la procédure à suivre pour y inscrire notre plugin. Dès que le site sera fini, notre plugin devrait théoriquement parti de la liste, un très bon moyen pour le faire connaître et de le partager.</p>
+<h3 id="les-m-ta-donn-es">Les méta-données</h3>
+<p>Tout comme pour le build, nous devons créer un fichier qui va contenir les informations relatives à notre plugin. Ce fichier servira à fournir les informations nécessaires pour indexer le plugin. Ce fichier est très proche du fichier <code class='inline'>package.json</code> (car ils se sont inspirés de la spec NPM), mais trop différent pour n&#39;utiliser qu&#39;un seul fichier... En suivant le <a href="https://github.com/jquery/plugins.jquery.com/blob/master/docs/manifest.md">format spécifié</a>, voici à quoi ressemble ce fichier pour notre plugin:</p>
+<p><x-gist gist-id="4156975" file="removablearea.jquery.json"></x-gist></p>
+<p>Bon, c&#39;est un peu redondant avec le fichier <code class='inline'>package.json</code> et il est surement possible de le générer avec depuis celui-ci, d&#39;ailleurs si quelqu&#39;un le fait déjà n&#39;hésitez pas à laisser un commentaire!</p>
+<h3 id="pr-parer-l-indexation">Préparer l&#39;indexation</h3>
+<p>Pour préparer l&#39;indexation sur le site <a href="http://plugins.jquery.com">plugins.jquery.com</a>, il suffit d&#39;ajouter un <em>hook</em> sur notre dépôt Github, comme décrit le décrit cette <a href="https://github.com/jquery/plugins.jquery.com#how-to-list-a-plugin">procédure</a>. La capture suivante montre l&#39;interface d&#39;administration du projet sur Github qui permet de rajouter le hoot:</p>
+<p><img src="../img/posts/images/sc.github-hook.png" alt="shot2" title="Ajout d&#39;un service hook dans l&#39;administration du dépôt"></p>
+<h1 id="et-voil-">Et voilà</h1>
+<blockquote>
+<p>Un petit plugin jQuery aux petits oignons.</p>
+</blockquote>
+<p>Le code source de l&#39;exemple est bien entendu disponible sur mon Github <a href="https://github.com/krampstudio/jQueryRemovableArea">krampstudio/jQueryRemovableArea</a>.</p>
+<p><em>Enjoy javascript coding</em></p>
+
+
+
+
+    <x-disqus shortname="Krampstudio" identifier="2012-11-27-pluginifier-vos-composants-jquery" lang="en" url="http://krampstudio.com/en/posts/2012-11-27-pluginifier-vos-composants-jquery.html"></x-disqus>   
+
+    <script type="text/javascript">
+        document.location = 'index.html?state=posts/2012-11-27-pluginifier-vos-composants-jquery.html';
+    </script>
+
+</article>

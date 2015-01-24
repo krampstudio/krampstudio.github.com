@@ -1,0 +1,404 @@
+<article>
+
+    <header>
+        <h1>JavaScript le mot clé this</h1>
+
+        <div class="post-meta">    
+
+        <x-time datetime="2013-08-12 18:36" format="ll"></x-time>
+        <x-author>@kramp</x-author> 
+        <x-twitter-share url="http://krampstudio.com/fr/posts/2013-08-12-javascript-le-mot-cle-this.html" content="JavaScript le mot clé this" author="@kramp"></x-twitter-share>
+            <div class="categories">
+                <span>javascript</span>
+            </div>
+        </div>
+
+    </header>
+
+    <p><img src="../img/posts/images/js-badge.png" alt="JS Logo" title="js.this"></p>
+<p>Si comme moi vous aviez plutôt l&#39;habitude des langages de programmation orientés objets <em>classiques</em>, vous avez sans doute aussi été surpris (entre autre) de l&#39;utilisation du mot clé <code>this</code> en JavaScript. Il y a quelques temps déjà, l&#39;envie de comprendre cette particularité m&#39;a permis d&#39;appréhender les concepts fondateurs du langage. Au final, en essayant de comprendre l&#39;utilisation de <code>this</code>, ma vision du langage a complètement changé et depuis c&#39;est avec plaisir que je code en JS.
+Je vais donc essayer de retracer ce cheminement, en expliquant quelques principes simples mais tellement important. Ça devrait éviter quelques prises de têtes.</p>
+<p>En fait le mot clé <code>this</code> n&#39;est pas du tout ce que l&#39;on croit. Ce n&#39;est pas une référence vers une instance d&#39;un objet, mais le contexte de la fonction. Pour comprendre cela, il y a quelques concepts du langage qu&#39;il faut explorer :</p>
+<ul>
+<li>le type <code>Function</code> est un objet de première classe (<a href="http://en.wikipedia.org/wiki/First-class_function">First-class function</a>),</li>
+<li>le portée des variables locales est hissée au niveau de la fonction,</li>
+<li>le mot clé <code>new</code> n&#39;est seulement qu&#39;un alias</li>
+</ul>
+<!-- more -->
+
+<p><em>Tous les exemples présentés ont été testés avec <a href="http://nodejs.org/">node.js</a> version 0.10.15. Vous pouvez les reproduire et aller plus en vous amusant avec <a href="http://nodejs.org/api/repl.html">REPL</a> (la console node).</em></p>
+<h2 id="la-fonction-citoyenne-de-1-re-classe">La fonction, citoyenne de 1ère classe</h2>
+<p><a name='function-first-class-object'></a></p>
+<p>On dit du type <code>Function</code> que c&#39;est un objet de première classe car ce type permet de faire tout ce qu&#39;un objet peut faire dans le langage. En gros l&#39;instance d&#39;une fonction se comporte comme un objet. Voici quelques caractéristiques qui illustre ce principe:</p>
+<ul>
+<li>Chaque fonction est une instance du type <code>Object</code>. Bien que <code>typeof aFunction</code> renvoie <code>function</code>, <code>insanteof</code> nous permet de vérifier l&#39;affiliation de la fonction au type <code>Object</code>.</li>
+</ul>
+<x-code-prism language='javascript' line-numbers='true'>function test() {
+    //do stuffs
+};
+console.log(test instanceof Object);
+//stdout: true
+
+console.log(require('util').inspect(test, true));
+//stdout: { [Function: test]
+//stdout:   [length]: 0,
+//stdout:   [name]: 'test',
+//stdout:   [arguments]: null,
+//stdout:   [caller]: null,
+//stdout:   [prototype]: { [constructor]: [Circular] } }</x-code-prism><ul>
+<li>Une fonction peut être assignée à une variable, comme un objet ou n&#39;importe quel type.</li>
+</ul>
+<x-code-prism language='javascript' line-numbers='true'>var getOs = function get_os() {
+    return 'windows';
+}
+console.log( typeof getOs );
+//stdout: 'function'</x-code-prism><ul>
+<li>une fonction peut être passée en paramètre d&#39;une fonction, permettant ainsi d&#39;utiliser (en autre) le pattern du <code>callback</code>, très utile pour la programmation événementielle et les traitements asynchrones.</li>
+</ul>
+<x-code-prism language='javascript' line-numbers='true'>function os_scanner( getOs ) {
+
+    console.log( typeof arguments[0] );
+
+    if( getOs() == 'windows' ){
+        console.log( 'Oh crap' );
+    } else {
+        console.log( "I know that, it's a Unix" );
+    }
+}
+
+os_scanner(getOs);
+//stdout: 'function'
+//stdout: 'Oh Crap'</x-code-prism><ul>
+<li>Une fonction étant une instance, c&#39;est une structure de données. Elle contient des propriétés intrinsèques (<code>name</code>, <code>arguments</code>, etc.), mais on peut aussi lui assigner de nouvelles propriétés.</li>
+</ul>
+<x-code-prism language='javascript' line-numbers='true'>get_os.arch='x86';
+
+console.log(require('util').inspect(get_os, true));
+//stdout: { [Function: get_os]
+//stdout:   [length]: 0,
+//stdout:   [name]: 'get_os',
+//stdout:   [arguments]: null,
+//stdout:   [caller]: null,
+//stdout:   [prototype]: { [constructor]: [Circular] },
+//stdout:   arch: 'x86' }</x-code-prism><p>Maintenant, nous savons que la fonction est un des concepts central du langage JavaScript, vous me direz, pas étonnant pour un langage fonctionnel, un peu plus pour un langage orienté objet (même sans classe, mais ça c&#39;est une autre histoire).</p>
+<h2 id="scope">Scope</h2>
+<p>Encore une fois, le langage se distingue de beaucoup de ses confrères sur le point du scope. La portée des variables en JavaScript se propage au niveau de la fonction et non du bloc. Bien entendu les variables globales sont accessibles partout (de tout façon personne n&#39;utilise jamais de variables globales, n&#39;est-ce pas?), par contre les variables <em>locales</em> sont locales à la fonction dans la laquelle elles ont été déclarées.</p>
+<p>Quand on tente d&#39;accéder à une variable non définie, on a une jolie erreur:</p>
+<x-code-prism language='javascript' line-numbers='true'>function get_os(){
+    var arch = 'x86';
+}
+
+function get_arch(){
+    console.log(arch);
+}
+
+get_arch();
+//stdout: ReferenceError: arch is not defined
+//stdout:    at get_arch (repl:1:34)
+//stdout:    at [...]</x-code-prism><p>Dans un langage où la portée des variables est le bloc, on pourrait s&#39;attendre à la même chose, mais:</p>
+<x-code-prism language='javascript' line-numbers='true'>function get_arch(){
+    if(false){
+        var arch = 'windows';
+    }
+    console.log(arch);
+}
+
+get_arch();
+//stdout: undefined</x-code-prism><p>La variable <code>arch</code> est donc <strong>accessible</strong> à toute la fonction, même si elle n&#39;a pas encore été définie (d&#39;où le <code>undefined</code>). Ce code est équivalent à:</p>
+<x-code-prism language='javascript' line-numbers='true'>function get_arch(){
+    var arch;
+    if(false){
+        arch = 'windows';
+    }
+    console.log(arch);
+}
+
+get_arch();
+//stdout: undefined</x-code-prism><p>JavaScript intègre le principe du <em>hoisting</em>, c&#39;est-à-dire que toutes les variables locales à une fonction sont accessibles dès le début de celle-ci. Une des bonnes pratiques veut que toutes les variables utilisées soient déclarées en début de fonction.</p>
+<p>Ce type de comportement peut nous paraître limitant. Ce serait la cas si JS n&#39;avais pas un mécanisme de <em>closure</em>. La closure est un principe tout simple mais très puissant, qui donne accès aux variables des scopes englobant dans le scope englobé. Comme la portée du scope est la fonction, alors on peut dire que si une fonction en contient une autre, alors la fonction contenue a accès aux variables de la fonction contenante. Comme souvent en informatique (et avec ma prose) un principe peut être simple mais compliqué à expliquer, alors un bon exemple devrait éclaircir ce point:</p>
+<x-code-prism language='javascript' line-numbers='true'>function desc_os(){
+    var os = 'GNU/Linux';
+    var version = '3.5.0-37-generic';
+    var arch = 'x86_64';
+    var distrib = 'Ubuntu';
+
+    function format(){
+        return os + ' ' + version + ' ' + arch + ' ' + distrib;
+    }
+
+    return format();
+}
+
+console.log(desc_os());
+//stdout: GNU/Linux 3.5.0-37-generic x86_64 Ubuntu</x-code-prism><p>Dans l&#39;exemple ci-dessus, la fonction <code>format</code> <em>capture</em> les valeurs des variables de la fonction <code>desc_os</code> au moment de son appel.</p>
+<h2 id="le-contexte-de-la-fonction-this-">Le contexte de la fonction: <code>this</code></h2>
+<p><img src="../img/posts/images/this.png" alt="This" title="Source theburnsider dot com slash stop this"></p>
+<p>Comme nous l&#39;avons vus dans la <a href="#function-first-class-object">première section</a> chaque fonction est aussi un objet. De plus, chaque fonction <em>hérite</em> de plusieurs membres de manière systématiques.</p>
+<p>Les propriétés suivantes sont accessible à partir de chaque fonction  :</p>
+<ul>
+<li><code>name</code> : le nom de la fonction.</li>
+<li><code>length</code> : le nombre d&#39;arguments déclarés.</li>
+<li><code>arguments</code> : un objet qui contient la liste des arguments passés (attention, ce n&#39;est pas un <code>Array</code> mais un objet qui se comporte comme tel).</li>
+<li><code>caller</code> : contient une référence à la fonction appelante.</li>
+</ul>
+<x-code-prism language='javascript' line-numbers='true'>function showFileSystem(mountPoint){
+    console.log(showFileSystem.name);
+    console.log(showFileSystem.length);
+    console.log(showFileSystem.arguments[0]); //also available as the `arguments` variable
+    console.log(showFileSystem.caller.name);
+}
+function discCheck(){
+    showFileSystem('/dev/sda');
+}
+
+discCheck();
+
+//stdout: showFileSystem
+//stdout: 1
+//stdout: /dev/sda
+//stdout: discCheck</x-code-prism><p>Il existe d&#39;autre propriétés qui peuvent changer entre les implémentions ou dont l&#39;usage sort du scope de ce post (à moins d&#39;une closure... bon, d&#39;accord c&#39;est nul ;).</p>
+<p>Parmi les méthodes accessibles, les suivantes nous intéressent particulièrement:</p>
+<ul>
+<li><code>call</code> : permet d&#39;exécuter la fonction</li>
+<li><code>apply</code> : permet aussi d&#39;exécuter la fonction</li>
+<li><code>bind</code> : créé une nouvelle fonction associée à un nouveau contexte</li>
+</ul>
+<p><code>call</code> et <code>apply</code> ont la même finalité, seul la manière dont les paramètres sont passés changent. On pourrait penser que ces fonctions sont peu utiles, comme dans l&#39;exemple suivant:</p>
+<x-code-prism language='javascript' line-numbers='true'>function kill(pid, signal){
+    if(!signal){
+        signal = '9';
+    }
+    console.log('Running: kill -'+ signal  +  ' ' + pid);
+}
+
+//usual way to invoke function
+kill(1234, 'TERM');
+
+//invoke the function using it's own method call
+kill.call(null, 1234);
+
+//invoke the function using it's own method apply
+kill.apply(null, [1234, 'PIPE']);
+
+//stdout: Running: kill -TERM 1234
+//stdout: Running: kill -9 1234
+//stdout: Running: kill -PIPE 1234</x-code-prism><p>Dans ce cas, il n&#39;y a effectivement pas un très grand intérêt, les méthodes <code>call</code> et <code>apply</code> semblent identiques. La méthode <code>apply</code> a pour particularité d&#39;utiliser un tableau pour les paramètres ce qui facilite les exécutions dynamiques de fonction, par exemple :</p>
+<x-code-prism language='javascript' line-numbers='true'>var fs = require('fs');
+
+//returns an array of files name for a service
+function get_logs(service){
+    var logDir = '/var/log/' + service + '/';
+    var logFiles = fs.readdirSync(logDir);
+    if(logFiles && logFiles instanceof Array){
+        return logFiles;
+    }
+    return [];
+}
+
+//merge the content of the array of files
+function merge(files){
+    var merged = '';
+    for(var i in files){
+        merged += fs.readSync(files[i]);
+    }
+    console.log(files.length +' files merged');
+}
+
+//backup each of the files
+function backup(files){
+    for(var i in files){
+        fs.createReadStream(files[i]).pipe(fs.createWriteStream(files[i] + '.backup'));
+    }
+    console.log(files.length +' files backed up');
+}
+
+//do actions on logs of a service
+function doOnLogs(service, action){
+    //action is a callback, on which we apply arguments dynamically
+    if(typeof action === 'function'){
+        action.apply(null, get_logs(service));
+    }
+}
+
+console.log(get_logs('redis'));
+
+//stdout: ['redis-server.log', redis-server.1.log']
+
+
+doOnLogs('redis', merge);
+doOnLogs('redis', backup);
+
+//stdout: 2 files merged
+//stdout: 2 files backed up</x-code-prism><p>C&#39;est bon, j&#39;arrête de vous tenir en haleine, maintenant je vais vous parlez du premier paramètre de ces méthodes, car vous vous demandez quel est donc ce paramètre qui a la valeur <code>null</code>? Et bien ce paramètre c&#39;est <em>le contexte de la fonction</em>, il permet de définir la valeur du mot clé <code>this</code> au sein de la fonction.</p>
+<x-code-prism language='javascript' line-numbers='true'>var cpu = {
+    cores : 2,
+    vendor : 'Intel',
+    ghz : 2.13,
+    model : 'Intel(R) Core(TM)2 Duo CPU P7450 @ 2.13GHz',
+
+    isMultiCore : function(){
+        return this.cores > 1;
+    }
+};
+
+console.log(cpu.isMulticore());
+//stdout: true
+
+var old_cpu = {
+    cores : 1
+};
+
+cpu.isMulticore.call(old_cpu);
+//stdout: false</x-code-prism><p>Dans l&#39;exemple ci-dessus, nous avons modifié le contexte de la fonction. Lors d&#39;un appel de méthode avec l&#39;opérateur <code>.</code> classique, le contexte de fonction est celui de l&#39;objet, donc dans <code>cpu.isMultiCore()</code>, <code>this</code> se rapporte à l&#39;objet <code>cpu</code>. Dans le 2nd appel, nous utilisons la méthode <code>call</code> pour changer le contexte de la fonction: <code>this</code> fera référence à <code>old_cpu</code>.</p>
+<p>Jusqu&#39;ici tout va bien. On a tous compris (enfin j&#39;espère) que <code>this</code> ne se rapporte pas à une instance comme dans d&#39;autres langages mais bien au contexte. Corsons un peu les choses, avec le code suivant:</p>
+<x-code-prism language='javascript' line-numbers='true'>var cpu = {
+    temperature : 65,
+
+    monitorTemperature : function(){
+        var monitor = setInterval(function(){
+            var temp = this.temperatue;
+            if(temp > 180){
+                console.log("Fire, fire, please help");
+            } else {
+                console.log("Temperature at "+ temp + "° is ok");
+            }
+        }, 1000);
+
+        setTimeout(function(){
+            clearInterval(monitor);
+        }, 5000);
+    }
+}
+cpu.monitorTemperature();
+//stdout: Temperature at undefined° is ok
+//stdout: Temperature at undefined° is ok
+//stdout: Temperature at undefined° is ok
+//stdout: Temperature at undefined° is ok</x-code-prism><p>Oh!(Ndt: traduction de  <em>WTF!</em>) C&#39;est quoi ce vieux <code>undefined</code>? Et bien oui, si vous avez suivis, chaque fonction a un contexte et ce contexte est accessible via le mot clé <code>this</code>. De plus, comme le scope porte sur la fonction et que nous déclarons une fonction anonyme comme <em>callback</em> de <code>setInterval</code> et bien <code>this</code> ne se rapporte plus au contexte de <code>monitorTemperature</code> mais à celui de la fonction anonyme.</p>
+<p>Mais comment on va s&#39;en sortir? C&#39;est là que les <em>closures</em> vont venir à notre secours. Nous allons garder une référence vers le contexte de la fonction :</p>
+<x-code-prism language='javascript' line-numbers='true'>var cpu = {
+    temperature : 65,
+
+    monitorTemperature : function(){
+        var self = this;
+        var monitor = setInterval(function(){
+            var temp = self.temperatue;
+            if(temp > 180){
+                console.log("Fire, fire, please help");
+            } else {
+                console.log("Temperature at "+ temp + "° is ok");
+            }
+        }, 1000);
+
+        setTimeout(function(){
+            clearInterval(monitor);
+        }, 5000);
+    }
+}
+cpu.monitorTemperature();
+//stdout: Temperature at 65° is ok
+//stdout: Temperature at 65° is ok
+//stdout: Temperature at 65° is ok
+//stdout: Temperature at 65° is ok</x-code-prism><p>Et voilà !</p>
+<p>Ce même exemple avec une <em>pseudo classe</em>, donne cela:</p>
+<x-code-prism language='javascript' line-numbers='true'>function Cpu(){
+    this.cores = 2;
+    this.vendor = 'Intel';
+    this.ghz = 2.13;
+    this.modelName = 'Intel(R) Core(TM)2 Duo CPU P7450 @ 2.13GHz';
+
+    this.isMultiCore = function(){
+        return this.cores > 0;
+    }
+}
+var cpu = new Cpu();
+console.log(cpu.isMultiCore());
+//stdout: true</x-code-prism><p>Le mot clé <code>new</code> peut être compris comme une sorte d&#39;alias à la méthode <code>call</code>. En gros <code>new Cpu()</code> revient à faire <code>Cpu.call({})</code>, c&#39;est-à-dire à créer un nouvel objet (le <code>{}</code>) et à le passer en tant que contexte de fonction.</p>
+<p>Une erreur fréquente est d&#39;utiliser <code>this</code> au sein d&#39;une fonction en vue de l&#39;utiliser comme une pseudo classe et de l&#39;appeler sans le mot clé <code>new</code>. Et là, c&#39;est le drame: <code>this</code> va se référer au contexte dans lequel il a été appelé. Prenons l&#39;exemple:</p>
+<x-code-prism language='javascript' line-numbers='true'>function UnixProcess(){
+    this.pid = process.pid;
+    console.log(this);
+}
+
+var unixProcess = new UnixProcess();
+console.log(unixProcess);
+//stdout: { pid: 6565 }</x-code-prism><p>Si vous exécutez ce code dans la console node.js et qu&#39;ensuite vous lancer <code>UnixProcess()</code> (sans le <code>new</code>), vous allez retrouvez toutes les variables globales, et oui... de même que si vous lancez <code>console.log(this)</code> à l&#39;extérieur d&#39;une fonction.</p>
+<h2 id="dans-la-vrai-vie">Dans la vrai vie</h2>
+<p>Voici un template d&#39;un plugin jQuery, on se penchant dessus on voit bien l&#39;usage du mot clé <code>this</code> qui permet d&#39;accéder au contexte de l&#39;élément jQuery (toujours un tableau d&#39;où les <code>this.each</code>) ou de l&#39;objet <code>Plugin</code>:</p>
+<x-code-prism language='javascript' line-numbers='true'>/*
+* $('#target').pluginName(options); calls Plugin.init(options)
+* $('#target').pluginName('aMethod'); calls public method Plugin.aMethod();
+*/
+(function( $ ){
+    "use strict";
+
+    //default options
+    var defaults = {
+
+    };
+
+    var Plugin = {
+
+        //initialisation code
+        init: function(options){
+            var self = this;
+            this.options = $.extend(true, {}, defaults, options);
+            return this.each(function() {
+                var $elt = $(this);
+                $elt.data('pluginName', self.options);
+
+            });
+        },
+
+        //a plublic method
+        aMethod : function(){
+            this.each(function() {
+                var $elt = $(this);
+
+            });
+        },
+
+        //a private method
+        _anotherMethod : function(){
+
+        },
+
+        //destroy code
+        destroy : function(){
+            this.each(function() {
+             var $elt = $(this);
+
+            });
+        }
+    };
+
+    $.fn.pluginName = function( method ) {
+        if ( Plugin[method] ) {
+            if(/^_/.test(method)){
+                $.error( 'Trying to call a private method ' + method + ' on jQuery.pluginName' );
+            } else {
+                return Plugin[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
+            }
+        } else if ( typeof method === 'object' || ! method) {
+            return Plugin.init.apply( this, arguments );
+        } else {
+           $.error( 'Method ' + method + ' does not exist on jQuery.pluginName' );
+        }
+    };
+
+})( jQuery );</x-code-prism><h2 id="pour-aller-plus-loin">Pour aller plus loin</h2>
+<p>Je vous conseil de lire ces deux ouvrages écrits par les gourous du JavaScript :</p>
+<ul>
+<li><a href="http://www.amazon.fr/JavaScript-The-Good-Parts-ebook/dp/B0026OR2ZY/ref=sr_1_1?ie=UTF8&amp;qid=1378985428&amp;sr=8-1&amp;keywords=javascript+the+good+parts">JavaScript The Good Parts</a> de Douglas Crockford</li>
+<li><a href="http://www.amazon.fr/Secrets-JavaScript-Ninja-John-Resig/dp/193398869X/ref=sr_1_1?ie=UTF8&amp;qid=1378985699&amp;sr=8-1&amp;keywords=secret+of+the+javascript+ninjas">Secrets of the JavaScript Ninja</a> de John Resig</li>
+</ul>
+
+
+
+
+    <x-disqus shortname="Krampstudio" identifier="2013-08-12-javascript-le-mot-cle-this" lang="fr" url="http://krampstudio.com/fr/posts/2013-08-12-javascript-le-mot-cle-this.html"></x-disqus>   
+
+    <script type="text/javascript">
+        document.location = 'index.html?state=posts/2013-08-12-javascript-le-mot-cle-this.html';
+    </script>
+
+</article>
