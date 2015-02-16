@@ -3,10 +3,10 @@
     <header>
         <h1>{{title}}</h1>
 
-        <div class="post-meta">    
+        <div class="post-meta">
 
         {{#if date}}<x-time datetime="{{date}}" format="ll"></x-time>{{/if}}
-        {{#if author}}<x-author>{{author}}</x-author>{{/if}} 
+        {{#if author}}<x-author>{{author}}</x-author>{{/if}}
         {{#if sharing}}<x-twitter-share url="{{fullUrl}}" content="{{title}}" author="{{author}}"></x-twitter-share>{{/if}}
         {{#if categories}}
             <div class="categories">
@@ -24,11 +24,11 @@
 
 
     {{#if comments}}
-    <x-disqus shortname="{{blogName}}" identifier="{{fileTitle}}" lang="{{lang}}" url="{{fullUrl}}"></x-disqus>   
+    <x-disqus shortname="{{blogName}}" identifier="{{fileTitle}}" lang="{{lang}}" url="{{fullUrl}}"></x-disqus>
     {{/if}}
 
     <script type="text/javascript">
-        document.location = 'index.html?state={{url}}';
+        document.location = '{{baseUrl}}/index.html?state={{url}}';
     </script>
 
 </article>

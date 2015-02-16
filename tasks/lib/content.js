@@ -1,6 +1,6 @@
 /**
  * @author Bertrand Chevrier <chevrier.bertrand@gmail.com>
- * @license GPL3 
+ * @license GPL3
  */
 var _       = require('lodash');
 var fs      = require('fs');
@@ -21,31 +21,31 @@ function extractLang(file, defaultLang){
     return matches ? matches[1] : defaultLang;
 }
 
-function extractTitle(file, lang){              
+function extractTitle(file, lang){
     return path.basename(file)
                .replace(patterns.ext, '')
                .replace('-' + lang, '');
 }
 
-function extractUrl(file, title, src, extension){              
+function extractUrl(file, title, src, extension){
     return  (path.dirname(file)
                   .replace(src, '') +
-                  '/' + title + 
+                  '/' + title +
                   (extension ? '.' + extension : ''))
-              .replace(/^\//, ''); 
+              .replace(/^\//, '');
 }
 
 exports.extractor = function extractor(file, options){
-    var content, meta, layout; 
+    var content, meta, layout;
     var lang    = extractLang(file, options.defaultLang);
     var title   = extractTitle(file, lang);
     var url     = extractUrl(file, title, options.src, options.extension);
- 
+
    var renderer = new marked.Renderer();
     renderer.code = function (code, lang) {
-        return "<x-code-prism language='" + (lang || '*') + "' line-numbers='true'>" + 
-                    (lang === 'markup' ? code.replace(/>/gm, '&gt;').replace(/</g, '&lt;') : code) + 
-                "</x-code-prism>"; 
+        return "<x-code-prism language='" + (lang || '*') + "' line-numbers='true'>" +
+                    (lang === 'markup' ? code.replace(/>/gm, '&gt;').replace(/</g, '&lt;') : code) +
+                "</x-code-prism>";
     };
 
     //marked tranform md to html and read yml metas.
@@ -62,6 +62,7 @@ exports.extractor = function extractor(file, options){
         dest        : options.dest + '/' + lang + '/' + url,
         url         : url,
         fullUrl     : options.url + '/' + lang + '/' + url,
+        baseUrl     : options.url + '/' + lang,
         blogName    : options.name,
         lang        : lang,
         fileTitle   : title,
