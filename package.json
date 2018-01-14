@@ -1,0 +1,30 @@
+{
+  "name": "krampstudio.github.com",
+  "version": "0.1.0",
+  "description": "Krampstudio.com website",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "postcss src/css/*css --use autoprefixer --use cssnano -d dist/css",
+    "dev": "lite-server --baseDir=src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krampstudio/krampstudio.github.com.git"
+  },
+  "author": "Bertrand Chevrier <chevrier.bertrand@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/krampstudio/krampstudio.github.com/issues"
+  },
+  "homepage": "https://github.com/krampstudio/krampstudio.github.com#readme",
+  "devDependencies": {
+    "autoprefixer": "^7.2.5",
+    "eslint": "^4.14.0",
+    "lite-server": "^2.3.0",
+    "npm-run-all": "^4.1.2",
+    "postcss-cli": "^4.1.1"
+  },
+  "dependencies": {
+    "cssnano": "^3.10.0"
+  }
+}

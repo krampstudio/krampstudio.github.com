@@ -1,0 +1,179 @@
+html {
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body, h1, h2, h3, h4, h5, h6, p {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+}
+
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+
+/* Layout */
+
+html, body {
+    position: relative;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+header {
+    flex: 0 0 5em;
+    height: 5em;
+}
+
+header nav ul {
+    padding: 0;
+    margin : 0;
+    list-style-type: none;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: space-around;
+}
+
+main {
+    flex: 1 1 auto;
+}
+main {
+    margin: 3em 1em 1em 1em;
+}
+
+footer {
+    flex: 0 0 2em;
+    height: 2em;
+}
+
+@media screen and (min-width: 800px){
+    main {
+        margin: 3em 5% 1em 5%;
+    }
+    header nav ul li {
+        padding: 0.5em 1em;
+    }
+    header nav ul li a{
+        margin: 0 1em;
+    }
+}
+@media screen and (min-width: 1024px){
+    main {
+        margin: 3em 10% 1em 10%;
+    }
+}
+@media screen and (min-width : 1280px){
+    main {
+        margin: 3em 20% 1em 20%;
+    }
+}
+
+
+/* Theming */
+
+body {
+    background-color: #252525;
+    color: #f0f0f0;
+    font-family: 'Roboto Mono', monospace;
+}
+
+h1, h2, h3, header {
+    font-family: 'Love Ya Like A Sister', serif;
+}
+
+header h1 {
+    text-align: center;
+    font-size: 3.5em;
+    padding: 0.5em;
+}
+
+header nav ul li {
+    padding: 0.5em 1em;
+}
+header nav ul li a {
+    font-size: 1.25em;
+    position: relative;
+    display: inline-block;
+}
+
+header nav ul li a:before,
+header nav ul li a:after {
+    content : '~';
+    position: absolute;
+    font-size: 2em;
+    text-decoration: none;
+    opacity: 0;
+    transition: opacity 400ms ease-in;
+}
+header nav ul li a:before {
+    left: -.35em;
+    top: -.15em;
+}
+header nav ul li a:after {
+    right: -.35em;
+    top: -.15em;
+}
+
+header nav ul li a:hover:before,
+header nav ul li a:active:before,
+header nav ul li a:focus:before,
+header nav ul li a:hover:after,
+header nav ul li a:active:after,
+header nav ul li a:focus:after {
+    opacity: 1;
+    transition: opacity 400ms ease-out;
+}
+
+
+
+a {
+    color: #c0c0c0;
+    text-decoration: none;
+}
+a:hover, a:active, a:focus {
+    color: #fff;
+
+    transition: color 300ms linear;
+}
+
+
+main article p {
+    margin-bottom: 2em;
+}
+main article h1 {
+    font-size: 1.75em;
+}
+main article h2 {
+    font-size: 1.5em;
+}
+main article h3 {
+    font-size: 1.25em;
+}
+main article h1,
+main article h2,
+main article h3{
+    margin-bottom : .5em;
+}
+main article ul {
+    list-style-type: none;
+}
+main article ul li:before {
+    content: '~ ';
+}
+
+footer {
+    text-align: center;
+}
