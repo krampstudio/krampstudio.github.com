@@ -4,8 +4,28 @@
   "description": "Krampstudio.com website",
   "main": "index.js",
   "scripts": {
+    "build:site": "metalsmith",
     "build:css": "postcss src/css/*css --use autoprefixer --use cssnano -d dist/css",
-    "dev": "lite-server --baseDir=src"
+    "build": "run-s build:site build:css",
+    "dev:site": "npm-watch build:site",
+    "dev:css": "npm-watch build:css",
+    "dev:serve": "lite-server --baseDir=dist",
+    "dev": "run-p dev:site dev:css dev:serve"
+  },
+  "watch": {
+    "build:site": {
+      "patterns": [
+        "src",
+        "layouts"
+      ],
+      "extensions": "html,md,hbs"
+    },
+    "build:css": {
+      "patterns": [
+        "src"
+      ],
+      "extensions": "css"
+    }
   },
   "repository": {
     "type": "git",
@@ -19,12 +39,14 @@
   "homepage": "https://github.com/krampstudio/krampstudio.github.com#readme",
   "devDependencies": {
     "autoprefixer": "^7.2.5",
+    "cssnano": "^3.10.0",
     "eslint": "^4.14.0",
+    "jstransformer-handlebars": "^1.0.0",
     "lite-server": "^2.3.0",
+    "metalsmith": "^2.3.0",
+    "metalsmith-layouts": "^2.0.0",
     "npm-run-all": "^4.1.2",
+    "npm-watch": "^0.3.0",
     "postcss-cli": "^4.1.1"
-  },
-  "dependencies": {
-    "cssnano": "^3.10.0"
   }
 }

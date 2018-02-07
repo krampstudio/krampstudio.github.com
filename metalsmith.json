@@ -1,0 +1,10 @@
+{
+  "source" : "src",
+  "destination" : "dist",
+  "plugins" : {
+    "metalsmith-layouts" : {
+      "default" : "layout.hbs",
+      "pattern" : "**/*.html"
+    }
+  }
+}

@@ -55,8 +55,8 @@ main {
 }
 
 footer {
-    flex: 0 0 2em;
-    height: 2em;
+    flex: 0 0 5em;
+    height: 5em;
 }
 
 @media screen and (min-width: 800px){
@@ -137,8 +137,6 @@ header nav ul li a:focus:after {
     transition: opacity 400ms ease-out;
 }
 
-
-
 a {
     color: #c0c0c0;
     text-decoration: none;
@@ -176,4 +174,168 @@ main article ul li:before {
 
 footer {
     text-align: center;
+    color: #888;
+}
+
+/** welcome page **/
+@keyframes typewritting-16 {
+  0% {
+     opacity: 1;
+     width: 0;
+  }
+  25% {
+     opacity: 1;
+     width: 16em;
+  }
+  100% {
+     opacity: 1;
+     width: 16em;
+  }
+}
+@keyframes typewritting-15 {
+  0% {
+     opacity: 1;
+     width: 0;
+  }
+  25% {
+     opacity: 1;
+     width: 15em;
+  }
+  100% {
+     opacity: 1;
+     width: 15em;
+  }
+}@keyframes typewritting-13 {
+  0% {
+     opacity: 1;
+     width: 0;
+  }
+  25% {
+     opacity: 1;
+     width: 13em;
+  }
+  100% {
+     opacity: 1;
+     width: 13em;
+  }
+}
+@keyframes typewritting-11 {
+  0% {
+     opacity: 1;
+     width: 0;
+  }
+  25% {
+     opacity: 1;
+     width: 11em;
+  }
+  100% {
+     opacity: 1;
+     width: 11em;
+  }
+}
+@keyframes typewritting-9 {
+  0% {
+     opacity: 1;
+     width: 0;
+  }
+  25% {
+     opacity: 1;
+     width: 9em;
+  }
+  100% {
+     opacity: 1;
+     width: 9em;
+  }
+}
+@keyframes blink {
+  from, to{
+     border-color: transparent;
+  }
+  50% {
+     border-color: white;
+  }
+}
+@keyframes appear {
+  0%{
+     opacity: 0;
+  }
+  100% {
+     opacity: 1;
+  }
+}
+
+.welcome ul {
+  list-style-type : none;
+  position: relative;
+  height: 1em;
+  padding:0;
+  margin:0 auto;
+  width: 100%;
+}
+.welcome ul li:before {
+    content: inherit;
+}
+
+.welcome  ul li {
+  opacity: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  padding:0;
+  margin:0 auto;
+  border-right: solid .2em white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 0;
+  font-size: 1.1em;
+  letter-spacing: .1em;
+}
+.tw11{
+  animation : 
+      blink .75s step-end infinite,
+      typewritting-11 5s steps(15,end);
+}
+.tw9{
+    animation : 
+      blink .75s step-end infinite,
+      typewritting-9 5s steps(15,end);
+}
+.tw15{
+    animation : 
+      blink .75s step-end infinite,
+      typewritting-15 5s steps(15,end);
+}
+.tw13{
+    animation : 
+      blink .75s step-end infinite,
+      typewritting-13 5s steps(15,end);
+}
+.tw16{
+    animation : 
+      blink .75s step-end infinite,
+      typewritting-16 5s steps(15,end);
+}
+.welcome ul li:nth-child(1){
+   animation-delay: 1;
+}
+.welcome ul li:nth-child(2){
+   animation-delay: 6s ;
+}
+.welcome ul li:nth-child(3){
+  animation-delay: 11s;
+}
+.welcome ul li:nth-child(4){
+  animation-delay: 16s;
+}
+.welcome ul li:nth-child(5){
+  animation-delay: 21s;
+}
+main ul li:nth-child(6){
+  animation-delay: 26s;
+}
+.welcome h2{
+    opacity : 0;
+    text-align:center;
+    animation : appear 3s ease-out 31s forwards;
 }
