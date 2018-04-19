@@ -26,7 +26,16 @@
         </header>
         <main>
             <section class="{{class}}">
-                {{{contents}}}
+                <ul>
+                    {{#each collections.posts }}
+                    {{#each . }}
+                    {{@key}} : {{.}} <br>
+                    {{/each}}
+                    <li>
+                        <a href="{{ url }}">{{ title }}</a>
+                    </li>
+                    {{/each}}
+                </ul>
             </section>
         </main>
         <footer>

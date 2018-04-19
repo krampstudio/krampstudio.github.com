@@ -1,10 +1,24 @@
 {
-  "source" : "src",
-  "destination" : "dist",
-  "plugins" : {
-    "metalsmith-layouts" : {
-      "default" : "layout.hbs",
-      "pattern" : "**/*.html"
+  "source": "src",
+  "destination": "dist",
+  "plugins": {
+    "metalsmith-collections": {
+      "posts" : {
+        "sortBy": "date",
+        "reverse": true
+      }
+    },
+    "metalsmith-layouts": {
+      "default": "layout.hbs",
+      "pattern": "**/*.html"
+    },
+    "metalsmith-permalinks": {
+      "linksets": [{
+        "match": {
+          "collection": "posts"
+        },
+        "pattern": ":url"
+      }]
     }
   }
 }
