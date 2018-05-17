@@ -19,6 +19,9 @@
         },
         "pattern": "posts/:title"
       }]
+    },
+    "metalsmith-sitemap": {
+      "hostname": "https://krampstudio.com"
     }
   }
 }
